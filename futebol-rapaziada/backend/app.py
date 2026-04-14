@@ -1,74 +1,63 @@
-from flask import Flask, jsonify
-from flask_mysqldb import MySQL
-from config import Config
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from database import get_connection
 
 app = Flask(__name__)
-app.config.from_object(Config)
-mysql = MySQL(app)
+CORS(app)  
 
-@app.route('/campeonatos', methods=['GET'])
-def get_campeonatos():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM campeonatos")
-    dados = cur.fetchall()
-    cur.close()
-    return jsonify(dados)
+@app.route("/usuarios", methods=["GET"])
+def get_usuarios():
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuarios")
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(resultado)
 
-@app.route('/classificacao', methods=['GET'])
-def get_classificacao():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM classificação")
-    dados = cur.fetchall()
-    cur.close()
-    return jsonify(dados)
+@app.route("/usuarios/<int:id>", methods=["GET"])
+def get_usuario(id):
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
+    resultado = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return jsonify(resultado)
 
-@app.route('/financeiro', methods=['GET'])
-def get_financeiro():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM financeiro")
-    dados = cur.fetchall()
-    cur.close()
-    return jsonify(dados)
+@app.route("/usuarios", methods=["POST"])
+def criar_usuario():
+    dados = request.json
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO usuarios (nome, email) VALUES (%s, %s)",
+                   (dados["nome"], dados["email"]))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Usuário criado!"}), 201
 
-@app.route('/jogadores', methods=['GET'])
-def get_jogadores():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM jogadores")
-    dados = cur.fetchall()
-    cur.close()
-    return jsonify(dados)
+@app.route("/usuarios/<int:id>", methods=["PUT"])
+def atualizar_usuario(id):
+    dados = request.json
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE usuarios SET nome = %s, email = %s WHERE id = %s",
+                   (dados["nome"], dados["email"], id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Usuário atualizado!"})
 
-@app.route('/jogos', methods=['GET'])
-def get_jogos():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM jogos")
-    dados = cur.fetchall()
-    cur.close()
-    return jsonify(dados)
+@app.route("/usuarios/<int:id>", methods=["DELETE"])
+def deletar_usuario(id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM usuarios WHERE id = %s", (id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Usuário deletado!"})
 
-@app.route('/ranking', methods=['GET'])
-def get_ranking():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM ranking")
-    dados = cur.fetchall()
-    cur.close()
-    return jsonify(dados)
-
-@app.route('/recordes', methods=['GET'])
-def get_recordes():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM recordes")
-    dados = cur.fetchall()
-    cur.close()
-    return jsonify(dados)
-
-@app.route('/times', methods=['GET'])
-def get_times():
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM times")
-    dados = cur.fetchall()
-    cur.close()
-    return jsonify(dados)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
