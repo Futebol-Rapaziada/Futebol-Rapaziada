@@ -132,6 +132,19 @@ def get_jogadores():
     conn.close()
     return jsonify(dados)
 
+@app.route('/jogadores', methods=['POST'])
+def criar_jogador():
+    dados = request.json
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO jogadores (nome, posicao, time, idade, perna_boa) VALUES (%s, %s, %s, %s, %s)",
+                   (dados["nome"], dados["posicao"], dados["time"], dados['idade'], dados['perna_boa']))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Jogador cadastrado!"}), 201
+
+
 @app.route('/jogos', methods=['GET'])
 def get_jogos():
     conn = get_connection()
