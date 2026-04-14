@@ -1,70 +1,264 @@
-body {
-  margin: 0;
-  background: #050505;
-  font-family: Arial, Helvetica, sans-serif;
+.home-wrap {
+  min-height: 100vh;
+  background: #0a0a0a;
+  padding-bottom: 40px;
 }
 
-.home-container {
-  height: 100vh;
+/* TopBar */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(10,10,10,0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #1a1a1a;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.app-name {
+  font-size: 12px;
+  letter-spacing: 4px;
+  color: #00e676;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* ── CARTA FIFA ── */
+.carta-section {
   display: flex;
   justify-content: center;
-  align-items: center;
+  padding: 32px 20px 24px;
 }
 
-/* CARD */
-.player-card {
-  background: #0f0f0f;
-  border: 1px solid #00ff88;
-  border-radius: 18px;
-  padding: 30px;
-  width: 360px;
-  text-align: center;
-  box-shadow: 0 0 30px rgba(0,255,136,0.2);
+.carta {
+  position: relative;
+  width: 220px;
+  border-radius: 16px;
+  padding: 20px 18px 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.15);
 }
 
-.player-image {
+.carta-brilho {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.carta-topo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.carta-overall {
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.carta-pos {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.carta-tipo {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  opacity: 0.6;
+}
+
+/* Foto */
+.carta-foto-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.carta-foto {
   width: 130px;
   height: 130px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #00ff88;
-  margin-bottom: 15px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.3) center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
 
-.player-card h1 {
-  color: white;
-  margin: 5px 0;
+.carta-foto-placeholder { font-size: 56px; opacity: 0.4; }
+
+/* Nome */
+.carta-nome {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
 }
 
-.player-info {
-  color: #00ff88;
-  margin-bottom: 20px;
+.carta-divisor {
+  height: 1px;
+  opacity: 0.3;
+  margin-bottom: 10px;
+  border-radius: 1px;
 }
 
-/* STATS */
-.stats {
+/* Stats */
+.carta-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 12px;
+}
+
+.carta-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.carta-stat-val { font-size: 20px; font-weight: 900; }
+.carta-stat-key { font-size: 10px; font-weight: 700; letter-spacing: 1px; }
+
+/* Rodapé */
+.carta-footer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
 }
 
-.stat {
-  background: #1a1a1a;
-padding: 15px;
-  border-radius: 10px;
-  width: 90px;
-  margin: 5px;
+/* Cards */
+.section { padding: 0 16px; }
+
+.section-title {
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  font-weight: 600;
 }
 
-.stat span {
-  font-size: 22px;
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-.stat p {
-  color: #aaa;
-  margin: 5px 0;
+.card {
+  background: #111;
+  border: 1px solid #1e1e1e;
+  border-radius: 16px;
+  padding: 18px 16px;
 }
 
-.stat h2 {
-  color: #00ff88;
-  margin: 0;
+.card-icon  { font-size: 22px; margin-bottom: 8px; }
+.card-label { font-size: 11px; color: #555; margin-bottom: 6px; line-height: 1.4; }
+.card-value { font-size: 16px; font-weight: 700; }
+
+/* Side Menu */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100;
+  display: flex;
 }
+
+.side-menu {
+  width: 280px;
+  height: 100%;
+  background: #111;
+  border-right: 1px solid #1e1e1e;
+  padding-bottom: 24px;
+  overflow-y: auto;
+}
+
+.side-menu-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 32px 20px 20px;
+  border-bottom: 1px solid #1e1e1e;
+  margin-bottom: 8px;
+}
+
+.side-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #222 center/cover;
+  flex-shrink: 0;
+  border: 2px solid #00e676;
+}
+
+.side-nome    { font-size: 15px; font-weight: 700; color: #fff; }
+.side-posicao { font-size: 12px; color: #666; }
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  cursor: pointer;
+  transition: background 0.15s;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.menu-item:hover { background: #1a1a1a; }
+.menu-label      { flex: 1; }
+.menu-arrow      { color: #555; }
+
+/* Dot Menu */
+.dot-overlay { position: fixed; inset: 0; z-index: 100; }
+
+.dot-menu {
+  position: absolute;
+  top: 60px;
+  right: 16px;
+  background: #181818;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  overflow: hidden;
+  min-width: 180px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+}
+
+.dot-item {
+  padding: 14px 20px;
+  font-size: 14px;
+  color: #ccc;
+  cursor: pointer;
+  border-bottom: 1px solid #222;
+  transition: background 0.15s;
+}
+
+.dot-item:hover      { background: #222; }
+.dot-item:last-child { border-bottom: none; }
