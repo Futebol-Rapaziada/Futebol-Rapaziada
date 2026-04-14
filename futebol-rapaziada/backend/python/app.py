@@ -13,12 +13,11 @@ CORS(app)
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
-# Parte do Cadastro e Login
-
+# CADASTRO
 @app.route("/cadastro", methods=["POST"])
 def cadastro():
     dados = request.json
-    senha_hash = bcrypt.hashpw(dados["senha"].encode("utf-8"), bcrypt.gensalt()).decode("utf-8")  # ← corrigido
+    senha_hash = bcrypt.hashpw(dados["senha"].encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
@@ -92,74 +91,86 @@ def deletar_usuario(id):
     conn.close()
     return jsonify({"mensagem": "Usuário deletado!"})
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
-# Parte da dos dados
-
+# DADOS
 @app.route('/campeonatos', methods=['GET'])
 def get_campeonatos():
-    cur = CORS.connection.cursor()
-    cur.execute("SELECT * FROM campeonatos")
-    dados = cur.fetchall()
-    cur.close()
+    conn = get_connection()  # ← corrigido
+    cursor = conn.cursor(dictionary=True)  # ← corrigido
+    cursor.execute("SELECT * FROM campeonatos")
+    dados = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return jsonify(dados)
 
 @app.route('/classificacao', methods=['GET'])
 def get_classificacao():
-    cur = CORS.connection.cursor()
-    cur.execute("SELECT * FROM classificação")
-    dados = cur.fetchall()
-    cur.close()
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM classificacao")
+    dados = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return jsonify(dados)
 
 @app.route('/financeiro', methods=['GET'])
 def get_financeiro():
-    cur = CORS.connection.cursor()
-    cur.execute("SELECT * FROM financeiro")
-    dados = cur.fetchall()
-    cur.close()
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM financeiro")
+    dados = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return jsonify(dados)
 
 @app.route('/jogadores', methods=['GET'])
 def get_jogadores():
-    cur = CORS.connection.cursor()
-    cur.execute("SELECT * FROM jogadores")
-    dados = cur.fetchall()
-    cur.close()
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM jogadores")
+    dados = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return jsonify(dados)
 
 @app.route('/jogos', methods=['GET'])
 def get_jogos():
-    cur = CORS.connection.cursor()
-    cur.execute("SELECT * FROM jogos")
-    dados = cur.fetchall()
-    cur.close()
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM jogos")
+    dados = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return jsonify(dados)
 
 @app.route('/ranking', methods=['GET'])
 def get_ranking():
-    cur = CORS.connection.cursor()
-    cur.execute("SELECT * FROM ranking")
-    dados = cur.fetchall()
-    cur.close()
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM ranking")
+    dados = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return jsonify(dados)
 
 @app.route('/recordes', methods=['GET'])
 def get_recordes():
-    cur = CORS.connection.cursor()
-    cur.execute("SELECT * FROM recordes")
-    dados = cur.fetchall()
-    cur.close()
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM recordes")
+    dados = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return jsonify(dados)
 
 @app.route('/times', methods=['GET'])
 def get_times():
-    cur = CORS.connection.cursor()
-    cur.execute("SELECT * FROM times")
-    dados = cur.fetchall()
-    cur.close()
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM times")
+    dados = cursor.fetchall()
+    cursor.close()
+    conn.close()
     return jsonify(dados)
 
-if __name__ == '__main__':
+if __name__ == "__main__":  # ← só um no final
     app.run(debug=True)
