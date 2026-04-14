@@ -75,28 +75,6 @@ export default function Cadastro() {
             </select>
           </div>
         </div>
-
-        {/* Overall */}
-        <div className="overall-wrap">
-          <div className="overall-top">
-            <span className="field-label">Overall</span>
-            {form.overall && (
-              <span className="overall-badge" style={{ background: cartaCor }}>
-                Carta {cartaTipo}
-              </span>
-            )}
-          </div>
-          <input
-            className="input overall-input"
-            type="number"
-            min={0} max={99}
-            placeholder="Digite de 0 a 99"
-            value={form.overall}
-            onChange={handle("overall")}
-            style={form.overall ? { borderColor: cartaCor, color: cartaCor } : {}}
-          />
-        </div>
-
         {/* Stats zeradas */}
         <div className="stats-preview-wrap">
           <span className="stats-preview-title">Estatísticas iniciais</span>

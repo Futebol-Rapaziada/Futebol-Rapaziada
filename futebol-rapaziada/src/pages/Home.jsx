@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import "../style/Home.css";
 
 const mockCards = [
-  { icon: "⚽", label: "Gols na temporada",   value: "0",                  cor: "#00e676" },
-  { icon: "🎯", label: "Assistências",         value: "0",                  cor: "#40c4ff" },
-  { icon: "📅", label: "Próximo jogo",         value: "Sáb, 12 Abr · 15h", cor: "#ffd740" },
-  { icon: "💰", label: "Pagamento",            value: "R$ 350,00 pendente", cor: "#ff6d00" },
-  { icon: "🏦", label: "Banco",                value: "Pix: (47) 9xxxx",    cor: "#ea80fc" },
+  { icon: "⚽", label: "Gols na temporada",   value: "2",                  cor: "#00e676" },
+  { icon: "🎯", label: "Assistências",         value: "4",                  cor: "#40c4ff" },
+  { icon: "📅", label: "Próximo jogo",         value: "Sex, 17hrs", cor: "#ffd740" },
+  { icon: "💰", label: "Pagamento",            value: "R$ 180,00 pendente", cor: "#ff6d00" },
+  { icon: "🏦", label: "Banco",                value: "Pix: (48) 9 8813-7485",    cor: "#ea80fc" },
   { icon: "✅", label: "Confirmados",          value: "8 / 11 jogadores",   cor: "#69f0ae" },
   { icon: "🏆", label: "Posição no camp.",     value: "3º lugar · 18 pts",  cor: "#ffd740" },
   { icon: "⏱️", label: "Minutos jogados",      value: "0 min",              cor: "#80d8ff" },
 ];
 
 function getCartaConfig(overall) {
-  const n = Number(overall);
+  const n = (overall, 80)
   if (n <= 33) return {
     tipo: "BRONZE",
     bg: "linear-gradient(160deg, #4a2800 0%, #cd7f32 40%, #8b5a00 70%, #3d2000 100%)",
