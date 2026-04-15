@@ -185,5 +185,5 @@ def get_times():
     conn.close()
     return jsonify(dados)
 
-if __name__ == "__main__":  # ← só um no final
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')
