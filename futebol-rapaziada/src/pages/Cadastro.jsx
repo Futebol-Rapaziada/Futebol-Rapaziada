@@ -43,7 +43,7 @@ export default function Cadastro() {
     try {
       const data = await criarJogador(jogador);
 
-      // 🔥 LOGIN AUTOMÁTICO
+    
       localStorage.setItem("user", JSON.stringify(data));
 
       navigate("/home");
