@@ -1,12 +1,17 @@
 const API_URL = "http://localhost:5000";
 
-export async function getUsuarios() {
-  const response = await fetch(`${API_URL}/usuarios`);
-  return response.json();
+export async function getJogadores() {
+  const response = await fetch(`${API_URL}/jogadores`);
+
+  if (!response.ok) {
+    throw new Error("Erro ao buscar jogadores");
+  }
+
+  return await response.json();
 }
 
-export async function criarUsuario(data) {
-  const response = await fetch(`${API_URL}/usuarios`, {
+export async function criarJogador(data) {
+  const response = await fetch(`${API_URL}/jogadores`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -14,11 +19,21 @@ export async function criarUsuario(data) {
     body: JSON.stringify(data),
   });
 
-  return response.json();
+  if (!response.ok) {
+    throw new Error("Erro ao criar jogador");
+  }
+
+  return await response.json();
 }
 
-export async function deletarUsuario(id) {
-  await fetch(`${API_URL}/usuarios/${id}`, {
+export async function deletarJogador(id) {
+  const response = await fetch(`${API_URL}/jogadores/${id}`, {
     method: "DELETE",
   });
+
+  if (!response.ok) {
+    throw new Error("Erro ao deletar jogador");
+  }
+
+  return true;
 }

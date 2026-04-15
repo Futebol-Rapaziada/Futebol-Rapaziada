@@ -1,33 +1,56 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { criarJogador } from "../services/api";
 import "../style/Cadastro.css";
 
 export default function Cadastro() {
   const navigate = useNavigate();
+
   const [form, setForm] = useState({
-    nome: "", posicao: "", idade: "", perna: "Direita", overall: "",
+    nome: "",
+    posicao: "",
+    idade: "",
+    perna: "Direita",
+    overall: "",
   });
+
   const [preview, setPreview] = useState(null);
 
-  const handle = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
+  const handle = (k) => (e) =>
+    setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const handleFoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
     const reader = new FileReader();
     reader.onload = () => setPreview(reader.result);
     reader.readAsDataURL(file);
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!form.nome) return;
-    localStorage.setItem("player", JSON.stringify({ ...form, fotoUrl: preview }));
-    navigate("/home");
-  };
 
-  const overall = Number(form.overall);
-  const cartaTipo = overall <= 33 ? "Bronze" : overall <= 66 ? "Prata" : "Ouro";
-  const cartaCor  = overall <= 33 ? "#cd7f32" : overall <= 66 ? "#c0c0c0" : "#ffd700";
+    const jogador = {
+      ...form,
+      fotoUrl: preview,
+      gols: 0,
+      assistencias: 0,
+      jogos: 0,
+      cartoes: 0,
+    };
+
+    try {
+      const data = await criarJogador(jogador);
+
+      // 🔥 LOGIN AUTOMÁTICO
+      localStorage.setItem("user", JSON.stringify(data));
+
+      navigate("/home");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="cadastro-wrap">
@@ -36,59 +59,34 @@ export default function Cadastro() {
         <div className="cadastro-header">
           <span className="tagline">⚽ PLAYER CARD</span>
           <h1 className="cadastro-title">Cadastro do Jogador</h1>
-          <p className="cadastro-sub">
-            Preencha para criar seu perfil. As estatísticas começam em 0.
-          </p>
         </div>
 
-        {/* Foto */}
         <label className="foto-label">
           <input type="file" accept="image/*" onChange={handleFoto} style={{ display: "none" }} />
           <div
             className="foto-circle"
-            style={preview ? { backgroundImage: `url(${preview})`, backgroundSize: "cover", backgroundPosition: "center" } : {}}
+            style={preview ? { backgroundImage: `url(${preview})`, backgroundSize: "cover" } : {}}
           >
-            {!preview && <span className="foto-icon">📷</span>}
-            {!preview && <span className="foto-hint">Adicionar foto</span>}
+            {!preview && <span>📷</span>}
           </div>
         </label>
 
-        {/* Campos */}
         <div className="form-grid">
-          {[
-            { key: "nome",    label: "Nome completo", placeholder: "Ex: Carlos Silva" },
-            { key: "posicao", label: "Posição",        placeholder: "Ex: ATA" },
-            { key: "idade",   label: "Idade",          placeholder: "Ex: 22" },
-          ].map(({ key, label, placeholder }) => (
-            <div key={key} className="field-wrap">
-              <label className="field-label">{label}</label>
-              <input className="input" placeholder={placeholder} value={form[key]} onChange={handle(key)} />
-            </div>
-          ))}
+          <input className="input" placeholder="Nome" value={form.nome} onChange={handle("nome")} />
+          <input className="input" placeholder="Posição" value={form.posicao} onChange={handle("posicao")} />
+          <input className="input" placeholder="Idade" value={form.idade} onChange={handle("idade")} />
 
-          <div className="field-wrap">
-            <label className="field-label">Perna boa</label>
-            <select className="input" value={form.perna} onChange={handle("perna")}>
-              <option value="Direita">Direita</option>
-              <option value="Esquerda">Esquerda</option>
-              <option value="Ambas">Ambas</option>
-            </select>
-          </div>
-        </div>
-        {/* Stats zeradas */}
-        <div className="stats-preview-wrap">
-          <span className="stats-preview-title">Estatísticas iniciais</span>
-          <div className="stats-preview-row">
-            {["Gols", "Assist.", "Jogos", "Cartões"].map((label) => (
-              <div key={label} className="stat-chip">
-                <span className="stat-num">0</span>
-                <span className="stat-key">{label}</span>
-              </div>
-            ))}
-          </div>
+          <select className="input" value={form.perna} onChange={handle("perna")}>
+            <option>Direita</option>
+            <option>Esquerda</option>
+            <option>Ambas</option>
+          </select>
         </div>
 
-        <button className="btn-primary" onClick={submit}>Criar perfil →</button>
+        <button className="btn-primary" onClick={submit}>
+          Criar perfil →
+        </button>
+
       </div>
     </div>
   );
