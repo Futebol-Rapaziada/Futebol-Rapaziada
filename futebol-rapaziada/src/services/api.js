@@ -1,4 +1,4 @@
-const API_URL = "http://192.168.1.5:5000";
+const API_URL = "https://ageless-favoring-skincare.ngrok-free.dev";
 
 export async function getJogadores() {
   const response = await fetch(`${API_URL}/jogadores`);
