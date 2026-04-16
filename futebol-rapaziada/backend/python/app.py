@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
@@ -137,13 +137,24 @@ def criar_jogador():
     dados = request.json
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO jogadores (nome, posicao, time, idade, perna_boa) VALUES (%s, %s, %s, %s, %s)",
-                   (dados["nome"], dados["posicao"], dados["time"], dados['idade'], dados['perna_boa']))
+    cursor.execute("INSERT INTO jogadores (nome, posicao, time, idade, perna_boa," \
+    " overall, fotoUrl, gols, assistencias, jogos, cartoes) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                    (dados["nome"], dados["posicao"], dados["time"], dados['idade'], dados['perna_boa'],
+                    dados['overall'], dados['fotoUrl'], dados['gols'], dados['assistencias'], dados['jogos'], dados['cartoes']))
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify({"mensagem": "Jogador cadastrado!"}), 201
 
+@app.route('/jogadores/<int:id>', methods=['DELETE'])
+def deletar_jogador(id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM jogadores WHERE id = %s", (id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Jogador deletado!"})
 
 @app.route('/jogos', methods=['GET'])
 def get_jogos():
