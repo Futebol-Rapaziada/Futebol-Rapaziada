@@ -1,39 +1,96 @@
-const API_URL = "https://ageless-favoring-skincare.ngrok-free.dev";
+const API_URL = "http://127.0.0.1:5000";
 
-export async function getJogadores() {
-  const response = await fetch(`${API_URL}/jogadores`);
-
-  if (!response.ok) {
-    throw new Error("Erro ao buscar jogadores");
-  }
-
-  return await response.json();
-}
-
-export async function criarJogador(data) {
-  const response = await fetch(`${API_URL}/jogadores`, {
-    method: "POST",
+async function request(endpoint, options = {}) {
+  const response = await fetch(`${API_URL}${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
+      ...(options.headers || {}),
     },
-    body: JSON.stringify(data),
+    ...options,
   });
 
-  if (!response.ok) {
-    throw new Error("Erro ao criar jogador");
+  let data = null;
+
+  try {
+    data = await response.json();
+  } catch {
+    data = null;
   }
 
-  return await response.json();
+  if (!response.ok) {
+    throw new Error(data?.erro || data?.mensagem || "Erro na requisição");
+  }
+
+  return data;
+}
+
+/* =========================
+   JOGADORES
+========================= */
+
+export async function getJogadores() {
+  return await request("/jogadores");
+}
+
+export async function criarJogador(jogador) {
+  return await request("/jogadores", {
+    method: "POST",
+    body: JSON.stringify(jogador),
+  });
 }
 
 export async function deletarJogador(id) {
-  const response = await fetch(`${API_URL}/jogadores/${id}`, {
+  return await request(`/jogadores/${id}`, {
     method: "DELETE",
   });
+}
 
-  if (!response.ok) {
-    throw new Error("Erro ao deletar jogador");
-  }
+/* =========================
+   LOGIN / CADASTRO
+========================= */
 
-  return true;
+export async function login(email, senha) {
+  return await request("/login", {
+    method: "POST",
+    body: JSON.stringify({ email, senha }),
+  });
+}
+
+export async function cadastro(nome, email, senha) {
+  return await request("/cadastro", {
+    method: "POST",
+    body: JSON.stringify({ nome, email, senha }),
+  });
+}
+
+/* =========================
+   DADOS GERAIS
+========================= */
+
+export async function getCampeonatos() {
+  return await request("/campeonatos");
+}
+
+export async function getClassificacao() {
+  return await request("/classificacao");
+}
+
+export async function getFinanceiro() {
+  return await request("/financeiro");
+}
+
+export async function getJogos() {
+  return await request("/jogos");
+}
+
+export async function getRanking() {
+  return await request("/ranking");
+}
+
+export async function getRecordes() {
+  return await request("/recordes");
+}
+
+export async function getTimes() {
+  return await request("/times");
 }
