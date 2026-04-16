@@ -9,8 +9,9 @@ export default function Cadastro() {
   const [form, setForm] = useState({
     nome: "",
     posicao: "",
+    time: "",
     idade: "",
-    perna: "Direita",
+    perna_boa: "Direita",
     overall: "",
   });
 
@@ -42,10 +43,7 @@ export default function Cadastro() {
 
     try {
       const data = await criarJogador(jogador);
-
-    
       localStorage.setItem("user", JSON.stringify(data));
-
       navigate("/home");
     } catch (err) {
       console.error(err);
@@ -74,13 +72,24 @@ export default function Cadastro() {
         <div className="form-grid">
           <input className="input" placeholder="Nome" value={form.nome} onChange={handle("nome")} />
           <input className="input" placeholder="Posição" value={form.posicao} onChange={handle("posicao")} />
+          <input className="input" placeholder="Time" value={form.time} onChange={handle("time")} />
           <input className="input" placeholder="Idade" value={form.idade} onChange={handle("idade")} />
 
-          <select className="input" value={form.perna} onChange={handle("perna")}>
+          <select className="input" value={form.perna_boa} onChange={handle("perna_boa")}>
             <option>Direita</option>
             <option>Esquerda</option>
             <option>Ambas</option>
           </select>
+
+          <input
+            className="input"
+            type="number"
+            min={0}
+            max={99}
+            placeholder="Overall (0-99)"
+            value={form.overall}
+            onChange={handle("overall")}
+          />
         </div>
 
         <button className="btn-primary" onClick={submit}>
