@@ -82,6 +82,9 @@ def login():
     token = create_access_token(identity=str(usuario["id"]))
     return jsonify({"token": token})
 
+@app.route("/")
+def home():
+    return "API Flask no Railway!"
 
 # ─── USUÁRIOS ────────────────────────────────────────────────────────────────────
 
