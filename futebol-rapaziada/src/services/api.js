@@ -1,9 +1,28 @@
-const API_URL = "http://192.168.3.247:5000";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://192.168.3.247:5000"
+
+// ─── TOKEN ───────────────────────────────────────────────────────────────────────
+
+export function salvarToken(token) {
+  localStorage.setItem("token", token);
+}
+
+export function obterToken() {
+  return localStorage.getItem("token");
+}
+
+export function removerToken() {
+  localStorage.removeItem("token");
+}
+
+// ─── REQUEST BASE ─────────────────────────────────────────────────────────────────
 
 async function request(endpoint, options = {}) {
+  const token = obterToken();
+
   const response = await fetch(`${API_URL}${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.headers || {}),
     },
     ...options,
@@ -29,18 +48,18 @@ async function request(endpoint, options = {}) {
 ========================= */
 
 export async function getJogadores() {
-  return await request("/jogadores");
+  return request("/jogadores");
 }
 
 export async function criarJogador(jogador) {
-  return await request("/jogadores", {
+  return request("/jogadores", {
     method: "POST",
     body: JSON.stringify(jogador),
   });
 }
 
 export async function deletarJogador(id) {
-  return await request(`/jogadores/${id}`, {
+  return request(`/jogadores/${id}`, {
     method: "DELETE",
   });
 }
@@ -50,14 +69,17 @@ export async function deletarJogador(id) {
 ========================= */
 
 export async function login(email, senha) {
-  return await request("/login", {
+  const data = await request("/login", {
     method: "POST",
     body: JSON.stringify({ email, senha }),
   });
+  // Salva o token automaticamente após login bem-sucedido
+  if (data?.token) salvarToken(data.token);
+  return data;
 }
 
 export async function cadastro(nome, email, senha) {
-  return await request("/cadastro", {
+  return request("/cadastro", {
     method: "POST",
     body: JSON.stringify({ nome, email, senha }),
   });
@@ -68,29 +90,29 @@ export async function cadastro(nome, email, senha) {
 ========================= */
 
 export async function getCampeonatos() {
-  return await request("/campeonatos");
+  return request("/campeonatos");
 }
 
 export async function getClassificacao() {
-  return await request("/classificacao");
+  return request("/classificacao");
 }
 
 export async function getFinanceiro() {
-  return await request("/financeiro");
+  return request("/financeiro");
 }
 
 export async function getJogos() {
-  return await request("/jogos");
+  return request("/jogos");
 }
 
 export async function getRanking() {
-  return await request("/ranking");
+  return request("/ranking");
 }
 
 export async function getRecordes() {
-  return await request("/recordes");
+  return request("/recordes");
 }
 
 export async function getTimes() {
-  return await request("/times");
+  return request("/times");
 }
