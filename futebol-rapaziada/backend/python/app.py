@@ -9,7 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app,
+     resources={r"/*": {"origins": "http://localhost:5173"}},
+     supports_credentials=True)
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
