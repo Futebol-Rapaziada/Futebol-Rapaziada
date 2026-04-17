@@ -1,5 +1,4 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask import Flask, jsonify, request, Response
 from flask_jwt_extended import JWTManager, create_access_token
 from database import get_connection
 import bcrypt
@@ -9,25 +8,51 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
-# CADASTRO
+
+# ─── CORS MANUAL ────────────────────────────────────────────────────────────────
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "http://localhost:5173"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
+
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        res = Response()
+        res.headers["Access-Control-Allow-Origin"] = "http://localhost:5173"
+        res.headers["Access-Control-Allow-Credentials"] = "true"
+        res.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        res.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        return res, 204
+
+
+# ─── CADASTRO ───────────────────────────────────────────────────────────────────
+
 @app.route("/cadastro", methods=["POST"])
 def cadastro():
     dados = request.json
     senha_hash = bcrypt.hashpw(dados["senha"].encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
-                   (dados["nome"], dados["email"], senha_hash))
+    cursor.execute(
+        "INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
+        (dados["nome"], dados["email"], senha_hash)
+    )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify({"mensagem": "Usuário cadastrado!"}), 201
 
-# LOGIN
+
+# ─── LOGIN ───────────────────────────────────────────────────────────────────────
+
 @app.route("/login", methods=["POST"])
 def login():
     dados = request.json
@@ -48,7 +73,9 @@ def login():
     token = create_access_token(identity=str(usuario["id"]))
     return jsonify({"token": token})
 
-# USUÁRIOS
+
+# ─── USUÁRIOS ────────────────────────────────────────────────────────────────────
+
 @app.route("/usuarios", methods=["GET"])
 def get_usuarios():
     conn = get_connection()
@@ -74,8 +101,10 @@ def atualizar_usuario(id):
     dados = request.json
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE usuarios SET nome = %s, email = %s WHERE id = %s",
-                   (dados["nome"], dados["email"], id))
+    cursor.execute(
+        "UPDATE usuarios SET nome = %s, email = %s WHERE id = %s",
+        (dados["nome"], dados["email"], id)
+    )
     conn.commit()
     cursor.close()
     conn.close()
@@ -91,16 +120,21 @@ def deletar_usuario(id):
     conn.close()
     return jsonify({"mensagem": "Usuário deletado!"})
 
-# DADOS
+
+# ─── CAMPEONATOS ─────────────────────────────────────────────────────────────────
+
 @app.route('/campeonatos', methods=['GET'])
 def get_campeonatos():
-    conn = get_connection()  # ← corrigido
-    cursor = conn.cursor(dictionary=True)  # ← corrigido
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM campeonatos")
     dados = cursor.fetchall()
     cursor.close()
     conn.close()
     return jsonify(dados)
+
+
+# ─── CLASSIFICAÇÃO ───────────────────────────────────────────────────────────────
 
 @app.route('/classificacao', methods=['GET'])
 def get_classificacao():
@@ -112,6 +146,9 @@ def get_classificacao():
     conn.close()
     return jsonify(dados)
 
+
+# ─── FINANCEIRO ──────────────────────────────────────────────────────────────────
+
 @app.route('/financeiro', methods=['GET'])
 def get_financeiro():
     conn = get_connection()
@@ -121,6 +158,9 @@ def get_financeiro():
     cursor.close()
     conn.close()
     return jsonify(dados)
+
+
+# ─── JOGADORES ───────────────────────────────────────────────────────────────────
 
 @app.route('/jogadores', methods=['GET'])
 def get_jogadores():
@@ -137,10 +177,23 @@ def criar_jogador():
     dados = request.json
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO jogadores (nome, posicao, time, idade, perna_boa," \
-    " overall, fotoUrl, gols, assistencias, jogos, cartoes) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                    (dados["nome"], dados["posicao"], dados["time"], dados['idade'], dados['perna_boa'],
-                    dados['overall'], dados['fotoUrl'], dados['gols'], dados['assistencias'], dados['jogos'], dados['cartoes']))
+    cursor.execute(
+        "INSERT INTO jogadores (nome, posicao, time, idade, perna_boa, overall, fotoUrl, gols, assistencias, jogos, cartoes) "
+        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (
+            dados["nome"],
+            dados["posicao"],
+            dados["time"],
+            dados["idade"],
+            dados["perna_boa"],
+            dados.get("overall", 0),
+            dados["fotoUrl"],
+            dados["gols"],
+            dados["assistencias"],
+            dados["jogos"],
+            dados["cartoes"]
+        )
+    )
     conn.commit()
     cursor.close()
     conn.close()
@@ -156,6 +209,9 @@ def deletar_jogador(id):
     conn.close()
     return jsonify({"mensagem": "Jogador deletado!"})
 
+
+# ─── JOGOS ───────────────────────────────────────────────────────────────────────
+
 @app.route('/jogos', methods=['GET'])
 def get_jogos():
     conn = get_connection()
@@ -165,6 +221,9 @@ def get_jogos():
     cursor.close()
     conn.close()
     return jsonify(dados)
+
+
+# ─── RANKING ─────────────────────────────────────────────────────────────────────
 
 @app.route('/ranking', methods=['GET'])
 def get_ranking():
@@ -176,6 +235,9 @@ def get_ranking():
     conn.close()
     return jsonify(dados)
 
+
+# ─── RECORDES ────────────────────────────────────────────────────────────────────
+
 @app.route('/recordes', methods=['GET'])
 def get_recordes():
     conn = get_connection()
@@ -186,6 +248,9 @@ def get_recordes():
     conn.close()
     return jsonify(dados)
 
+
+# ─── TIMES ───────────────────────────────────────────────────────────────────────
+
 @app.route('/times', methods=['GET'])
 def get_times():
     conn = get_connection()
@@ -195,6 +260,9 @@ def get_times():
     cursor.close()
     conn.close()
     return jsonify(dados)
+
+
+# ─── MAIN ─────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
