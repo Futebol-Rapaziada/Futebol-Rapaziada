@@ -13,8 +13,9 @@ jwt = JWTManager(app)
 
 ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://192.168.3.247:5173",  # IP do amigo
-    "http://192.168.2.105:5173",  # seu IP
+    "http://192.168.3.247:5173",
+    "http://192.168.2.105:5173",
+    "https://futebol-rapaziada.vercel.app"
 ]
 
 # ─── CORS MANUAL ────────────────────────────────────────────────────────────────

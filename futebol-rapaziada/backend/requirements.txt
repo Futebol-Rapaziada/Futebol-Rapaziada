@@ -1,0 +1,7 @@
+Flask==3.1.0
+Flask-JWT-Extended==4.7.1
+flask-cors==6.0.2
+bcrypt==5.0.0
+mysql-connector-python==9.6.0
+python-dotenv==1.2.2
+gunicorn==25.3.0
