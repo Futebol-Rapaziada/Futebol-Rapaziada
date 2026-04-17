@@ -11,12 +11,18 @@ app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://192.168.1.247:5173",
+]
 
 # ─── CORS MANUAL ────────────────────────────────────────────────────────────────
 
 @app.after_request
 def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "http://localhost:5173"
+    origin = request.headers.get("Origin")
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin  # ← dinâmico
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
@@ -25,8 +31,10 @@ def add_cors_headers(response):
 @app.before_request
 def handle_preflight():
     if request.method == "OPTIONS":
+        origin = request.headers.get("Origin")
         res = Response()
-        res.headers["Access-Control-Allow-Origin"] = "http://localhost:5173"
+        if origin in ALLOWED_ORIGINS:
+            res.headers["Access-Control-Allow-Origin"] = origin  # ← dinâmico
         res.headers["Access-Control-Allow-Credentials"] = "true"
         res.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
         res.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
