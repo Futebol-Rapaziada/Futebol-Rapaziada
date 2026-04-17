@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://192.168.3.247:5000"
+const API_URL = import.meta.env.VITE_API_URL ?? "http://192.168.2.105:5000"
 
 // ─── TOKEN ───────────────────────────────────────────────────────────────────────
 
