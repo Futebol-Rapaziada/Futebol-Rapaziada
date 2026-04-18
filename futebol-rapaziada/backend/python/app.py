@@ -13,9 +13,8 @@ jwt = JWTManager(app)
 
 ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "http://192.168.3.247:5173",
     "http://192.168.2.105:5173",
-    "https://futebol-rapaziada.vercel.app"
+    "https://futebol-rapaziada-4qw0kzf98-pietrowennings-projects.vercel.app",  # ← adiciona
 ]
 
 # ─── CORS MANUAL ────────────────────────────────────────────────────────────────
