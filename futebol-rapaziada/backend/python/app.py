@@ -11,19 +11,28 @@ app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
 
-ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://192.168.2.105:5173",
-    "https://futebol-rapaziada-4qw0kzf98-pietrowennings-projects.vercel.app",  # ← adiciona
-]
+# ─── CORS ────────────────────────────────────────────────────────────────────────
 
-# ─── CORS MANUAL ────────────────────────────────────────────────────────────────
+def origem_permitida(origin):
+    if not origin:
+        return False
+    allowed = [
+        "http://localhost:5173",
+        "http://192.168.3.247:5173",
+        "http://192.168.2.105:5173",
+        "https://futebol-rapaziada.vercel.app",
+    ]
+    if origin in allowed:
+        return True
+    if origin.endswith(".vercel.app"):  # libera todos os previews da Vercel
+        return True
+    return False
 
 @app.after_request
 def add_cors_headers(response):
     origin = request.headers.get("Origin")
-    if origin in ALLOWED_ORIGINS:
-        response.headers["Access-Control-Allow-Origin"] = origin  # ← dinâmico
+    if origem_permitida(origin):
+        response.headers["Access-Control-Allow-Origin"] = origin
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
@@ -34,8 +43,8 @@ def handle_preflight():
     if request.method == "OPTIONS":
         origin = request.headers.get("Origin")
         res = Response()
-        if origin in ALLOWED_ORIGINS:
-            res.headers["Access-Control-Allow-Origin"] = origin  # ← dinâmico
+        if origem_permitida(origin):
+            res.headers["Access-Control-Allow-Origin"] = origin
         res.headers["Access-Control-Allow-Credentials"] = "true"
         res.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
         res.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
@@ -85,6 +94,7 @@ def login():
 @app.route("/")
 def home():
     return "API Flask no Railway!"
+
 
 # ─── USUÁRIOS ────────────────────────────────────────────────────────────────────
 
