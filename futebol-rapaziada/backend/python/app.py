@@ -216,7 +216,7 @@ def criar_jogador():
         dados["cartoes"]
     )
 )
-    )
+    
     conn.commit()
     cursor.close()
     conn.close()
