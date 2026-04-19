@@ -57,7 +57,7 @@ def handle_preflight():
 def cadastro():
     dados = request.json
     senha_hash = bcrypt.hashpw(dados["senha"].encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
@@ -74,7 +74,7 @@ def cadastro():
 @app.route("/login", methods=["POST"])
 def login():
     dados = request.json
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM usuarios WHERE email = %s", (dados["email"],))
     usuario = cursor.fetchone()
@@ -100,7 +100,7 @@ def home():
 
 @app.route("/usuarios", methods=["GET"])
 def get_usuarios():
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM usuarios")
     resultado = cursor.fetchall()
@@ -110,7 +110,7 @@ def get_usuarios():
 
 @app.route("/usuarios/<int:id>", methods=["GET"])
 def get_usuario(id):
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
     resultado = cursor.fetchone()
@@ -121,7 +121,7 @@ def get_usuario(id):
 @app.route("/usuarios/<int:id>", methods=["PUT"])
 def atualizar_usuario(id):
     dados = request.json
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor()
     cursor.execute(
         "UPDATE usuarios SET nome = %s, email = %s WHERE id = %s",
@@ -134,7 +134,7 @@ def atualizar_usuario(id):
 
 @app.route("/usuarios/<int:id>", methods=["DELETE"])
 def deletar_usuario(id):
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM usuarios WHERE id = %s", (id,))
     conn.commit()
@@ -147,7 +147,7 @@ def deletar_usuario(id):
 
 @app.route('/campeonatos', methods=['GET'])
 def get_campeonatos():
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM campeonatos")
     dados = cursor.fetchall()
@@ -160,7 +160,7 @@ def get_campeonatos():
 
 @app.route('/classificacao', methods=['GET'])
 def get_classificacao():
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM classificacao")
     dados = cursor.fetchall()
@@ -173,7 +173,7 @@ def get_classificacao():
 
 @app.route('/financeiro', methods=['GET'])
 def get_financeiro():
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM financeiro")
     dados = cursor.fetchall()
@@ -186,7 +186,7 @@ def get_financeiro():
 
 @app.route('/jogadores', methods=['GET'])
 def get_jogadores():
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM jogadores")
     dados = cursor.fetchall()
@@ -197,7 +197,7 @@ def get_jogadores():
 @app.route('/jogadores', methods=['POST'])
 def criar_jogador():
     dados = request.json
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO jogadores (nome, posicao, time, idade, perna_boa, overall, fotoUrl, gols, assistencias, jogos, cartoes) "
@@ -223,7 +223,7 @@ def criar_jogador():
 
 @app.route('/jogadores/<int:id>', methods=['DELETE'])
 def deletar_jogador(id):
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor()
     cursor.execute("DELETE FROM jogadores WHERE id = %s", (id,))
     conn.commit()
@@ -236,7 +236,7 @@ def deletar_jogador(id):
 
 @app.route('/jogos', methods=['GET'])
 def get_jogos():
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM jogos")
     dados = cursor.fetchall()
@@ -249,7 +249,7 @@ def get_jogos():
 
 @app.route('/ranking', methods=['GET'])
 def get_ranking():
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM ranking")
     dados = cursor.fetchall()
@@ -262,7 +262,7 @@ def get_ranking():
 
 @app.route('/recordes', methods=['GET'])
 def get_recordes():
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM recordes")
     dados = cursor.fetchall()
@@ -275,7 +275,7 @@ def get_recordes():
 
 @app.route('/times', methods=['GET'])
 def get_times():
-    conn = get_connection()
+    conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM times")
     dados = cursor.fetchall()
