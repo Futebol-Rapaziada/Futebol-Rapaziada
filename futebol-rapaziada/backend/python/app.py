@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, Response
 from flask_jwt_extended import JWTManager, create_access_token
-from database import get_connection
+from database import obter_conexao
 import bcrypt
 import os
 from dotenv import load_dotenv
