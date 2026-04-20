@@ -33,17 +33,29 @@ export default function Campeonato() {
     return `${i + 1}º`;
   }
 
-  // Classificação: ordenada por gols + assistências (participação geral)
   const classificacao = [...jogadores].sort((a, b) =>
     ((b.gols ?? 0) + (b.assistencias ?? 0)) - ((a.gols ?? 0) + (a.assistencias ?? 0))
   );
-
-  const artilheiros = [...jogadores].sort((a, b) => (b.gols ?? 0) - (a.gols ?? 0));
-  const garcons     = [...jogadores].sort((a, b) => (b.assistencias ?? 0) - (a.assistencias ?? 0));
+  const artilheiros  = [...jogadores].sort((a, b) => (b.gols ?? 0) - (a.gols ?? 0));
+  const garcons      = [...jogadores].sort((a, b) => (b.assistencias ?? 0) - (a.assistencias ?? 0));
   const participacao = classificacao;
-  const defesa      = [...jogadores]
-    .filter(j => (j.jogos ?? 0) > 0)
-    .sort((a, b) => (a.cartoes ?? 0) - (b.cartoes ?? 0));
+  const defesa       = [...jogadores].filter(j => (j.jogos ?? 0) > 0).sort((a, b) => (a.cartoes ?? 0) - (b.cartoes ?? 0));
+
+  function RankItem({ j, i, renderStat }) {
+    return (
+      <div className={`camp-rank-item ${isEu(j) ? "eu" : ""}`}>
+        <span className="rank-pos">{medalha(i)}</span>
+        <div className="rank-info">
+          <span className="rank-nome">
+            {j.nome?.split(" ")[0]}
+            {isEu(j) && <span className="tag-eu">você</span>}
+          </span>
+          <span className="rank-posicao">{j.posicao || "—"}</span>
+        </div>
+        <span className="rank-stat">{renderStat(j)}</span>
+      </div>
+    );
+  }
 
   if (loading) return (
     <Layout>
@@ -70,7 +82,7 @@ export default function Campeonato() {
 
         {/* Abas */}
         <div className="abas">
-          {ABAS.map((a) => (
+          {ABAS.map(a => (
             <button key={a} className={`aba-btn ${aba === a ? "ativa" : ""}`} onClick={() => setAba(a)}>
               {a}
             </button>
@@ -85,10 +97,11 @@ export default function Campeonato() {
                 <tr>
                   <th>#</th>
                   <th>Jogador</th>
+                  <th>Posição</th>
                   <th title="Jogos">JG</th>
                   <th title="Gols">G</th>
                   <th title="Assistências">A</th>
-                  <th title="Participações">G+A</th>
+                  <th title="G+A">G+A</th>
                   <th title="Cartões">🟨</th>
                   <th title="Overall">OVR</th>
                 </tr>
@@ -102,6 +115,7 @@ export default function Campeonato() {
                       {j.nome?.split(" ")[0]}
                       {isEu(j) && <span className="tag-eu">você</span>}
                     </td>
+                    <td className="col-posicao">{j.posicao || "—"}</td>
                     <td>{j.jogos ?? 0}</td>
                     <td className="col-destaque">{j.gols ?? 0}</td>
                     <td className="col-destaque">{j.assistencias ?? 0}</td>
@@ -119,11 +133,9 @@ export default function Campeonato() {
         {aba === "Artilheiros" && (
           <div className="camp-ranking">
             {artilheiros.slice(0, 10).map((j, i) => (
-              <div key={j.id ?? i} className={`camp-rank-item ${isEu(j) ? "eu" : ""}`}>
-                <span className="rank-pos">{medalha(i)}</span>
-                <span className="rank-nome">{j.nome?.split(" ")[0]} {isEu(j) ? "(você)" : ""}</span>
-                <span className="rank-stat">⚽ <strong>{j.gols ?? 0}</strong> gols</span>
-              </div>
+              <RankItem key={j.id ?? i} j={j} i={i} renderStat={j => (
+                <span>⚽ <strong>{j.gols ?? 0}</strong> gols</span>
+              )} />
             ))}
           </div>
         )}
@@ -132,11 +144,9 @@ export default function Campeonato() {
         {aba === "Garçons" && (
           <div className="camp-ranking">
             {garcons.slice(0, 10).map((j, i) => (
-              <div key={j.id ?? i} className={`camp-rank-item ${isEu(j) ? "eu" : ""}`}>
-                <span className="rank-pos">{medalha(i)}</span>
-                <span className="rank-nome">{j.nome?.split(" ")[0]} {isEu(j) ? "(você)" : ""}</span>
-                <span className="rank-stat">🎯 <strong>{j.assistencias ?? 0}</strong> assistências</span>
-              </div>
+              <RankItem key={j.id ?? i} j={j} i={i} renderStat={j => (
+                <span>🎯 <strong>{j.assistencias ?? 0}</strong> ass.</span>
+              )} />
             ))}
           </div>
         )}
@@ -145,14 +155,9 @@ export default function Campeonato() {
         {aba === "Participação" && (
           <div className="camp-ranking">
             {participacao.slice(0, 10).map((j, i) => (
-              <div key={j.id ?? i} className={`camp-rank-item ${isEu(j) ? "eu" : ""}`}>
-                <span className="rank-pos">{medalha(i)}</span>
-                <span className="rank-nome">{j.nome?.split(" ")[0]} {isEu(j) ? "(você)" : ""}</span>
-                <span className="rank-stat">
-                  🔥 <strong>{(j.gols ?? 0) + (j.assistencias ?? 0)}</strong> G+A
-                  <span className="rank-detail"> ({j.gols ?? 0}G {j.assistencias ?? 0}A)</span>
-                </span>
-              </div>
+              <RankItem key={j.id ?? i} j={j} i={i} renderStat={j => (
+                <span>🔥 <strong>{(j.gols ?? 0) + (j.assistencias ?? 0)}</strong> G+A</span>
+              )} />
             ))}
           </div>
         )}
@@ -161,21 +166,18 @@ export default function Campeonato() {
         {aba === "Defesa" && (
           <div className="camp-ranking">
             {defesa.length === 0
-              ? <p className="camp-vazio">Nenhum jogador com jogos registrados ainda.</p>
+              ? <p className="camp-vazio">Nenhum jogador com jogos registrados.</p>
               : defesa.slice(0, 10).map((j, i) => (
-                <div key={j.id ?? i} className={`camp-rank-item ${isEu(j) ? "eu" : ""}`}>
-                  <span className="rank-pos">{medalha(i)}</span>
-                  <span className="rank-nome">{j.nome?.split(" ")[0]} {isEu(j) ? "(você)" : ""}</span>
-                  <span className="rank-stat">🟨 <strong>{j.cartoes ?? 0}</strong> cartões</span>
-                </div>
+                <RankItem key={j.id ?? i} j={j} i={i} renderStat={j => (
+                  <span>🟨 <strong>{j.cartoes ?? 0}</strong> cart.</span>
+                )} />
               ))
             }
           </div>
         )}
 
-        {/* Aviso de construção */}
         <div className="camp-aviso">
-          🚧 Jogos e rodadas serão adicionados em breve. Por enquanto, as estatísticas são atualizadas manualmente pelo perfil.
+          🚧 Jogos e rodadas serão adicionados em breve.
         </div>
 
       </div>
