@@ -135,6 +135,8 @@ def atualizar_usuario(id):
     conn.close()
     return jsonify({"mensagem": "Usuário atualizado!"})
 
+# ─── DELETAR USUARIO ─────────────────────────────────────────────────────────────────
+
 @app.route("/usuarios/<int:id>", methods=["DELETE"])
 def deletar_usuario(id):
     conn = obter_conexao()
@@ -145,6 +147,37 @@ def deletar_usuario(id):
     conn.close()
     return jsonify({"mensagem": "Usuário deletado!"})
 
+# ─── ALTERAR OS DADOS ─────────────────────────────────────────────────────────────────
+
+@app.route('/jogadores/<int:id>', methods=['PUT'])
+def atualizar_jogador(id):
+    dados = request.json
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        UPDATE jogadores
+        SET nome = %s, posicao = %s, idade = %s, perna_boa = %s,
+            fotoUrl = %s, gols = %s, assistencias = %s, jogos = %s, cartoes = %s
+        WHERE id = %s
+        """,
+        (
+            dados["nome"],
+            dados["posicao"],
+            dados["idade"],
+            dados["perna_boa"],
+            dados["fotoUrl"],
+            dados["gols"],
+            dados["assistencias"],
+            dados["jogos"],
+            dados["cartoes"],
+            id,
+        )
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Jogador atualizado!"})
 
 # ─── CAMPEONATOS ─────────────────────────────────────────────────────────────────
 
