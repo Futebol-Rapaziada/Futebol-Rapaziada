@@ -88,7 +88,7 @@ def login():
     if not senha_correta:
         return jsonify({"erro": "Senha incorreta!"}), 401
 
-    token = create_access_token(identity=str(usuario["id"]))
+    token = create_access_token(identity=str(usuario["id_usuarios"]))
     return jsonify({"token": token})
 
 @app.route("/")
