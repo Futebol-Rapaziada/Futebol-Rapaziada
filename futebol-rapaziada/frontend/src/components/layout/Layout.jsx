@@ -3,19 +3,19 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import "../../style/Layout.css";
 
 const MENU = [
-  { path: "/home",         icon: "🃏", label: "Meu Perfil" },
-  { path: "/estatisticas", icon: "📊", label: "Estatísticas" },
-  { path: "/campeonato",   icon: "🏆", label: "Campeonato" },
-  { path: "/lista-presenca", icon: "📋", label: "Lista de Presença", em_breve: true },
-  { path: "/times",        icon: "👕", label: "Times",        em_breve: true },
-  { path: "/financeiro",   icon: "💰", label: "Financeiro",   em_breve: true },
-  { path: "/midias",       icon: "🎥", label: "Mídias",       em_breve: true },
+  { path: "/home",          icon: "🃏", label: "Meu Perfil" },
+  { path: "/estatisticas",  icon: "📊", label: "Estatísticas" },
+  { path: "/campeonato",    icon: "🏆", label: "Campeonato" },
+  { path: "/jogos",         icon: "⚽", label: "Jogos" },
+  { path: "/presenca",      icon: "📋", label: "Lista de Presença" },
+  { path: "/times",         icon: "👕", label: "Times",      em_breve: true },
+  { path: "/financeiro",    icon: "💰", label: "Financeiro", em_breve: true },
 ];
 
 export default function Layout({ children }) {
-  const navigate   = useNavigate();
-  const location   = useLocation();
-  const usuario    = JSON.parse(localStorage.getItem("user"));
+  const navigate  = useNavigate();
+  const location  = useLocation();
+  const usuario   = JSON.parse(localStorage.getItem("user"));
   const [aberto, setAberto] = useState(false);
 
   function sair() {
@@ -29,7 +29,10 @@ export default function Layout({ children }) {
 
       {/* ── SIDEBAR ── */}
       <aside className={`sidebar ${aberto ? "aberta" : ""}`}>
-        <div className="sidebar-logo">⚽ <span>PLAYER CARD</span></div>
+        <div className="sidebar-logo">
+          <span className="logo-icon">⚽</span>
+          <span className="logo-text">FUTEBOL<br /><span className="logo-sub">RAPAZIADA</span></span>
+        </div>
 
         <nav className="sidebar-nav">
           {MENU.map(({ path, icon, label, em_breve }) => (
@@ -41,24 +44,26 @@ export default function Layout({ children }) {
             >
               <span className="sidebar-icon">{icon}</span>
               <span className="sidebar-label">{label}</span>
-              {em_breve && <span className="badge-breve">Em breve</span>}
+              {em_breve && <span className="badge-breve">BREVE</span>}
+              {location.pathname === path && <span className="item-glow" />}
             </Link>
           ))}
         </nav>
 
         <div className="sidebar-footer">
           <div className="sidebar-user">
-            <span className="sidebar-avatar">👤</span>
-            <div>
-              <p className="sidebar-nome">{usuario?.nome?.split(" ")[0]}</p>
-              <p className="sidebar-email">{usuario?.email}</p>
+            <div className="user-avatar">
+              {usuario?.nome?.[0]?.toUpperCase() ?? "?"}
+            </div>
+            <div className="user-info">
+              <p className="user-nome">{usuario?.nome?.split(" ")[0]}</p>
+              <p className="user-email">{usuario?.email}</p>
             </div>
           </div>
-          <button className="sidebar-sair" onClick={sair}>Sair</button>
+          <button className="btn-sair" onClick={sair}>⏻ Sair</button>
         </div>
       </aside>
 
-      {/* overlay mobile */}
       {aberto && <div className="sidebar-overlay" onClick={() => setAberto(false)} />}
 
       {/* ── CONTEÚDO ── */}
@@ -68,12 +73,14 @@ export default function Layout({ children }) {
           <span className="topbar-titulo">
             {MENU.find(m => m.path === location.pathname)?.label ?? "Player Card"}
           </span>
-          <span className="topbar-user">Olá, {usuario?.nome?.split(" ")[0]}</span>
+          <div className="topbar-right">
+            <span className="topbar-user">
+              <span className="user-dot" />
+              {usuario?.nome?.split(" ")[0]}
+            </span>
+          </div>
         </header>
-
-        <main className="layout-content">
-          {children}
-        </main>
+        <main className="layout-content">{children}</main>
       </div>
 
     </div>

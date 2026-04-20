@@ -1,0 +1,33 @@
+/* Presenca.css */
+@import './tokens.css';
+
+.pres-wrap{display:flex;flex-direction:column;gap:24px;}
+
+.pres-contadores{display:flex;gap:14px;flex-wrap:wrap;}
+.pres-cnt{flex:1;min-width:120px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.pres-cnt-ok{border-color:rgba(0,255,135,.2);background:rgba(0,255,135,.04);}
+.pres-cnt-nd{border-color:rgba(255,77,109,.2);background:rgba(255,77,109,.03);}
+.pres-cnt-total{border-color:rgba(76,201,240,.2);background:rgba(76,201,240,.03);}
+.cnt-num{font-family:var(--font-display);font-size:40px;line-height:1;color:var(--text);}
+.pres-cnt-ok .cnt-num{color:var(--neon);}
+.pres-cnt-nd .cnt-num{color:var(--red);}
+.pres-cnt-total .cnt-num{color:var(--blue);}
+.cnt-lbl{font-size:12px;color:var(--text2);font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+
+.pres-section{display:flex;flex-direction:column;gap:12px;}
+.pres-section-titulo{font-family:var(--font-display);font-size:18px;letter-spacing:2px;color:var(--text2);}
+.pres-lista{display:flex;flex-direction:column;gap:8px;}
+.pres-vazio{color:var(--text2);font-size:14px;padding:12px 0;}
+
+.pres-item{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:13px 18px;transition:all .15s;}
+.pres-item:hover{background:rgba(255,255,255,.04);}
+.pres-ok{border-color:rgba(0,255,135,.1);}
+.pres-nd{border-color:rgba(255,77,109,.08);}
+
+.pi-avatar{font-size:22px;}
+.pi-info{flex:1;display:flex;flex-direction:column;gap:2px;}
+.pi-nome{font-size:15px;font-weight:700;color:var(--text);}
+.pi-pos{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+.pi-status{font-size:20px;}
+
+.camp-aviso{background:rgba(255,255,255,.02);border:1px dashed var(--border2);border-radius:10px;padding:14px 20px;font-size:13px;color:var(--text2);text-align:center;}
