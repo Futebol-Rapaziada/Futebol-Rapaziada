@@ -3,81 +3,135 @@ import { useNavigate } from "react-router-dom";
 import { getJogadores, deletarJogador } from "../services/api";
 import "../style/Home.css";
 
+const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-production.up.railway.app";
+
+const POSICOES = [
+  "Goleiro", "Zagueiro", "Lateral Direito",
+  "Lateral Esquerdo", "Meia", "Centroavante",
+];
+
 export default function Home() {
   const navigate = useNavigate();
-
-  const [jogadores, setJogadores] = useState([]);
-  const [playerIndex, setPlayerIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
-
   const usuarioLogado = JSON.parse(localStorage.getItem("user"));
-  const player = jogadores[playerIndex] || {};
+
+  const [player, setPlayer]       = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [painelAberto, setPainel] = useState(false);
+  const [salvando, setSalvando]   = useState(false);
+  const [sucesso, setSucesso]     = useState("");
+  const [erro, setErro]           = useState("");
+
+  const [form, setForm] = useState({
+    nome: "", posicao: "", idade: "",
+    perna_boa: "Direita", fotoUrl: "",
+    gols: 0, assistencias: 0, jogos: 0, cartoes: 0,
+  });
 
   useEffect(() => {
-    if (!usuarioLogado) {
-      navigate("/");
-      return;
-    }
-    carregarJogadores();
+    if (!usuarioLogado) { navigate("/login"); return; }
+    carregarJogador();
   }, []);
 
-  async function carregarJogadores() {
+  async function carregarJogador() {
     try {
-      const data = await getJogadores();
-      setJogadores(data);
-
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user) {
-        const index = data.findIndex((j) => j.id === user.id);
-        if (index !== -1) setPlayerIndex(index);
+      const todos = await getJogadores();
+      const meu = todos.find(
+        (j) => j.nome?.toLowerCase() === usuarioLogado.nome?.toLowerCase()
+      );
+      if (meu) {
+        setPlayer(meu);
+        setForm({
+          nome:         meu.nome         ?? "",
+          posicao:      meu.posicao      ?? "",
+          idade:        meu.idade        ?? "",
+          perna_boa:    meu.perna_boa    ?? "Direita",
+          fotoUrl:      meu.fotoUrl      ?? "",
+          gols:         meu.gols         ?? 0,
+          assistencias: meu.assistencias ?? 0,
+          jogos:        meu.jogos        ?? 0,
+          cartoes:      meu.cartoes      ?? 0,
+        });
       }
-    } catch (error) {
-      console.error(error);
+    } catch (e) {
+      console.error(e);
     } finally {
       setLoading(false);
     }
   }
 
-  function proximoPlayer() {
-    setPlayerIndex((prev) => (prev + 1) % jogadores.length);
+  const handle = (campo) => (e) =>
+    setForm((old) => ({ ...old, [campo]: e.target.value }));
+
+  function ajustarStat(campo, delta) {
+    setForm((old) => ({
+      ...old,
+      [campo]: Math.max(0, Number(old[campo]) + delta),
+    }));
   }
 
-  function anteriorPlayer() {
-    setPlayerIndex((prev) =>
-      prev === 0 ? jogadores.length - 1 : prev - 1
-    );
+  async function salvar() {
+    if (!player) return;
+    setSalvando(true);
+    setErro("");
+    setSucesso("");
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/jogadores/${player.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          nome:         form.nome,
+          posicao:      form.posicao,
+          idade:        Number(form.idade),
+          perna_boa:    form.perna_boa,
+          fotoUrl:      form.fotoUrl,
+          gols:         Number(form.gols),
+          assistencias: Number(form.assistencias),
+          jogos:        Number(form.jogos),
+          cartoes:      Number(form.cartoes),
+        }),
+      });
+      if (!res.ok) throw new Error("Erro ao salvar");
+      setSucesso("Perfil atualizado!");
+      await carregarJogador();
+      setTimeout(() => { setSucesso(""); setPainel(false); }, 1500);
+    } catch (e) {
+      setErro("Erro ao salvar. Tente novamente.");
+    } finally {
+      setSalvando(false);
+    }
   }
 
   async function handleDelete() {
-    if (!player.id) return;
-    if (!window.confirm(`Deletar ${player.nome}?`)) return;
-
+    if (!player?.id) return;
+    if (!window.confirm("Deletar seu perfil?")) return;
     await deletarJogador(player.id);
-
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user?.id === player.id) {
-      localStorage.removeItem("user");
-      navigate("/");
-      return;
-    }
-    carregarJogadores();
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate("/");
   }
 
   function sair() {
     localStorage.removeItem("user");
-    navigate("/");
+    localStorage.removeItem("token");
+    navigate("/login");
   }
 
-  const isOwner = usuarioLogado?.id === player.id;
+  if (loading) return (
+    <div className="loading-screen">
+      <div className="loading-ball">⚽</div>
+      <p>Carregando...</p>
+    </div>
+  );
 
-  if (loading) {
-    return (
-      <div className="loading-screen">
-        <div className="loading-ball">⚽</div>
-        <p>Carregando...</p>
-      </div>
-    );
-  }
+  if (!player) return (
+    <div className="loading-screen">
+      <p>Nenhum perfil encontrado. <button onClick={sair}>Sair</button></p>
+    </div>
+  );
 
   return (
     <div className="home-wrap">
@@ -86,70 +140,53 @@ export default function Home() {
       <header className="top-bar">
         <div className="top-logo">⚽ PLAYER CARD</div>
         <div className="top-actions">
+          <button className="btn-perfil" onClick={() => setPainel(true)}>✏️ Meu Perfil</button>
           <span className="top-user">Olá, {usuarioLogado?.nome?.split(" ")[0]}</span>
           <button className="btn-sair" onClick={sair}>Sair</button>
         </div>
       </header>
 
-      {/* Navegação */}
-      <div className="nav-players">
-        <button className="nav-btn" onClick={anteriorPlayer}>‹</button>
-        <span className="nav-count">{playerIndex + 1} / {jogadores.length}</span>
-        <button className="nav-btn" onClick={proximoPlayer}>›</button>
-      </div>
-
-      {/* Card do Jogador */}
+      {/* Card */}
       <div className="card-wrap">
         <div className="player-card">
 
-          {/* Topo do card */}
           <div className="card-top">
             <div className="card-overall">{player.overall || "—"}</div>
             <div className="card-pos">{player.posicao || "—"}</div>
             <div className="card-flag">🇧🇷</div>
           </div>
 
-          {/* Foto */}
           <div className="card-photo">
-            {player.fotoUrl ? (
-              <img src={player.fotoUrl} alt={player.nome} />
-            ) : (
-              <div className="card-photo-placeholder">👤</div>
-            )}
+            {player.fotoUrl
+              ? <img src={player.fotoUrl} alt={player.nome} />
+              : <div className="card-photo-placeholder">👤</div>
+            }
           </div>
 
-          {/* Nome */}
           <div className="card-name">
-            {player.nome?.split(" ")[0]?.toUpperCase() || "JOGADOR"}
+            {player.nome?.split(" ")[0]?.toUpperCase()}
           </div>
 
-          {/* Divisor */}
           <div className="card-divider" />
 
-          {/* Stats */}
           <div className="card-stats">
-            <div className="stat">
-              <span className="stat-val">{player.gols ?? 0}</span>
-              <span className="stat-lbl">GOL</span>
-            </div>
-            <div className="stat">
-              <span className="stat-val">{player.assistencias ?? 0}</span>
-              <span className="stat-lbl">ASS</span>
-            </div>
-            <div className="stat">
-              <span className="stat-val">{player.jogos ?? 0}</span>
-              <span className="stat-lbl">JOG</span>
-            </div>
-            <div className="stat">
-              <span className="stat-val">{player.cartoes ?? 0}</span>
-              <span className="stat-lbl">CAR</span>
-            </div>
+            {[
+              { val: player.gols ?? 0,         lbl: "GOL" },
+              { val: player.assistencias ?? 0,  lbl: "ASS" },
+              { val: player.jogos ?? 0,         lbl: "JOG" },
+              { val: player.cartoes ?? 0,        lbl: "CAR" },
+            ].map(({ val, lbl }) => (
+              <div className="stat" key={lbl}>
+                <span className="stat-val">{val}</span>
+                <span className="stat-lbl">{lbl}</span>
+              </div>
+            ))}
           </div>
 
         </div>
       </div>
 
-      {/* Infos extras */}
+      {/* Infos */}
       <div className="player-info">
         <div className="info-item">
           <span className="info-lbl">Time</span>
@@ -165,12 +202,78 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Ações */}
-      {isOwner && (
-        <div className="card-actions">
-          <button className="btn-delete" onClick={handleDelete}>
-            🗑 Deletar meu perfil
-          </button>
+      <button className="btn-delete" onClick={handleDelete}>🗑 Deletar meu perfil</button>
+
+      {/* ── PAINEL DE EDIÇÃO ── */}
+      {painelAberto && (
+        <div className="overlay" onClick={() => setPainel(false)}>
+          <div className="painel" onClick={(e) => e.stopPropagation()}>
+
+            <div className="painel-header">
+              <h2>Meu Perfil</h2>
+              <button className="painel-close" onClick={() => setPainel(false)}>✕</button>
+            </div>
+
+            <div className="painel-section">
+              <p className="painel-label">Dados</p>
+
+              <label className="painel-field-label">Nome</label>
+              <input className="painel-input" value={form.nome} onChange={handle("nome")} />
+
+              <label className="painel-field-label">URL da foto</label>
+              <input className="painel-input" placeholder="https://..." value={form.fotoUrl} onChange={handle("fotoUrl")} />
+
+              <label className="painel-field-label">Posição</label>
+              <select className="painel-input" value={form.posicao} onChange={handle("posicao")}>
+                {POSICOES.map((p) => <option key={p}>{p}</option>)}
+              </select>
+
+              <div className="painel-row">
+                <div className="painel-col">
+                  <label className="painel-field-label">Idade</label>
+                  <input className="painel-input" type="number" min="5" max="99"
+                    value={form.idade} onChange={handle("idade")} />
+                </div>
+                <div className="painel-col">
+                  <label className="painel-field-label">Perna boa</label>
+                  <select className="painel-input" value={form.perna_boa} onChange={handle("perna_boa")}>
+                    <option>Direita</option>
+                    <option>Esquerda</option>
+                    <option>Ambas</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div className="painel-section">
+              <p className="painel-label">Estatísticas</p>
+              <p className="painel-obs">⚽ Overall só pode ser alterado pela administração.</p>
+
+              {[
+                { key: "gols",         label: "Gols" },
+                { key: "assistencias", label: "Assistências" },
+                { key: "jogos",        label: "Jogos" },
+                { key: "cartoes",      label: "Cartões" },
+              ].map(({ key, label }) => (
+                <div className="stat-row" key={key}>
+                  <span className="stat-row-label">{label}</span>
+                  <div className="stat-controls">
+                    <button className="stat-btn" onClick={() => ajustarStat(key, -1)}>−</button>
+                    <span className="stat-row-val">{form[key]}</span>
+                    <button className="stat-btn" onClick={() => ajustarStat(key, +1)}>+</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {erro    && <div className="msg erro">⚠ {erro}</div>}
+            {sucesso && <div className="msg sucesso">✓ {sucesso}</div>}
+
+            <button className="btn-salvar" onClick={salvar} disabled={salvando}>
+              {salvando ? "Salvando..." : "Salvar alterações"}
+            </button>
+
+          </div>
         </div>
       )}
 
