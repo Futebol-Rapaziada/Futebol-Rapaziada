@@ -53,20 +53,34 @@ def handle_preflight():
 
 # ─── CADASTRO ───────────────────────────────────────────────────────────────────
 
-@app.route("/cadastro", methods=["POST"])
+@app.route('/cadastro', methods=['POST'])
 def cadastro():
-    dados = request.json
-    senha_hash = bcrypt.hashpw(dados["senha"].encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    dados = request.get_json()
+    nome = dados.get('nome')
+    email = dados.get('email')
+    senha = dados.get('senha')
+
     conn = obter_conexao()
     cursor = conn.cursor()
+
+    cursor.execute("SELECT id FROM usuarios WHERE email = %s", (email,))
+    usuario_existente = cursor.fetchone()
+
+    if usuario_existente:
+        cursor.close()
+        conn.close()
+        return jsonify({'erro': 'Email já cadastrado'}), 409
+
+    senha_hash = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
     cursor.execute(
         "INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
-        (dados["nome"], dados["email"], senha_hash)
+        (nome, email, senha_hash)
     )
     conn.commit()
     cursor.close()
     conn.close()
-    return jsonify({"mensagem": "Usuário cadastrado!"}), 201
+
+    return jsonify({'mensagem': 'Usuário cadastrado com sucesso'}), 201
 
 
 # ─── LOGIN ───────────────────────────────────────────────────────────────────────
