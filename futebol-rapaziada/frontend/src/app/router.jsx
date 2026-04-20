@@ -1,17 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Cadastro from "../pages/Cadastro";
-import Login from "../pages/Login";
-import Home from "../pages/Home";
+import Cadastro     from "../pages/Cadastro.jsx";
+import Login        from "../pages/Login";
+import Home         from "../pages/Home";
+import Estatisticas from "../pages/Estatisticas";
+import Campeonato   from "../pages/Campeonato";
 
 function PrivateRoute({ children }) {
   const user = JSON.parse(localStorage.getItem("user"));
-
-  // 🔒 se não estiver logado → volta pro login
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-
+  if (!user) return <Navigate to="/login" />;
   return children;
 }
 
@@ -20,23 +17,16 @@ export default function RouterApp() {
     <BrowserRouter>
       <Routes>
 
-        {/* Cadastro (público) */}
-        <Route path="/" element={<Cadastro />} />
-
-        {/* Login (público) */}
+        {/* Públicas */}
+        <Route path="/"      element={<Cadastro />} />
         <Route path="/login" element={<Login />} />
 
-        {/* Home (protegida) */}
-        <Route
-          path="/home"
-          element={
-            <PrivateRoute>
-              <Home />
-            </PrivateRoute>
-          }
-        />
+        {/* Privadas */}
+        <Route path="/home"         element={<PrivateRoute><Home /></PrivateRoute>} />
+        <Route path="/estatisticas" element={<PrivateRoute><Estatisticas /></PrivateRoute>} />
+        <Route path="/campeonato"   element={<PrivateRoute><Campeonato /></PrivateRoute>} />
 
-        {/* Qualquer rota inválida */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/login" />} />
 
       </Routes>

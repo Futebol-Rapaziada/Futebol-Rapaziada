@@ -1,0 +1,133 @@
+.camp-wrap {
+  display: flex; flex-direction: column; gap: 24px;
+}
+
+.loading-screen {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 60vh; gap: 16px;
+}
+.loading-ball { font-size: 48px; animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ─── HEADER ──────────────────────────────────────────────────── */
+.camp-header {
+  display: flex; align-items: center; gap: 20px;
+  background: rgba(212,168,67,.06);
+  border: 1px solid rgba(212,168,67,.2);
+  border-radius: 16px; padding: 20px 24px;
+}
+
+.camp-badge { font-size: 40px; }
+
+.camp-titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; letter-spacing: 3px; color: #d4a843;
+}
+
+.camp-sub { font-size: 13px; color: #7a8399; font-weight: 600; margin-top: 2px; }
+
+.camp-status {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 700; color: #2ecc71;
+  background: rgba(46,204,113,.1);
+  border: 1px solid rgba(46,204,113,.2);
+  padding: 6px 14px; border-radius: 20px;
+}
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #2ecc71;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .3; }
+}
+
+/* ─── ABAS ────────────────────────────────────────────────────── */
+.abas { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.aba-btn {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  color: #7a8399; padding: 8px 18px; border-radius: 20px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 1px;
+  cursor: pointer; transition: all .2s;
+}
+.aba-btn:hover { color: #e8e8e8; border-color: rgba(255,255,255,.2); }
+.aba-btn.ativa { background: rgba(212,168,67,.15); border-color: rgba(212,168,67,.4); color: #d4a843; }
+
+/* ─── TABELA ──────────────────────────────────────────────────── */
+.camp-tabela-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid rgba(255,255,255,.07); }
+
+.camp-tabela {
+  width: 100%; border-collapse: collapse;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.camp-tabela thead tr {
+  background: rgba(255,255,255,.04);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.camp-tabela th {
+  padding: 12px 16px; text-align: center;
+  font-size: 12px; font-weight: 700;
+  color: #7a8399; text-transform: uppercase; letter-spacing: 1px;
+}
+
+.camp-tabela th:nth-child(2) { text-align: left; }
+
+.camp-tabela td {
+  padding: 12px 16px; text-align: center;
+  font-size: 15px; font-weight: 600; color: #e8e8e8;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+
+.camp-tabela tr:last-child td { border-bottom: none; }
+.camp-tabela tr:hover td { background: rgba(255,255,255,.02); }
+
+.camp-tabela tr.eu td { background: rgba(212,168,67,.07); }
+.camp-tabela tr.eu td:first-child { border-left: 2px solid #d4a843; }
+
+.col-pos { font-size: 14px; color: #7a8399; min-width: 36px; }
+.col-nome { text-align: left !important; display: flex; align-items: center; gap: 8px; }
+.tabela-avatar { font-size: 18px; }
+.tag-eu { font-size: 10px; background: rgba(212,168,67,.2); color: #d4a843; padding: 2px 6px; border-radius: 4px; }
+.col-destaque { color: #d4a843 !important; }
+.col-participacao { font-family: 'Bebas Neue', sans-serif; font-size: 18px !important; }
+.col-overall { background: rgba(212,168,67,.15); color: #d4a843; padding: 2px 8px; border-radius: 6px; font-size: 13px; font-weight: 700; }
+
+/* ─── RANKING ─────────────────────────────────────────────────── */
+.camp-ranking { display: flex; flex-direction: column; gap: 8px; }
+
+.camp-rank-item {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 10px; padding: 14px 20px;
+  transition: all .15s;
+}
+.camp-rank-item:hover { background: rgba(255,255,255,.04); }
+.camp-rank-item.eu { background: rgba(212,168,67,.07); border-color: rgba(212,168,67,.2); border-left: 3px solid #d4a843; }
+
+.rank-pos { font-size: 16px; min-width: 32px; }
+.rank-nome { flex: 1; font-size: 15px; font-weight: 700; color: #e8e8e8; }
+.rank-stat { font-size: 15px; color: #7a8399; font-weight: 600; }
+.rank-stat strong { color: #d4a843; font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
+.rank-detail { font-size: 12px; color: #7a8399; }
+
+/* ─── AVISO ───────────────────────────────────────────────────── */
+.camp-aviso {
+  background: rgba(255,255,255,.02);
+  border: 1px dashed rgba(255,255,255,.1);
+  border-radius: 10px; padding: 14px 20px;
+  font-size: 13px; color: #7a8399;
+  text-align: center;
+}
+
+.camp-vazio { color: #7a8399; text-align: center; padding: 40px; font-size: 15px; }

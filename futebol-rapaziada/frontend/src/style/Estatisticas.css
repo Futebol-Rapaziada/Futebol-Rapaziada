@@ -1,0 +1,157 @@
+.estat-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ─── LOADING ─────────────────────────────────────────────────── */
+.loading-screen {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 60vh; gap: 16px;
+}
+.loading-ball { font-size: 48px; animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* ─── SEÇÃO TITULO ────────────────────────────────────────────── */
+.sect-titulo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px;
+  color: #d4a843; margin-bottom: 16px;
+}
+
+/* ─── MINHAS STATS ────────────────────────────────────────────── */
+.meus-stats {
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(212,168,67,.15);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.stat-boxes {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  margin-bottom: 16px;
+}
+
+.stat-box {
+  flex: 1; min-width: 90px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px;
+  padding: 16px 12px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 6px;
+  transition: border-color .2s;
+}
+
+.stat-box:hover { border-color: rgba(212,168,67,.3); }
+
+.stat-box-icone { font-size: 22px; }
+
+.stat-box-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; color: #e8e8e8; line-height: 1;
+}
+
+.stat-box-lbl {
+  font-size: 11px; color: #7a8399;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+.meus-posicoes {
+  display: flex; flex-wrap: wrap; gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+
+.meus-posicoes span {
+  font-size: 13px; color: #7a8399; font-weight: 600;
+}
+
+.meus-posicoes strong { color: #d4a843; }
+
+/* ─── ABAS ────────────────────────────────────────────────────── */
+.abas {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+
+.aba-btn {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  color: #7a8399;
+  padding: 8px 18px; border-radius: 20px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 1px;
+  cursor: pointer; transition: all .2s;
+}
+
+.aba-btn:hover { color: #e8e8e8; border-color: rgba(255,255,255,.2); }
+
+.aba-btn.ativa {
+  background: rgba(212,168,67,.15);
+  border-color: rgba(212,168,67,.4);
+  color: #d4a843;
+}
+
+/* ─── RANKINGS GRID ───────────────────────────────────────────── */
+.rankings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* ─── RANKING CARD ────────────────────────────────────────────── */
+.ranking-card {
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.ranking-card-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 20px;
+  background: rgba(255,255,255,.03);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.ranking-card-header span { font-size: 20px; }
+
+.ranking-card-header h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 1px; color: #e8e8e8;
+}
+
+.ranking-lista { display: flex; flex-direction: column; }
+
+.ranking-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: background .15s;
+}
+
+.ranking-item:last-child { border-bottom: none; }
+.ranking-item:hover { background: rgba(255,255,255,.03); }
+
+.ranking-item.eu {
+  background: rgba(212,168,67,.07);
+  border-left: 2px solid #d4a843;
+}
+
+.rank-pos {
+  font-size: 14px; min-width: 28px;
+  font-weight: 700; color: #7a8399;
+}
+
+.rank-nome {
+  flex: 1; font-size: 14px; font-weight: 700; color: #e8e8e8;
+}
+
+.rank-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; color: #d4a843;
+}
+
+.rank-lbl { font-size: 11px; color: #7a8399; font-family: 'Rajdhani', sans-serif; font-weight: 600; }
+.rank-detail { font-size: 11px; color: #7a8399; font-family: 'Rajdhani', sans-serif; }
