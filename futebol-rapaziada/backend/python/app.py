@@ -204,7 +204,7 @@ def criar_jogador():
         "INSERT INTO jogadores (nome, posicao, id_time, idade, perna_boa, overall, fotoUrl, gols, assistencias, jogos, cartoes) "
         "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         (
-            dados["nome"],
+            dados["nome"][:90],
             dados["posicao"],
             id_time,
             dados["idade"],
