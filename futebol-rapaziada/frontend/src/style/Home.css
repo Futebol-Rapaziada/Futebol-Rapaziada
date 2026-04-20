@@ -447,6 +447,62 @@ body {
   transition: opacity .2s;
   margin-top: auto;
 }
+.player-card {
+  width: 320px;
+  min-height: 500px;
+  border-radius: 22px;
+  padding: 20px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+
+/* BRONZE */
+.bronze-card {
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.18), transparent 35%),
+    linear-gradient(135deg, #6e4427, #b87333, #8a5a44);
+}
+
+/* PRATA */
+.silver-card {
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.22), transparent 35%),
+    linear-gradient(135deg, #7e7e7e, #c0c0c0, #9e9e9e);
+}
+
+/* OURO */
+.gold-card {
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,.28), transparent 35%),
+    linear-gradient(135deg, #9c7400, #ffd700, #c9a227);
+}
+
+/* brilho estilo fifa */
+.bronze-card::before,
+.silver-card::before,
+.gold-card::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -40%;
+  width: 70%;
+  height: 160%;
+  transform: rotate(25deg);
+  background: rgba(255,255,255,.08);
+}
+
+.bronze-card::after,
+.silver-card::after,
+.gold-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.18);
+  pointer-events: none;
+}
 
 .btn-salvar:hover { opacity: .88; }
 .btn-salvar:disabled { opacity: .5; cursor: not-allowed; }
