@@ -89,11 +89,14 @@ def login():
         return jsonify({"erro": "Senha incorreta!"}), 401
 
     token = create_access_token(identity=str(usuario["id_usuarios"]))
-    return jsonify({"token": token})
-
-@app.route("/")
-def home():
-    return "API Flask no Railway!"
+    return jsonify({
+        "token": token,
+        "user": {
+            "id": usuario["id_usuarios"],
+            "nome": usuario["nome"],
+            "email": usuario["email"]
+        }
+    })
 
 
 # ─── USUÁRIOS ────────────────────────────────────────────────────────────────────
