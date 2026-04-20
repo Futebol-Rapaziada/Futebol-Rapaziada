@@ -244,28 +244,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            <div className="painel-section">
-              <p className="painel-label">Estatísticas</p>
-              <p className="painel-obs">⚽ Overall só pode ser alterado pela administração.</p>
-
-              {[
-                { key: "gols",         label: "Gols" },
-                { key: "assistencias", label: "Assistências" },
-                { key: "jogos",        label: "Jogos" },
-                { key: "cartoes",      label: "Cartões" },
-              ].map(({ key, label }) => (
-                <div className="stat-row" key={key}>
-                  <span className="stat-row-label">{label}</span>
-                  <div className="stat-controls">
-                    <button className="stat-btn" onClick={() => ajustarStat(key, -1)}>−</button>
-                    <span className="stat-row-val">{form[key]}</span>
-                    <button className="stat-btn" onClick={() => ajustarStat(key, +1)}>+</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
+            
             {erro    && <div className="msg erro">⚠ {erro}</div>}
             {sucesso && <div className="msg sucesso">✓ {sucesso}</div>}
 
