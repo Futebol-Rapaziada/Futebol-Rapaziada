@@ -30,9 +30,9 @@ export default function RouterApp() {
         <Route
           path="/home"
           element={
-            <PrivateRoute>
+            
               <Home />
-            </PrivateRoute>
+            
           }
         />
 
