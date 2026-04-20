@@ -63,7 +63,7 @@ def cadastro():
     conn = obter_conexao()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT id FROM usuarios WHERE email = %s", (email,))
+    cursor.execute("SELECT id_usuarios FROM cadastro WHERE email = %s", (email,))
     usuario_existente = cursor.fetchone()
 
     if usuario_existente:
@@ -72,8 +72,9 @@ def cadastro():
         return jsonify({'erro': 'Email já cadastrado'}), 409
 
     senha_hash = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
+    
     cursor.execute(
-        "INSERT INTO usuarios (nome, email, senha) VALUES (%s, %s, %s)",
+        "INSERT INTO cadastro (nome, email, senha) VALUES (%s, %s, %s)",
         (nome, email, senha_hash)
     )
     conn.commit()
@@ -90,7 +91,7 @@ def login():
     dados = request.json
     conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM usuarios WHERE email = %s", (dados["email"],))
+    cursor.execute("SELECT * FROM cadastro WHERE email = %s", (dados["email"],))
     usuario = cursor.fetchone()
     cursor.close()
     conn.close()
