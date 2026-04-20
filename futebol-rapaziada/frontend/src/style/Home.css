@@ -449,7 +449,7 @@ body {
 }
 .player-card {
   width: 320px;
-  min-height: 500px;
+  min-height: 300px;
   border-radius: 22px;
   padding: 20px;
   color: white;
