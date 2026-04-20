@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login, salvarToken } from "../services/api";
 import "../style/Login.css";
 
+
 export default function Login() {
   const navigate = useNavigate();
 
@@ -87,7 +88,7 @@ export default function Login() {
         </button>
 
         <p className="cadastro-link">
-          Não tem conta? <Link to="/cadastro">Criar perfil</Link>
+          Não tem conta? <Link to="/">Criar perfil</Link>
         </p>
 
       </div>
