@@ -73,16 +73,29 @@ export async function login(email, senha) {
     method: "POST",
     body: JSON.stringify({ email, senha }),
   });
-  // Salva o token automaticamente após login bem-sucedido
+
   if (data?.token) salvarToken(data.token);
+
+  // Salva os dados do usuário para o Home.jsx usar
+  if (data?.user) {
+    localStorage.setItem("user", JSON.stringify(data.user));
+  }
+
   return data;
 }
 
 export async function cadastro(nome, email, senha) {
-  return request("/cadastro", {
+  const data = await request("/cadastro", {
     method: "POST",
     body: JSON.stringify({ nome, email, senha }),
   });
+
+  // Salva o user no localStorage para o Home.jsx usar
+  if (data?.id) {
+    localStorage.setItem("user", JSON.stringify({ id: data.id, nome, email }));
+  }
+
+  return data;
 }
 
 /* =========================
