@@ -335,6 +335,17 @@ def get_times():
     conn.close()
     return jsonify(dados)
 
+@app.route('/jogadores/<int:id>/confirmar', methods=['PATCH'])
+def confirmar_jogador(id):
+    dados = request.json
+    confirmado = 1 if dados.get("confirmado") else 0
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE jogadores SET confirmado = %s WHERE id = %s", (confirmado, id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Presença atualizada!", "confirmado": confirmado})
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────────
 
