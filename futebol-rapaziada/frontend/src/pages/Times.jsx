@@ -6,7 +6,6 @@ import "../style/Times.css";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-production.up.railway.app";
 
-// Posições no campo para cada time (7x7)
 const SLOTS_TIME = [
   { id:"gol",   label:"GOL",  x:50, y:88 },
   { id:"zag1",  label:"ZAG",  x:30, y:72 },
