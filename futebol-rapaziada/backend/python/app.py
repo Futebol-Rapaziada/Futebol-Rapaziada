@@ -359,7 +359,7 @@ def get_times_jogo():
     for time in times:
         cursor.execute("""
             SELECT e.id, e.posicao_campo, e.reserva,
-                   j.id as jogador_id, j.nome, j.posicao, j.fotoUrl, j.overall
+                j.id as jogador_id, j.nome, j.posicao, j.fotoUrl, j.overall
             FROM escalacao e
             LEFT JOIN jogadores j ON e.id_jogador = j.id
             WHERE e.id_time = %s
@@ -376,7 +376,7 @@ def criar_time_jogo():
     conn = obter_conexao()
     cursor = conn.cursor()
     cursor.execute("INSERT INTO times_jogo (nome, cor) VALUES (%s, %s)",
-                   (dados.get("nome","Time"), dados.get("cor","#00ff87")))
+                (dados.get("nome","Time"), dados.get("cor","#00ff87")))
     conn.commit()
     novo_id = cursor.lastrowid
     cursor.close(); conn.close()
@@ -412,9 +412,9 @@ def salvar_escalacao():
         cursor.execute(
             "INSERT INTO escalacao (id_time, id_jogador, posicao_campo, reserva) VALUES (%s, %s, %s, %s)",
             (id_time,
-             slot.get("id_jogador") or None,
-             slot.get("posicao_campo"),
-             1 if slot.get("reserva") else 0)
+            slot.get("id_jogador") or None,
+            slot.get("posicao_campo"),
+            1 if slot.get("reserva") else 0)
         )
 
     conn.commit()
