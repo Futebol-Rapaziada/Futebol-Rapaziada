@@ -1,37 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+
+/* ───────── RESET ───────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ───────── CORES ───────── */
 
 :root {
   --bg: #07090f;
-  --card: #111111;
-  --card-border: #222222;
-  --input-bg: #161616;
-  --input-border: #333333;
-  --text: #ffffff;
-  --text-muted: #666666;
+  --card: #111;
+  --card-border: #222;
   --accent: #00e676;
-  --accent-soft: rgba(0, 230, 118, 0.08);
+  --text: #fff;
+  --text-muted: #666;
+  --input-bg: #161616;
+  --input-border: #333;
   --error: #ff6b6b;
-  --error-soft: rgba(255, 80, 80, 0.08);
-  --success: #00e676;
 }
 
-/* RESET */
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* ───────── BODY ───────── */
 
 body {
-  background: var(--bg);
   font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
   color: var(--text);
 }
 
-/* WRAP */
+/* ───────── WRAP ───────── */
 
-.cad-wrap {
+.cadastro-wrap {
   min-height: 100vh;
   background: linear-gradient(135deg, #050505, #0a0a0a, #111111);
   display: flex;
@@ -40,53 +43,53 @@ body {
   padding: 24px 16px;
 }
 
-/* CARD */
+/* ───────── CARD ───────── */
 
-.cad-card {
-  width: 100%;
-  max-width: 480px;
-  background: var(--card);
-  border: 1px solid var(--card-border);
+.cadastro-card {
+  background: #111;
+  border: 1px solid #222;
   border-radius: 22px;
   padding: 40px 32px;
+  max-width: 480px;
+  width: 100%;
   box-shadow: 0 40px 80px rgba(0, 0, 0, 0.65);
 }
 
-/* HEADER */
+/* ───────── HEADER ───────── */
 
-.cad-header {
-  text-align: center;
+.cadastro-header {
   margin-bottom: 28px;
+  text-align: center;
 }
 
-.cad-tagline {
+.tagline {
   font-size: 11px;
   letter-spacing: 4px;
-  color: var(--accent);
+  color: #00e676;
   font-weight: 700;
   text-transform: uppercase;
 }
 
-.cad-titulo {
+.cadastro-title {
   margin: 8px 0 6px;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 800;
-  color: var(--text);
+  color: #fff;
   line-height: 1.2;
 }
 
-.cad-sub {
+.cadastro-sub {
   font-size: 13px;
-  color: var(--text-muted);
+  color: #666;
   line-height: 1.6;
 }
 
-/* FOTO */
+/* ───────── FOTO ───────── */
 
 .foto-label {
   display: flex;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 28px;
   cursor: pointer;
 }
 
@@ -95,74 +98,38 @@ body {
   height: 110px;
   border-radius: 50%;
   border: 2px dashed #333;
-  background: var(--input-bg);
+  background: #161616;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  color: #fff;
+  font-size: 32px;
   transition: 0.25s ease;
-  overflow: hidden;
 }
 
 .foto-circle:hover {
-  border-color: var(--accent);
+  border-color: #00e676;
   transform: scale(1.04);
 }
 
-.foto-icon {
-  font-size: 32px;
-}
+/* ───────── FORM ───────── */
 
-.foto-hint {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  font-size: 10px;
-  padding: 4px;
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.foto-obs {
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 22px;
-}
-
-/* SEÇÕES */
-
-.form-section {
-  margin-bottom: 18px;
-}
-
-.section-label {
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 10px;
-}
-
-/* INPUTS */
-
-.input-row {
+.form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 16px;
 }
 
 .input {
-  width: 100%;
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
+  background: #161616;
+  border: 1px solid #333;
   border-radius: 12px;
   padding: 12px 14px;
-  color: var(--text);
+  color: #fff;
   font-size: 14px;
   outline: none;
   transition: 0.2s ease;
-  margin-bottom: 14px;
+  width: 100%;
   font-family: inherit;
 }
 
@@ -171,56 +138,46 @@ body {
 }
 
 .input:focus {
-  border-color: var(--accent);
+  border-color: #00e676;
   box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.08);
 }
 
-.full {
-  width: 100%;
-}
-
 select.input {
-  cursor: pointer;
+  appearance: none;
 }
 
-/* OBS */
+/* ───────── ALERTAS ───────── */
 
-.overall-obs {
-  margin: 6px 0 14px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-/* ALERTAS */
-
-.msg {
+.info-msg {
+  margin-top: 18px;
   padding: 14px;
-  border-radius: 12px;
-  font-size: 13px;
-  text-align: center;
-  margin-bottom: 14px;
-}
-
-.msg.erro {
-  background: var(--error-soft);
-  border: 1px solid rgba(255, 80, 80, 0.18);
-  color: var(--error);
-}
-
-.msg.sucesso {
   background: rgba(0, 230, 118, 0.08);
   border: 1px solid rgba(0, 230, 118, 0.18);
-  color: var(--success);
+  border-radius: 12px;
+  color: #00e676;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.5;
 }
 
-/* BOTÃO */
+.erro-msg {
+  margin-top: 14px;
+  padding: 14px;
+  background: rgba(255, 80, 80, 0.08);
+  border: 1px solid rgba(255, 80, 80, 0.18);
+  border-radius: 12px;
+  color: #ff6b6b;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ───────── BOTÃO ───────── */
 
 .btn-primary {
   width: 100%;
-  margin-top: 6px;
+  margin-top: 20px;
   padding: 14px;
-  background: var(--accent);
+  background: #00e676;
   color: #000;
   border: none;
   border-radius: 14px;
@@ -243,39 +200,19 @@ select.input {
   transform: none;
 }
 
-/* LOGIN */
-
-.login-link {
-  margin-top: 18px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--text-muted);
-}
-
-.login-link a {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.login-link a:hover {
-  text-decoration: underline;
-}
-
-/* RESPONSIVO */
+/* ───────── RESPONSIVO ───────── */
 
 @media (max-width: 640px) {
-  .cad-card {
+  .cadastro-card {
     padding: 28px 20px;
   }
 
-  .cad-titulo {
+  .cadastro-title {
     font-size: 24px;
   }
 
-  .input-row {
+  .form-grid {
     grid-template-columns: 1fr;
-    gap: 0;
   }
 
   .foto-circle {
