@@ -347,6 +347,89 @@ def confirmar_jogador(id):
     conn.close()
     return jsonify({"mensagem": "Presença atualizada!", "confirmado": confirmado})
 
+# ─── TIMES DO JOGO ───────────────────────────────────────────────────────────────
+
+@app.route('/times-jogo', methods=['GET'])
+def get_times_jogo():
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM times_jogo ORDER BY id")
+    times = cursor.fetchall()
+
+    for time in times:
+        cursor.execute("""
+            SELECT e.id, e.posicao_campo, e.reserva,
+                   j.id as jogador_id, j.nome, j.posicao, j.fotoUrl, j.overall
+            FROM escalacao e
+            LEFT JOIN jogadores j ON e.id_jogador = j.id
+            WHERE e.id_time = %s
+            ORDER BY e.reserva, e.posicao_campo
+        """, (time["id"],))
+        time["escalacao"] = cursor.fetchall()
+
+    cursor.close(); conn.close()
+    return jsonify(times)
+
+@app.route('/times-jogo', methods=['POST'])
+def criar_time_jogo():
+    dados = request.json
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO times_jogo (nome, cor) VALUES (%s, %s)",
+                   (dados.get("nome","Time"), dados.get("cor","#00ff87")))
+    conn.commit()
+    novo_id = cursor.lastrowid
+    cursor.close(); conn.close()
+    return jsonify({"mensagem": "Time criado!", "id": novo_id}), 201
+
+@app.route('/times-jogo/<int:id>', methods=['DELETE'])
+def deletar_time_jogo(id):
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM escalacao WHERE id_time = %s", (id,))
+    cursor.execute("DELETE FROM times_jogo WHERE id = %s", (id,))
+    conn.commit()
+    cursor.close(); conn.close()
+    return jsonify({"mensagem": "Time deletado!"})
+
+
+# ─── ESCALAÇÃO ───────────────────────────────────────────────────────────────────
+
+@app.route('/escalacao', methods=['POST'])
+def salvar_escalacao():
+    dados = request.json
+    id_time = dados.get("id_time")
+    slots   = dados.get("slots", [])  # [{ posicao_campo, id_jogador, reserva }]
+
+    conn = obter_conexao()
+    cursor = conn.cursor()
+
+    # Deleta escalação atual do time
+    cursor.execute("DELETE FROM escalacao WHERE id_time = %s", (id_time,))
+
+    # Insere nova escalação
+    for slot in slots:
+        cursor.execute(
+            "INSERT INTO escalacao (id_time, id_jogador, posicao_campo, reserva) VALUES (%s, %s, %s, %s)",
+            (id_time,
+             slot.get("id_jogador") or None,
+             slot.get("posicao_campo"),
+             1 if slot.get("reserva") else 0)
+        )
+
+    conn.commit()
+    cursor.close(); conn.close()
+    return jsonify({"mensagem": "Escalação salva!"})
+
+@app.route('/escalacao/<int:id_time>', methods=['DELETE'])
+def limpar_escalacao(id_time):
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM escalacao WHERE id_time = %s", (id_time,))
+    conn.commit()
+    cursor.close(); conn.close()
+    return jsonify({"mensagem": "Escalação limpa!"})
+
 # ─── MAIN ─────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
