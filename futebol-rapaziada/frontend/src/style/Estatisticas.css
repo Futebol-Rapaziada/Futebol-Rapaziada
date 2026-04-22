@@ -1,39 +1,103 @@
 @import './tokens.css';
 
-.estat-wrap{display:flex;flex-direction:column;gap:28px;}
+.estat-wrap { display:flex; flex-direction:column; gap:28px; }
+.estat-conteudo { display:flex; flex-direction:column; gap:24px; }
 
-/* Minhas stats */
-.meus-stats{background:rgba(255,255,255,.02);border:1px solid rgba(0,255,135,.15);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:18px;}
-.ms-top{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;}
-.ms-id{display:flex;align-items:center;gap:14px;background:rgba(0,255,135,.05);border:1px solid rgba(0,255,135,.15);border-radius:12px;padding:14px 18px;}
-.ms-ovr{font-family:var(--font-display);font-size:48px;color:var(--neon);line-height:1;text-shadow:0 0 20px rgba(0,255,135,.4);}
-.ms-nome{font-family:var(--font-display);font-size:22px;letter-spacing:1px;color:var(--text);}
-.ms-pos{font-size:12px;color:var(--text2);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
-.ms-boxes{display:flex;flex-wrap:wrap;gap:10px;flex:1;}
-.ms-box{flex:1;min-width:75px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:13px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .2s;}
-.ms-box:hover{border-color:rgba(0,255,135,.25);background:rgba(0,255,135,.04);}
-.msb-i{font-size:19px;}
-.msb-v{font-family:var(--font-display);font-size:28px;color:var(--text);line-height:1;}
-.msb-l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:1px;}
-.ms-ranks{display:flex;flex-wrap:wrap;gap:16px;padding-top:14px;border-top:1px solid var(--border);}
-.ms-ranks span{font-size:13px;color:var(--text2);font-weight:600;}
-.ms-ranks strong{color:var(--neon);}
+/* ── MINHAS STATS ── */
+.meus-stats { background:rgba(255,255,255,.02); border:1px solid rgba(0,255,135,.15); border-radius:16px; padding:22px; display:flex; flex-direction:column; gap:18px; }
+.ms-top { display:flex; flex-wrap:wrap; gap:20px; align-items:flex-start; }
+.ms-id { display:flex; align-items:center; gap:14px; background:rgba(0,255,135,.05); border:1px solid rgba(0,255,135,.15); border-radius:12px; padding:14px 18px; }
+.ms-ovr { font-family:var(--font-display); font-size:48px; color:var(--neon); line-height:1; text-shadow:0 0 20px rgba(0,255,135,.4); }
+.ms-nome { font-family:var(--font-display); font-size:22px; letter-spacing:1px; color:var(--text); }
+.ms-pos  { font-size:12px; color:var(--text2); font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+.ms-boxes { display:flex; flex-wrap:wrap; gap:10px; flex:1; }
+.ms-box { flex:1; min-width:75px; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:12px; padding:13px 10px; display:flex; flex-direction:column; align-items:center; gap:4px; transition:all .2s; }
+.ms-box:hover { border-color:rgba(0,255,135,.25); background:rgba(0,255,135,.04); }
+.msb-i { font-size:19px; }
+.msb-v { font-family:var(--font-display); font-size:28px; color:var(--text); line-height:1; }
+.msb-l { font-size:10px; color:var(--text2); text-transform:uppercase; letter-spacing:1px; }
+.ms-ranks { display:flex; flex-wrap:wrap; gap:16px; padding-top:14px; border-top:1px solid var(--border); }
+.ms-ranks span { font-size:13px; color:var(--text2); font-weight:600; }
+.ms-ranks strong { color:var(--neon); }
 
-/* Rankings */
-.ranks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;}
+/* ── PÓDIOS GRID ── */
+.podios-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
 
-.rank-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
-.rc-header{display:flex;align-items:center;gap:10px;padding:13px 18px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border);}
-.rc-header span{font-size:19px;}
-.rc-header h3{font-family:var(--font-display);font-size:17px;letter-spacing:1px;color:var(--text);}
-.rc-lista{display:flex;flex-direction:column;}
-.rc-item{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--border);transition:background .15s;}
-.rc-item:last-child{border-bottom:none;}
-.rc-item:hover{background:rgba(255,255,255,.02);}
-.rc-item.eu{background:rgba(0,255,135,.06);border-left:2px solid var(--neon);}
-.rc-pos{font-size:14px;min-width:28px;font-weight:700;color:var(--text2);}
-.rc-info{flex:1;display:flex;flex-direction:column;gap:1px;}
-.rc-nome{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px;}
-.rc-posicao{font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:1px;}
-.tag-eu{font-size:9px;background:rgba(0,255,135,.15);color:var(--neon);padding:1px 5px;border-radius:4px;font-weight:700;}
-.rc-val{font-family:var(--font-display);font-size:17px;color:var(--neon);white-space:nowrap;}
+.podio-card { background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:14px; padding:20px; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
+
+.podio-titulo { display:flex; align-items:center; gap:8px; }
+.podio-titulo span { font-size:20px; }
+.podio-titulo h3 { font-family:var(--font-display); font-size:18px; letter-spacing:1px; color:var(--text); }
+
+/* Palco do pódio */
+.podio-palco { display:flex; align-items:flex-end; justify-content:center; gap:8px; min-height:180px; }
+
+.podio-slot { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; }
+.podio-slot.vazio { opacity:.2; }
+
+.podio-foto {
+  width:44px; height:44px; border-radius:50%;
+  overflow:hidden; border:2px solid var(--border2);
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.05); font-size:22px;
+}
+.podio-foto img { width:100%; height:100%; object-fit:cover; }
+
+.podio-nome { font-size:12px; font-weight:700; color:var(--text); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:70px; }
+.podio-val  { font-family:var(--font-display); font-size:16px; text-align:center; }
+
+.podio-base {
+  width:100%; border-radius:6px 6px 0 0;
+  display:flex; align-items:center; justify-content:center;
+  min-width:60px;
+}
+.podio-label { font-size:11px; font-weight:700; color:rgba(0,0,0,.7); letter-spacing:.5px; writing-mode:vertical-rl; padding:6px 0; }
+
+/* ── TABELA COMPLETA ── */
+.tabela-wrap { background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
+.tabela-titulo { font-family:var(--font-display); font-size:18px; letter-spacing:2px; color:var(--text2); padding:16px 20px; border-bottom:1px solid var(--border); }
+.tabela-scroll { overflow-x:auto; }
+
+.estat-tabela { width:100%; border-collapse:collapse; font-family:var(--font-body); }
+.estat-tabela thead tr { background:rgba(255,255,255,.03); border-bottom:1px solid var(--border2); }
+.estat-tabela th { padding:10px 12px; text-align:center; font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:1px; white-space:nowrap; }
+.estat-tabela th:nth-child(2), .estat-tabela th:nth-child(3) { text-align:left; }
+.estat-tabela td { padding:10px 12px; text-align:center; font-size:14px; font-weight:600; color:var(--text); border-bottom:1px solid var(--border); }
+.estat-tabela tr:last-child td { border-bottom:none; }
+.estat-tabela tr:hover td { background:rgba(255,255,255,.02); }
+.estat-tabela tr.eu td { background:rgba(0,255,135,.05); }
+.estat-tabela tr.eu td:first-child { border-left:2px solid var(--neon); }
+
+.td-pos     { font-size:14px; color:var(--text2); min-width:36px; }
+.td-nome    { text-align:left!important; display:flex; align-items:center; gap:8px; white-space:nowrap; }
+.td-posicao { text-align:left!important; font-size:12px!important; color:var(--text2)!important; text-transform:uppercase; letter-spacing:1px; }
+.td-dest    { color:#ffd166!important; }
+.td-gpa     { font-family:var(--font-display); font-size:17px!important; }
+.td-ovr     { background:rgba(0,255,135,.1); color:var(--neon); padding:2px 8px; border-radius:6px; font-size:13px; font-weight:700; }
+.tab-foto   { width:28px; height:28px; border-radius:50%; object-fit:cover; }
+.tab-av     { font-size:20px; }
+.tag-eu     { font-size:9px; background:rgba(0,255,135,.15); color:var(--neon); padding:1px 5px; border-radius:4px; margin-left:4px; font-weight:700; }
+
+/* ── RANK LISTA ── */
+.rank-lista-est { display:flex; flex-direction:column; gap:8px; }
+
+.rle-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:10px; padding:10px 18px; transition:background .15s; }
+.rle-item:hover { background:rgba(255,255,255,.04); }
+.rle-item.eu { background:rgba(0,255,135,.06); border-left:2px solid var(--neon); }
+
+.rle-pos  { font-size:14px; min-width:28px; font-weight:700; color:var(--text2); }
+.rle-info { flex:1; display:flex; flex-direction:column; gap:1px; }
+.rle-nome { font-size:14px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:6px; }
+.rle-posicao { font-size:11px; color:var(--text2); font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+.rle-val  { font-family:var(--font-display); font-size:17px; color:var(--neon); white-space:nowrap; }
+
+/* Abas */
+.abas { display:flex; flex-wrap:wrap; gap:8px; }
+.aba-btn { background:rgba(255,255,255,.03); border:1px solid var(--border); color:var(--text2); padding:8px 18px; border-radius:20px; font-family:var(--font-body); font-size:14px; font-weight:700; letter-spacing:1px; cursor:pointer; transition:all .2s; }
+.aba-btn:hover { color:var(--text); border-color:var(--border2); }
+.aba-btn.ativa { background:rgba(0,255,135,.1); border-color:var(--border-neon); color:var(--neon); }
+
+/* Loading */
+.loading-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; height:60vh; gap:16px; }
+.loading-ball   { font-size:48px; animation:spin 1s linear infinite; }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import "../../style/Layout.css";
+import "../style/Layout.css";
 
 const MENU = [
   { path: "/home",          icon: "🃏", label: "Meu Perfil" },
@@ -8,7 +8,7 @@ const MENU = [
   { path: "/campeonato",    icon: "🏆", label: "Campeonato" },
   { path: "/jogos",         icon: "⚽", label: "Jogos" },
   { path: "/presenca",      icon: "📋", label: "Lista de Presença" },
-  { path: "/times",         icon: "👕", label: "Times",      em_breve: true },
+  { path: "/times",         icon: "👕", label: "Times" },
   { path: "/financeiro",    icon: "💰", label: "Financeiro", em_breve: true },
 ];
 
@@ -26,8 +26,6 @@ export default function Layout({ children }) {
 
   return (
     <div className="layout">
-
-      {/* ── SIDEBAR ── */}
       <aside className={`sidebar ${aberto ? "aberta" : ""}`}>
         <div className="sidebar-logo">
           <span className="logo-icon">⚽</span>
@@ -66,7 +64,6 @@ export default function Layout({ children }) {
 
       {aberto && <div className="sidebar-overlay" onClick={() => setAberto(false)} />}
 
-      {/* ── CONTEÚDO ── */}
       <div className="layout-main">
         <header className="layout-topbar">
           <button className="menu-toggle" onClick={() => setAberto(!aberto)}>☰</button>
@@ -82,7 +79,6 @@ export default function Layout({ children }) {
         </header>
         <main className="layout-content">{children}</main>
       </div>
-
     </div>
   );
 }
