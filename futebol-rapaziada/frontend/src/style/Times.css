@@ -1,403 +1,388 @@
 @import './tokens.css';
 
-.times-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
+.times-wrap{
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  max-width:1400px;
+  margin:0 auto;
 }
 
-.times-sucesso {
-  background: rgba(0,255,135,.08);
-  border: 1px solid rgba(0,255,135,.25);
-  color: var(--neon);
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
+/* ALERTA */
+.times-sucesso{
+  background:rgba(0,255,135,.08);
+  border:1px solid rgba(0,255,135,.25);
+  color:var(--neon);
+  padding:12px 16px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:700;
+}
+
+/* TITULOS */
+.page-titulo{
+  font-family:var(--font-display);
+  font-size:34px;
+  letter-spacing:2px;
+  color:var(--text);
+}
+
+.page-sub{
+  margin-top:-10px;
+  color:var(--text2);
+  font-size:14px;
 }
 
 /* LAYOUT */
-.times-layout {
-  display: grid;
-  grid-template-columns: 1fr 220px 1fr;
-  gap: 20px;
-  align-items: start;
+.times-layout{
+  display:grid;
+  grid-template-columns:1fr 240px 1fr;
+  gap:22px;
+  align-items:start;
 }
 
-/* CABEÇALHO */
-.time-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background: rgba(255,255,255,.02);
-  border: 1px solid;
-  border-radius: 12px;
-  margin-bottom: 12px;
+/* CABEÇALHO TIME */
+.time-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 16px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
+  border-radius:14px;
+  margin-bottom:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,.25);
 }
 
-.time-badge {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+.time-badge{
+  width:12px;
+  height:12px;
+  border-radius:50%;
 }
 
-.time-header h2 {
-  flex: 1;
-  font-family: var(--font-display);
-  font-size: 20px;
-  letter-spacing: 2px;
+.time-header h2{
+  flex:1;
+  font-family:var(--font-display);
+  font-size:20px;
+  letter-spacing:1px;
 }
 
-.time-count {
-  font-size: 13px;
-  color: var(--text2);
-  font-weight: 700;
+.time-count{
+  color:var(--text2);
+  font-size:13px;
+  font-weight:700;
 }
 
 /* CAMPO */
-.campo-svg-wrap {
-  width: 100%;
+.campo-svg-wrap{
+  width:100%;
 }
 
-.campo {
-  position: relative;
-  width: 100%;
-  padding-bottom: 150%;
-  border-radius: 14px;
-  overflow: hidden;
-  border: 2px solid rgba(255,255,255,.12);
-
+.campo{
+  position:relative;
+  width:100%;
+  padding-bottom:150%;
+  border-radius:16px;
+  overflow:hidden;
+  border:3px solid rgba(255,255,255,.16);
   background:
-    repeating-linear-gradient(
-      0deg,
-      #1a5a1a 0px,
-      #1a5a1a 60px,
-      #196019 60px,
-      #196019 120px
-    );
-
+  repeating-linear-gradient(
+    0deg,
+    #1d5f25 0px,
+    #1d5f25 40px,
+    #216b2a 40px,
+    #216b2a 80px
+  );
   box-shadow:
-    inset 0 0 40px rgba(0,0,0,.25),
-    0 0 25px rgba(0,0,0,.35);
+  inset 0 0 50px rgba(0,0,0,.35),
+  0 15px 35px rgba(0,0,0,.35);
 }
 
 /* LINHAS */
-.campo-linha {
-  position: absolute;
-  background: rgba(255,255,255,.35);
+.campo-linha{
+  position:absolute;
+  background:rgba(255,255,255,.45);
 }
 
-.campo-linha.meio {
-  width: 100%;
-  height: 1px;
-  top: 50%;
-  left: 0;
+.campo-linha.meio{
+  width:100%;
+  height:2px;
+  top:50%;
+  left:0;
 }
 
-.campo-circulo {
-  position: absolute;
-  border: 1px solid rgba(255,255,255,.35);
-  border-radius: 50%;
+.campo-circulo{
+  position:absolute;
+  border:2px solid rgba(255,255,255,.45);
+  border-radius:50%;
 }
 
-.campo-circulo.meio {
-  width: 22%;
-  padding-bottom: 22%;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.campo-circulo.meio{
+  width:24%;
+  padding-bottom:24%;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
 }
 
-.campo-area {
-  position: absolute;
-  width: 55%;
-  left: 22.5%;
-  border: 1px solid rgba(255,255,255,.28);
+.campo-area{
+  position:absolute;
+  width:55%;
+  left:22.5%;
+  border:2px solid rgba(255,255,255,.35);
 }
 
-.area-sup {
-  top: 0;
-  height: 20%;
+.area-sup{
+  top:0;
+  height:20%;
 }
 
-.area-inf {
-  bottom: 0;
-  height: 20%;
+.area-inf{
+  bottom:0;
+  height:20%;
 }
 
-.campo-goleira {
-  position: absolute;
-  width: 25%;
-  left: 37.5%;
-  height: 6%;
-  border: 1px solid rgba(255,255,255,.25);
+.campo-goleira{
+  position:absolute;
+  width:24%;
+  left:38%;
+  height:6%;
+  border:2px solid rgba(255,255,255,.25);
 }
 
-.goleira-sup { top: 0; }
-.goleira-inf { bottom: 0; }
+.goleira-sup{ top:0; }
+.goleira-inf{ bottom:0; }
 
-/* SLOT */
-.campo-slot {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  z-index: 20;
+/* POSIÇÕES */
+.campo-slot{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  z-index:2;
 }
 
-.slot-jogador {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  cursor: grab;
+/* JOGADOR NO CAMPO */
+.slot-jogador{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
 }
 
-.slot-jogador:active {
-  cursor: grabbing;
+.slot-foto{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  overflow:hidden;
+  border:2px solid #fff;
+  background:#111;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 4px 12px rgba(0,0,0,.4);
 }
 
-.slot-foto {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 2px solid var(--neon);
-  overflow: hidden;
-  background: #111;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  box-shadow: 0 4px 10px rgba(0,0,0,.45);
+.slot-foto img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
-.slot-foto img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.slot-nome {
-  font-size: 9px;
-  color: #fff;
-  font-weight: 700;
-  padding: 2px 5px;
-  border-radius: 4px;
-  background: rgba(0,0,0,.55);
-  max-width: 58px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.slot-remove {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  border: none;
-  background: #ff3b3b;
-  color: #fff;
-  font-size: 10px;
-  cursor: pointer;
-  display: none;
-}
-
-.slot-jogador:hover .slot-remove {
-  display: block;
+.slot-nome{
+  font-size:10px;
+  color:#fff;
+  font-weight:700;
+  background:rgba(0,0,0,.55);
+  padding:2px 6px;
+  border-radius:6px;
+  white-space:nowrap;
+  max-width:70px;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 
 /* SLOT VAZIO */
-.slot-empty {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 2px dashed rgba(255,255,255,.25);
-  background: rgba(0,0,0,.22);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.slot-empty{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  border:2px dashed rgba(255,255,255,.35);
+  background:rgba(0,0,0,.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.slot-empty:hover {
-  border-color: rgba(255,255,255,.55);
+.slot-pos-label{
+  font-size:10px;
+  color:#fff;
+  font-weight:700;
 }
 
-.slot-pos-label {
-  font-size: 9px;
-  color: rgba(255,255,255,.65);
-  font-weight: 700;
+/* SELECTS */
+.time-lista{
+  margin-top:14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
 }
 
-/* RESERVAS */
-.reservas-area {
-  margin-top: 12px;
-  border: 1px dashed var(--border2);
-  border-radius: 10px;
-  padding: 12px;
-  min-height: 80px;
-  background: rgba(255,255,255,.02);
+.tl-item{
+  display:grid;
+  grid-template-columns:42px 1fr;
+  gap:8px;
+  align-items:center;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.03);
 }
 
-.reservas-titulo {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text2);
-  margin-bottom: 8px;
+.tl-pos{
+  font-size:11px;
+  font-weight:800;
+  color:var(--text2);
 }
 
-.reservas-lista {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.tl-select{
+  width:100%;
+  background:#111;
+  color:#fff;
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:8px;
+  outline:none;
 }
 
-.reserva-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border-radius: 20px;
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--border);
-  cursor: grab;
-  font-size: 12px;
-  font-weight: 700;
+.tl-select:focus{
+  border-color:var(--neon);
 }
 
-.reserva-item button {
-  border: none;
-  background: transparent;
-  color: var(--text2);
-  cursor: pointer;
+/* COLUNA CENTRAL */
+.disponiveis-col{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
-/* DISPONIVEIS */
-.disponiveis-col {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.disp-titulo{
+  font-family:var(--font-display);
+  font-size:22px;
+  color:var(--text);
 }
 
-.disp-titulo {
-  font-family: var(--font-display);
-  font-size: 18px;
-  letter-spacing: 2px;
+.disp-sub{
+  font-size:13px;
+  color:var(--text2);
 }
 
-.disp-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-height: 700px;
-  overflow-y: auto;
+.disp-lista{
+  max-height:620px;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
 }
 
-.disp-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 10px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,.03);
-  cursor: grab;
+.disp-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border-radius:12px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
 }
 
-.disp-item:hover {
-  background: rgba(255,255,255,.05);
+.disp-foto{
+  width:34px;
+  height:34px;
+  border-radius:50%;
+  overflow:hidden;
+  background:#111;
 }
 
-.disp-foto {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  overflow: hidden;
-  background: rgba(255,255,255,.05);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.disp-foto img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
 }
 
-.disp-foto img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.disp-info{
+  flex:1;
 }
 
-.disp-info {
-  flex: 1;
-  min-width: 0;
+.disp-nome{
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  color:var(--text);
 }
 
-.disp-nome {
-  display: block;
-  font-size: 13px;
-  font-weight: 700;
+.disp-pos{
+  font-size:11px;
+  color:var(--text2);
 }
 
-.disp-pos {
-  font-size: 10px;
-  color: var(--text2);
+.disp-ovr{
+  font-family:var(--font-display);
+  color:var(--neon);
+  font-size:18px;
 }
 
-.disp-ovr {
-  font-family: var(--font-display);
-  font-size: 16px;
-  color: var(--neon);
+/* BOTÃO */
+.times-actions{
+  display:flex;
+  justify-content:center;
 }
 
-/* BOTAO */
-.times-actions {
-  display: flex;
-  justify-content: center;
+.btn-salvar-times{
+  background:var(--neon);
+  color:#000;
+  border:none;
+  padding:14px 34px;
+  border-radius:14px;
+  font-size:20px;
+  font-family:var(--font-display);
+  cursor:pointer;
+  font-weight:800;
+  transition:.2s;
 }
 
-.btn-salvar-times {
-  border: none;
-  background: var(--neon);
-  color: #000;
-  padding: 14px 42px;
-  border-radius: 12px;
-  font-size: 18px;
-  font-family: var(--font-display);
-  cursor: pointer;
-  font-weight: 700;
+.btn-salvar-times:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 24px rgba(0,255,135,.35);
 }
 
-.btn-salvar-times:hover {
-  box-shadow: 0 0 22px rgba(0,255,135,.35);
-}
-
-/* LOADING */
-.loading-screen {
-  height: 60vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.loading-ball {
-  font-size: 50px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.btn-salvar-times:disabled{
+  opacity:.55;
+  cursor:not-allowed;
 }
 
 /* RESPONSIVO */
-@media (max-width: 900px) {
-  .times-layout {
-    grid-template-columns: 1fr;
+@media (max-width:1000px){
+  .times-layout{
+    grid-template-columns:1fr;
   }
 
-  .disponiveis-col {
-    order: -1;
+  .disponiveis-col{
+    order:-1;
   }
+}
+
+/* LOADING */
+.loading-screen{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:60vh;
+}
+
+.loading-ball{
+  font-size:52px;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
 }
