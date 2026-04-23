@@ -198,43 +198,59 @@ export default function Times() {
         </div>
 
       </div>
-      <div className="reservas-box">
-  <h3>Reservas</h3>
+      {/* TIME 1 - coloque abaixo do campo do Time Verde */}
+<div className="reservas-box">
+  <h3>Reservas Time Verde</h3>
 
   <div className="reservas-grid">
     <select>
       <option value="">Reserva 1</option>
       {jogadores.map((j) => (
-        <option key={j.id} value={j.id}>
-          {j.nome}
-        </option>
+        <option key={j.id} value={j.id}>{j.nome}</option>
       ))}
     </select>
 
     <select>
       <option value="">Reserva 2</option>
       {jogadores.map((j) => (
-        <option key={j.id} value={j.id}>
-          {j.nome}
-        </option>
+        <option key={j.id} value={j.id}>{j.nome}</option>
       ))}
     </select>
 
     <select>
       <option value="">Reserva 3</option>
       {jogadores.map((j) => (
-        <option key={j.id} value={j.id}>
-          {j.nome}
-        </option>
+        <option key={j.id} value={j.id}>{j.nome}</option>
+      ))}
+    </select>
+  </div>
+</div>
+
+
+
+{/* TIME 2 - coloque abaixo do campo do Time Vermelho */}
+<div className="reservas-box vermelho">
+  <h3>Reservas Time Vermelho</h3>
+
+  <div className="reservas-grid">
+    <select>
+      <option value="">Reserva 1</option>
+      {jogadores.map((j) => (
+        <option key={j.id} value={j.id}>{j.nome}</option>
       ))}
     </select>
 
     <select>
-      <option value="">Reserva 4</option>
+      <option value="">Reserva 2</option>
       {jogadores.map((j) => (
-        <option key={j.id} value={j.id}>
-          {j.nome}
-        </option>
+        <option key={j.id} value={j.id}>{j.nome}</option>
+      ))}
+    </select>
+
+    <select>
+      <option value="">Reserva 3</option>
+      {jogadores.map((j) => (
+        <option key={j.id} value={j.id}>{j.nome}</option>
       ))}
     </select>
   </div>
