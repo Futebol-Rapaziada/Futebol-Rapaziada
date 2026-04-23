@@ -1,152 +1,83 @@
-.times-page{
-  padding:30px;
-}
-
-.titulo{
-  text-align:center;
-  color:#fff;
-  font-size:34px;
-  margin-bottom:30px;
-  font-weight:800;
-  letter-spacing:1px;
-}
-
-.times-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:30px;
-}
-
-.time-box{
-  background:#111;
-  border:1px solid #222;
-  border-radius:18px;
-  padding:20px;
-  box-shadow:0 10px 30px rgba(0,0,0,.45);
-}
-
-.time-box h2{
-  text-align:center;
-  margin-bottom:18px;
-  font-size:26px;
-  font-weight:800;
-}
-
-.campo{
-  position:relative;
-  width:100%;
-  height:720px;
-  border-radius:18px;
-  overflow:hidden;
-  border:3px solid rgba(255,255,255,.12);
-
-  background:
-  repeating-linear-gradient(
-    90deg,
-    #2d8a3c 0px,
-    #2d8a3c 70px,
-    #2a7d36 70px,
-    #2a7d36 140px
-  );
-}
-
-/* linhas campo */
-.campo::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border:3px solid rgba(255,255,255,.22);
-  border-radius:18px;
-}
-
-.campo::after{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  top:50%;
-  height:2px;
-  background:rgba(255,255,255,.25);
-}
-
-/* jogador card */
 .slot{
   position:absolute;
   width:120px;
   display:flex;
   flex-direction:column;
-  gap:8px;
   align-items:center;
+  gap:8px;
   transform:translate(-50%,-50%);
 }
 
+/* bonequinho jogador */
 .slot span{
-  background:rgba(0,0,0,.55);
-  color:#fff;
-  padding:7px 10px;
-  border-radius:12px;
-  font-size:13px;
-  font-weight:700;
+  position:relative;
+  padding-top:42px;
+  background:transparent;
+  color:#ffffff;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.8px;
+  text-transform:uppercase;
   text-align:center;
-  width:100%;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  min-width:90px;
 }
 
+/* cabeça */
+.slot span::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  background:#ffffff;
+  box-shadow:0 0 10px rgba(255,255,255,.45);
+}
+
+/* corpo */
+.slot span::after{
+  content:"";
+  position:absolute;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  width:28px;
+  height:18px;
+  border-radius:8px 8px 6px 6px;
+  background:linear-gradient(180deg,#ffffff,#d8d8d8);
+}
+
+/* input bonito */
 .slot select{
-  width:120px;
-  padding:8px;
+  width:130px;
+  padding:10px 12px;
   border:none;
-  border-radius:10px;
-  background:#fff;
-  font-weight:700;
+  outline:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#00ff88,#00c96b);
+  color:#04140c;
+  font-weight:800;
   font-size:13px;
   cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,255,136,.28);
+  transition:0.2s;
 }
 
-/* POSIÇÕES CERTAS */
-.gol  { left:50%; top:88%; }
-
-.zag1 { left:33%; top:72%; }
-.zag2 { left:67%; top:72%; }
-
-.ala1 { left:18%; top:52%; }
-.ala2 { left:82%; top:52%; }
-
-.meia { left:50%; top:45%; }
-
-.atq  { left:50%; top:20%; }
-
-@media(max-width:1100px){
-  .times-grid{
-    grid-template-columns:1fr;
-  }
-
-  .campo{
-    height:650px;
-  }
+.slot select:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 24px rgba(0,255,136,.38);
 }
 
-@media(max-width:700px){
-  .times-page{
-    padding:15px;
-  }
+.slot select:focus{
+  box-shadow:0 0 0 3px rgba(255,255,255,.25),
+             0 10px 24px rgba(0,255,136,.35);
+}
 
-  .campo{
-    height:560px;
-  }
-
-  .slot{
-    width:95px;
-  }
-
-  .slot select{
-    width:95px;
-    font-size:11px;
-  }
-
-  .slot span{
-    font-size:11px;
-  }
+/* opções */
+.slot select option{
+  background:#ffffff;
+  color:#111;
+  font-weight:700;
 }
