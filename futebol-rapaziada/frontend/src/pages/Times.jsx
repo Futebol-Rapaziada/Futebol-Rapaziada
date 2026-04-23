@@ -14,8 +14,8 @@ const SLOTS_TIME = [
   { id: "zag2", label: "ZAG", x: 70, y: 72 },
   { id: "lat1", label: "LAT", x: 15, y: 55 },
   { id: "lat2", label: "LAT", x: 85, y: 55 },
-  { id: "meia", label: "MEI", x: 50, y: 48 },
-  { id: "atq", label: "ATQ", x: 50, y: 28 },
+  { id: "meia", label: "MEI", x: 50, y: 45 },
+  { id: "atq", label: "ATQ", x: 50, y: 25 },
 ];
 
 const COR_TIME = ["#00ff87", "#ff4d6d"];
@@ -27,187 +27,44 @@ export default function Times() {
 
   const [jogadores, setJogadores] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [salvando, setSalvando] = useState(false);
-  const [sucesso, setSucesso] = useState("");
 
   const [escA, setEscA] = useState({});
   const [escB, setEscB] = useState({});
-  const [reservasA, setResA] = useState([]);
-  const [reservasB, setResB] = useState([]);
-
-  const [dragging, setDragging] = useState(null);
 
   useEffect(() => {
     if (!usuarioLogado) {
       navigate("/login");
       return;
     }
-
     carregar();
   }, []);
 
   async function carregar() {
     try {
-      const [jogs, timesResp] = await Promise.all([
-        getJogadores(),
-        fetch(`${API_URL}/times-jogo`)
-          .then((r) => r.json())
-          .catch(() => []),
-      ]);
-
+      const jogs = await getJogadores();
       setJogadores(jogs);
-
-      if (timesResp.length >= 2) {
-        const montarEsc = (esc) => {
-          const mapa = {};
-
-          esc
-            .filter((e) => !e.reserva)
-            .forEach((e) => {
-              if (e.jogador_id) mapa[e.posicao_campo] = Number(e.jogador_id);
-            });
-
-          return mapa;
-        };
-
-        setEscA(montarEsc(timesResp[0].escalacao || []));
-        setEscB(montarEsc(timesResp[1].escalacao || []));
-
-        const reservas = (esc) =>
-          esc
-            .filter((e) => e.reserva && e.jogador_id)
-            .map((e) => Number(e.jogador_id));
-
-        setResA(reservas(timesResp[0].escalacao || []));
-        setResB(reservas(timesResp[1].escalacao || []));
-      }
-    } catch (erro) {
-      console.error(erro);
+    } catch (e) {
+      console.error(e);
     } finally {
       setLoading(false);
     }
   }
 
   function jogadorById(id) {
-    return jogadores.find((j) => Number(j.id) === Number(id));
+    return jogadores.find((j) => j.id === Number(id));
   }
 
-  function escaladosIds() {
-    return [
-      ...Object.values(escA),
-      ...Object.values(escB),
-      ...reservasA,
-      ...reservasB,
-    ].map(Number);
-  }
-
-  function limparJogadorDosTimes(jogadorId) {
-    const id = Number(jogadorId);
-
-    setEscA((old) => {
-      const novo = { ...old };
-      Object.keys(novo).forEach((k) => {
-        if (Number(novo[k]) === id) delete novo[k];
-      });
-      return novo;
-    });
-
-    setEscB((old) => {
-      const novo = { ...old };
-      Object.keys(novo).forEach((k) => {
-        if (Number(novo[k]) === id) delete novo[k];
-      });
-      return novo;
-    });
-
-    setResA((old) => old.filter((x) => Number(x) !== id));
-    setResB((old) => old.filter((x) => Number(x) !== id));
-  }
-
-  function iniciarDrag(e, jogadorId) {
-    const id = Number(jogadorId);
-
-    e.dataTransfer.setData("text/plain", id);
-    setDragging(id);
-  }
-
-  function pegarIdDrop(e) {
-    const data = e.dataTransfer.getData("text/plain");
-
-    if (data) return Number(data);
-    if (dragging) return Number(dragging);
-
-    return null;
-  }
-
-  function dropSlot(e, time, slotId) {
-    e.preventDefault();
-
-    const jogadorId = pegarIdDrop(e);
-    if (!jogadorId) return;
-
-    limparJogadorDosTimes(jogadorId);
+  function mudarJogador(time, posicao, valor) {
+    const id = valor ? Number(valor) : null;
 
     if (time === "A") {
-      setEscA((old) => ({
-        ...old,
-        [slotId]: jogadorId,
-      }));
+      setEscA((old) => ({ ...old, [posicao]: id }));
     } else {
-      setEscB((old) => ({
-        ...old,
-        [slotId]: jogadorId,
-      }));
-    }
-
-    setDragging(null);
-  }
-
-  function dropReserva(e, time) {
-    e.preventDefault();
-
-    const jogadorId = pegarIdDrop(e);
-    if (!jogadorId) return;
-
-    limparJogadorDosTimes(jogadorId);
-
-    if (time === "A") {
-      setResA((old) => [...old, jogadorId]);
-    } else {
-      setResB((old) => [...old, jogadorId]);
-    }
-
-    setDragging(null);
-  }
-
-  function removerDoSlot(time, slotId) {
-    if (time === "A") {
-      setEscA((old) => {
-        const novo = { ...old };
-        delete novo[slotId];
-        return novo;
-      });
-    } else {
-      setEscB((old) => {
-        const novo = { ...old };
-        delete novo[slotId];
-        return novo;
-      });
-    }
-  }
-
-  function removerReserva(time, id) {
-    if (time === "A") {
-      setResA((old) => old.filter((x) => Number(x) !== Number(id)));
-    } else {
-      setResB((old) => old.filter((x) => Number(x) !== Number(id)));
+      setEscB((old) => ({ ...old, [posicao]: id }));
     }
   }
 
   async function salvar() {
-    setSalvando(true);
-    setSucesso("");
-
     try {
       const token = localStorage.getItem("token");
 
@@ -231,29 +88,22 @@ export default function Times() {
         });
 
         const novo = await res.json();
-
         timesResp.push({ id: novo.id });
       }
 
-      const montar = (esc, reservas) => [
-        ...SLOTS_TIME.map((s) => ({
+      const montar = (esc) =>
+        SLOTS_TIME.map((s) => ({
           posicao_campo: s.id,
           id_jogador: esc[s.id] || null,
           reserva: 0,
-        })),
-        ...reservas.map((id) => ({
-          posicao_campo: "reserva",
-          id_jogador: id,
-          reserva: 1,
-        })),
-      ];
+        }));
 
       await fetch(`${API_URL}/escalacao`, {
         method: "POST",
         headers,
         body: JSON.stringify({
           id_time: timesResp[0].id,
-          slots: montar(escA, reservasA),
+          slots: montar(escA),
         }),
       });
 
@@ -262,16 +112,14 @@ export default function Times() {
         headers,
         body: JSON.stringify({
           id_time: timesResp[1].id,
-          slots: montar(escB, reservasB),
+          slots: montar(escB),
         }),
       });
 
-      setSucesso("Escalação salva!");
-      setTimeout(() => setSucesso(""), 2500);
-    } catch (erro) {
-      console.error(erro);
-    } finally {
-      setSalvando(false);
+      alert("Times salvos!");
+    } catch (e) {
+      console.error(e);
+      alert("Erro ao salvar.");
     }
   }
 
@@ -279,16 +127,8 @@ export default function Times() {
     return (
       <div className="campo-svg-wrap">
         <div className="campo">
-          <div className="campo-linha meio" />
-          <div className="campo-circulo meio" />
-          <div className="campo-area area-sup" />
-          <div className="campo-area area-inf" />
-          <div className="campo-goleira goleira-sup" />
-          <div className="campo-goleira goleira-inf" />
-
           {SLOTS_TIME.map((slot) => {
-            const jogId = esc[slot.id];
-            const jog = jogId ? jogadorById(jogId) : null;
+            const jog = jogadorById(esc[slot.id]);
 
             return (
               <div
@@ -298,15 +138,9 @@ export default function Times() {
                   left: `${slot.x}%`,
                   top: `${slot.y}%`,
                 }}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => dropSlot(e, time, slot.id)}
               >
                 {jog ? (
-                  <div
-                    className="slot-jogador"
-                    draggable
-                    onDragStart={(e) => iniciarDrag(e, jog.id)}
-                  >
+                  <div className="slot-jogador">
                     <div
                       className="slot-foto"
                       style={{ borderColor: cor }}
@@ -314,27 +148,16 @@ export default function Times() {
                       {jog.fotoUrl ? (
                         <img src={jog.fotoUrl} alt={jog.nome} />
                       ) : (
-                        <span>👤</span>
+                        "👤"
                       )}
                     </div>
 
                     <span className="slot-nome">
-                      {jog.nome?.split(" ")[0]}
+                      {jog.nome.split(" ")[0]}
                     </span>
-
-                    <button
-                      className="slot-remove"
-                      onClick={() => removerDoSlot(time, slot.id)}
-                    >
-                      ✕
-                    </button>
                   </div>
                 ) : (
-                  <div className="slot-empty">
-                    <span className="slot-pos-label">
-                      {slot.label}
-                    </span>
-                  </div>
+                  <div className="slot-empty">{slot.label}</div>
                 )}
               </div>
             );
@@ -344,201 +167,68 @@ export default function Times() {
     );
   }
 
-  if (loading) {
-    return (
-      <Layout>
-        <div className="loading-screen">
-          <div className="loading-ball">⚽</div>
-        </div>
-      </Layout>
-    );
-  }
-
-  const disponiveis = jogadores.filter(
-    (j) => !escaladosIds().includes(Number(j.id))
-  );
+  if (loading) return <Layout>Carregando...</Layout>;
 
   return (
     <Layout>
       <div className="times-wrap">
-        <h1 className="page-titulo">Times</h1>
-        <p className="page-sub">
-          Monte os times arrastando os jogadores
-        </p>
-
-        {sucesso && (
-          <div className="times-sucesso">
-            ✓ {sucesso}
-          </div>
-        )}
+        <h1 className="page-titulo">TIMES</h1>
 
         <div className="times-layout">
           {/* TIME A */}
-          <div className="time-col">
-            <div
-              className="time-header"
-              style={{ borderColor: COR_TIME[0] }}
-            >
-              <span
-                className="time-badge"
-                style={{ background: COR_TIME[0] }}
-              />
-              <h2 style={{ color: COR_TIME[0] }}>
-                Time Verde
-              </h2>
-            </div>
+          <div>
+            <h2 style={{ color: COR_TIME[0] }}>Time Verde</h2>
 
-            <Campo
-              time="A"
-              esc={escA}
-              cor={COR_TIME[0]}
-            />
+            <Campo time="A" esc={escA} cor={COR_TIME[0]} />
 
-            <div
-              className="reservas-area"
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => dropReserva(e, "A")}
-            >
-              <p className="reservas-titulo">
-                🪑 Reservas
-              </p>
+            {SLOTS_TIME.map((slot) => (
+              <select
+                key={slot.id}
+                value={escA[slot.id] || ""}
+                onChange={(e) =>
+                  mudarJogador("A", slot.id, e.target.value)
+                }
+                className="select-time"
+              >
+                <option value="">
+                  {slot.label} - Escolher jogador
+                </option>
 
-              <div className="reservas-lista">
-                {reservasA.map((id) => {
-                  const j = jogadorById(id);
-                  if (!j) return null;
-
-                  return (
-                    <div
-                      key={id}
-                      className="reserva-item"
-                      draggable
-                      onDragStart={(e) =>
-                        iniciarDrag(e, id)
-                      }
-                    >
-                      <span>
-                        {j.nome?.split(" ")[0]}
-                      </span>
-
-                      <button
-                        onClick={() =>
-                          removerReserva("A", id)
-                        }
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* DISPONIVEIS */}
-          <div className="disponiveis-col">
-            <h3 className="disp-titulo">
-              Jogadores
-            </h3>
-
-            <div className="disp-lista">
-              {disponiveis.map((j) => (
-                <div
-                  key={j.id}
-                  className="disp-item"
-                  draggable
-                  onDragStart={(e) =>
-                    iniciarDrag(e, j.id)
-                  }
-                >
-                  <div className="disp-foto">
-                    {j.fotoUrl ? (
-                      <img
-                        src={j.fotoUrl}
-                        alt={j.nome}
-                      />
-                    ) : (
-                      <span>👤</span>
-                    )}
-                  </div>
-
-                  <div className="disp-info">
-                    <span className="disp-nome">
-                      {j.nome}
-                    </span>
-                    <span className="disp-pos">
-                      {j.posicao}
-                    </span>
-                  </div>
-
-                  <span className="disp-ovr">
-                    {j.overall ?? 0}
-                  </span>
-                </div>
-              ))}
-            </div>
+                {jogadores.map((j) => (
+                  <option key={j.id} value={j.id}>
+                    {j.nome}
+                  </option>
+                ))}
+              </select>
+            ))}
           </div>
 
           {/* TIME B */}
-          <div className="time-col">
-            <div
-              className="time-header"
-              style={{ borderColor: COR_TIME[1] }}
-            >
-              <span
-                className="time-badge"
-                style={{ background: COR_TIME[1] }}
-              />
-              <h2 style={{ color: COR_TIME[1] }}>
-                Time Vermelho
-              </h2>
-            </div>
+          <div>
+            <h2 style={{ color: COR_TIME[1] }}>Time Vermelho</h2>
 
-            <Campo
-              time="B"
-              esc={escB}
-              cor={COR_TIME[1]}
-            />
+            <Campo time="B" esc={escB} cor={COR_TIME[1]} />
 
-            <div
-              className="reservas-area"
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => dropReserva(e, "B")}
-            >
-              <p className="reservas-titulo">
-                🪑 Reservas
-              </p>
+            {SLOTS_TIME.map((slot) => (
+              <select
+                key={slot.id}
+                value={escB[slot.id] || ""}
+                onChange={(e) =>
+                  mudarJogador("B", slot.id, e.target.value)
+                }
+                className="select-time"
+              >
+                <option value="">
+                  {slot.label} - Escolher jogador
+                </option>
 
-              <div className="reservas-lista">
-                {reservasB.map((id) => {
-                  const j = jogadorById(id);
-                  if (!j) return null;
-
-                  return (
-                    <div
-                      key={id}
-                      className="reserva-item"
-                      draggable
-                      onDragStart={(e) =>
-                        iniciarDrag(e, id)
-                      }
-                    >
-                      <span>
-                        {j.nome?.split(" ")[0]}
-                      </span>
-
-                      <button
-                        onClick={() =>
-                          removerReserva("B", id)
-                        }
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+                {jogadores.map((j) => (
+                  <option key={j.id} value={j.id}>
+                    {j.nome}
+                  </option>
+                ))}
+              </select>
+            ))}
           </div>
         </div>
 
@@ -546,11 +236,8 @@ export default function Times() {
           <button
             className="btn-salvar-times"
             onClick={salvar}
-            disabled={salvando}
           >
-            {salvando
-              ? "Salvando..."
-              : "💾 Salvar Escalação"}
+            SALVAR TIMES
           </button>
         </div>
       </div>
