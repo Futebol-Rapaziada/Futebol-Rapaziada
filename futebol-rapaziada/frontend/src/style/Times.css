@@ -282,7 +282,7 @@
 }
 
 .reservas-grid option{
-  background:#ffffff;
-  color:#111;
+  background:rgba(0, 0, 0, 0.45);
+  color:#ffffff;
   font-weight:700;
 }
