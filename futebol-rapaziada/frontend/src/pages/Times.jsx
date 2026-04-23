@@ -1,244 +1,121 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getJogadores } from "../services/api";
 import Layout from "../components/layout/Layout";
+import { getJogadores } from "../services/api";
 import "../style/Times.css";
 
-const API_URL =
-  import.meta.env.VITE_API_URL ??
-  "https://futebol-rapaziada-production.up.railway.app";
-
-const SLOTS_TIME = [
-  { id: "gol", label: "GOL", x: 50, y: 88 },
-  { id: "zag1", label: "ZAG", x: 30, y: 72 },
-  { id: "zag2", label: "ZAG", x: 70, y: 72 },
-  { id: "lat1", label: "LAT", x: 15, y: 55 },
-  { id: "lat2", label: "LAT", x: 85, y: 55 },
-  { id: "meia", label: "MEI", x: 50, y: 45 },
-  { id: "atq", label: "ATQ", x: 50, y: 25 },
+const POSICOES = [
+  { id: "gol", nome: "Goleiro", x: 50, y: 88 },
+  { id: "zag1", nome: "Zagueiro", x: 30, y: 68 },
+  { id: "zag2", nome: "Zagueiro", x: 70, y: 68 },
+  { id: "ala1", nome: "Ala", x: 18, y: 48 },
+  { id: "ala2", nome: "Ala", x: 82, y: 48 },
+  { id: "meia", nome: "Meia", x: 50, y: 48 },
+  { id: "ata", nome: "Atacante", x: 50, y: 22 },
 ];
 
-const COR_TIME = ["#00ff87", "#ff4d6d"];
-const NOME_TIME = ["Time Verde", "Time Vermelho"];
-
 export default function Times() {
-  const navigate = useNavigate();
-  const usuarioLogado = JSON.parse(localStorage.getItem("user"));
-
   const [jogadores, setJogadores] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  const [escA, setEscA] = useState({});
-  const [escB, setEscB] = useState({});
+  const [timeA, setTimeA] = useState({});
+  const [timeB, setTimeB] = useState({});
 
   useEffect(() => {
-    if (!usuarioLogado) {
-      navigate("/login");
-      return;
-    }
-    carregar();
+    carregarJogadores();
   }, []);
 
-  async function carregar() {
-    try {
-      const jogs = await getJogadores();
-      setJogadores(jogs);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
+  async function carregarJogadores() {
+    const dados = await getJogadores();
+    setJogadores(dados);
   }
 
-  function jogadorById(id) {
-    return jogadores.find((j) => j.id === Number(id));
-  }
-
-  function mudarJogador(time, posicao, valor) {
-    const id = valor ? Number(valor) : null;
-
+  function alterarJogador(time, posicao, idJogador) {
     if (time === "A") {
-      setEscA((old) => ({ ...old, [posicao]: id }));
+      setTimeA({ ...timeA, [posicao]: idJogador });
     } else {
-      setEscB((old) => ({ ...old, [posicao]: id }));
+      setTimeB({ ...timeB, [posicao]: idJogador });
     }
   }
 
-  async function salvar() {
-    try {
-      const token = localStorage.getItem("token");
-
-      const headers = {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      };
-
-      let timesResp = await fetch(`${API_URL}/times-jogo`)
-        .then((r) => r.json())
-        .catch(() => []);
-
-      for (let i = timesResp.length; i < 2; i++) {
-        const res = await fetch(`${API_URL}/times-jogo`, {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            nome: NOME_TIME[i],
-            cor: COR_TIME[i],
-          }),
-        });
-
-        const novo = await res.json();
-        timesResp.push({ id: novo.id });
-      }
-
-      const montar = (esc) =>
-        SLOTS_TIME.map((s) => ({
-          posicao_campo: s.id,
-          id_jogador: esc[s.id] || null,
-          reserva: 0,
-        }));
-
-      await fetch(`${API_URL}/escalacao`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          id_time: timesResp[0].id,
-          slots: montar(escA),
-        }),
-      });
-
-      await fetch(`${API_URL}/escalacao`, {
-        method: "POST",
-        headers,
-        body: JSON.stringify({
-          id_time: timesResp[1].id,
-          slots: montar(escB),
-        }),
-      });
-
-      alert("Times salvos!");
-    } catch (e) {
-      console.error(e);
-      alert("Erro ao salvar.");
-    }
+  function pegarJogador(id) {
+    return jogadores.find((j) => String(j.id) === String(id));
   }
 
-  function Campo({ time, esc, cor }) {
+  function Campo({ time, dados, cor }) {
     return (
-      <div className="campo-svg-wrap">
-        <div className="campo">
-          {SLOTS_TIME.map((slot) => {
-            const jog = jogadorById(esc[slot.id]);
+      <div className="campo">
+        {POSICOES.map((p) => {
+          const jogador = pegarJogador(dados[p.id]);
 
-            return (
-              <div
-                key={slot.id}
-                className="campo-slot"
-                style={{
-                  left: `${slot.x}%`,
-                  top: `${slot.y}%`,
-                }}
-              >
-                {jog ? (
-                  <div className="slot-jogador">
-                    <div
-                      className="slot-foto"
-                      style={{ borderColor: cor }}
-                    >
-                      {jog.fotoUrl ? (
-                        <img src={jog.fotoUrl} alt={jog.nome} />
-                      ) : (
-                        "👤"
-                      )}
-                    </div>
-
-                    <span className="slot-nome">
-                      {jog.nome.split(" ")[0]}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="slot-empty">{slot.label}</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+          return (
+            <div
+              key={p.id}
+              className="posicao"
+              style={{ left: `${p.x}%`, top: `${p.y}%` }}
+            >
+              {jogador ? (
+                <div className="player-card">
+                  <img src={jogador.fotoUrl} alt="" />
+                  <span>{jogador.nome}</span>
+                </div>
+              ) : (
+                <div className="vazio">{p.nome}</div>
+              )}
+            </div>
+          );
+        })}
       </div>
     );
   }
 
-  if (loading) return <Layout>Carregando...</Layout>;
+  function Selects({ time, dados }) {
+    return (
+      <div className="lista-selects">
+        {POSICOES.map((p) => (
+          <div key={p.id} className="linha-select">
+            <label>{p.nome}</label>
+
+            <select
+              value={dados[p.id] || ""}
+              onChange={(e) =>
+                alterarJogador(time, p.id, e.target.value)
+              }
+            >
+              <option value="">Selecionar</option>
+
+              {jogadores.map((j) => (
+                <option key={j.id} value={j.id}>
+                  {j.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <Layout>
       <div className="times-wrap">
-        <h1 className="page-titulo">TIMES</h1>
 
-        <div className="times-layout">
+        <h1 className="titulo">Montar Times</h1>
+
+        <div className="times-grid">
+
           {/* TIME A */}
-          <div>
-            <h2 style={{ color: COR_TIME[0] }}>Time Verde</h2>
-
-            <Campo time="A" esc={escA} cor={COR_TIME[0]} />
-
-            {SLOTS_TIME.map((slot) => (
-              <select
-                key={slot.id}
-                value={escA[slot.id] || ""}
-                onChange={(e) =>
-                  mudarJogador("A", slot.id, e.target.value)
-                }
-                className="select-time"
-              >
-                <option value="">
-                  {slot.label} - Escolher jogador
-                </option>
-
-                {jogadores.map((j) => (
-                  <option key={j.id} value={j.id}>
-                    {j.nome}
-                  </option>
-                ))}
-              </select>
-            ))}
+          <div className="bloco-time">
+            <h2 className="verde">Time Verde</h2>
+            <Campo time="A" dados={timeA} cor="#00ff87" />
+            <Selects time="A" dados={timeA} />
           </div>
 
           {/* TIME B */}
-          <div>
-            <h2 style={{ color: COR_TIME[1] }}>Time Vermelho</h2>
-
-            <Campo time="B" esc={escB} cor={COR_TIME[1]} />
-
-            {SLOTS_TIME.map((slot) => (
-              <select
-                key={slot.id}
-                value={escB[slot.id] || ""}
-                onChange={(e) =>
-                  mudarJogador("B", slot.id, e.target.value)
-                }
-                className="select-time"
-              >
-                <option value="">
-                  {slot.label} - Escolher jogador
-                </option>
-
-                {jogadores.map((j) => (
-                  <option key={j.id} value={j.id}>
-                    {j.nome}
-                  </option>
-                ))}
-              </select>
-            ))}
+          <div className="bloco-time">
+            <h2 className="vermelho">Time Vermelho</h2>
+            <Campo time="B" dados={timeB} cor="#ff4d4d" />
+            <Selects time="B" dados={timeB} />
           </div>
-        </div>
 
-        <div className="times-actions">
-          <button
-            className="btn-salvar-times"
-            onClick={salvar}
-          >
-            SALVAR TIMES
-          </button>
         </div>
       </div>
     </Layout>

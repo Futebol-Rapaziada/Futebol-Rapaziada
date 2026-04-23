@@ -1,388 +1,207 @@
-@import './tokens.css';
-
-.times-wrap{
-  display:flex;
-  flex-direction:column;
-  gap:24px;
-  max-width:1400px;
-  margin:0 auto;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-/* ALERTA */
-.times-sucesso{
-  background:rgba(0,255,135,.08);
-  border:1px solid rgba(0,255,135,.25);
-  color:var(--neon);
-  padding:12px 16px;
-  border-radius:10px;
-  font-size:14px;
-  font-weight:700;
+body{
+  background:#0b0b0b;
+  font-family:Arial, Helvetica, sans-serif;
 }
 
-/* TITULOS */
-.page-titulo{
-  font-family:var(--font-display);
-  font-size:34px;
+.pagina-times{
+  padding:30px;
+}
+
+.pagina-times h1{
+  text-align:center;
+  color:#fff;
+  font-size:38px;
+  margin-bottom:30px;
+  font-weight:900;
   letter-spacing:2px;
-  color:var(--text);
 }
 
-.page-sub{
-  margin-top:-10px;
-  color:var(--text2);
-  font-size:14px;
-}
-
-/* LAYOUT */
-.times-layout{
+.grid-times{
   display:grid;
-  grid-template-columns:1fr 240px 1fr;
-  gap:22px;
-  align-items:start;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
 }
 
-/* CABEÇALHO TIME */
-.time-header{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:14px 16px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-  border-radius:14px;
-  margin-bottom:14px;
-  box-shadow:0 8px 20px rgba(0,0,0,.25);
+.box-time{
+  background:#121212;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 15px 30px rgba(0,0,0,.35);
 }
 
-.time-badge{
-  width:12px;
-  height:12px;
-  border-radius:50%;
-}
-
-.time-header h2{
-  flex:1;
-  font-family:var(--font-display);
-  font-size:20px;
-  letter-spacing:1px;
-}
-
-.time-count{
-  color:var(--text2);
-  font-size:13px;
-  font-weight:700;
+.box-time h2{
+  text-align:center;
+  font-size:28px;
+  margin-bottom:18px;
+  font-weight:900;
 }
 
 /* CAMPO */
-.campo-svg-wrap{
-  width:100%;
-}
-
 .campo{
   position:relative;
   width:100%;
-  padding-bottom:150%;
-  border-radius:16px;
+  height:620px;
+  border-radius:22px;
   overflow:hidden;
-  border:3px solid rgba(255,255,255,.16);
+  margin-bottom:20px;
+
   background:
   repeating-linear-gradient(
     0deg,
-    #1d5f25 0px,
-    #1d5f25 40px,
-    #216b2a 40px,
-    #216b2a 80px
+    #136d2c 0px,
+    #136d2c 55px,
+    #1a7a34 55px,
+    #1a7a34 110px
   );
-  box-shadow:
-  inset 0 0 50px rgba(0,0,0,.35),
-  0 15px 35px rgba(0,0,0,.35);
+
+  border:3px solid rgba(255,255,255,.12);
 }
 
-/* LINHAS */
-.campo-linha{
+/* Linha do meio */
+.campo::before{
+  content:"";
   position:absolute;
-  background:rgba(255,255,255,.45);
-}
-
-.campo-linha.meio{
-  width:100%;
-  height:2px;
-  top:50%;
-  left:0;
-}
-
-.campo-circulo{
-  position:absolute;
-  border:2px solid rgba(255,255,255,.45);
-  border-radius:50%;
-}
-
-.campo-circulo.meio{
-  width:24%;
-  padding-bottom:24%;
-  top:50%;
   left:50%;
-  transform:translate(-50%,-50%);
-}
-
-.campo-area{
-  position:absolute;
-  width:55%;
-  left:22.5%;
-  border:2px solid rgba(255,255,255,.35);
-}
-
-.area-sup{
   top:0;
-  height:20%;
+  width:3px;
+  height:100%;
+  background:rgba(255,255,255,.25);
+  transform:translateX(-50%);
 }
 
-.area-inf{
-  bottom:0;
-  height:20%;
-}
-
-.campo-goleira{
+/* Circulo meio */
+.campo::after{
+  content:"";
   position:absolute;
-  width:24%;
-  left:38%;
-  height:6%;
-  border:2px solid rgba(255,255,255,.25);
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  border:3px solid rgba(255,255,255,.25);
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
 }
 
-.goleira-sup{ top:0; }
-.goleira-inf{ bottom:0; }
-
-/* POSIÇÕES */
-.campo-slot{
+/* POSICOES */
+.slot{
   position:absolute;
   transform:translate(-50%,-50%);
-  z-index:2;
 }
 
-/* JOGADOR NO CAMPO */
-.slot-jogador{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-}
-
-.slot-foto{
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  overflow:hidden;
-  border:2px solid #fff;
-  background:#111;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 4px 12px rgba(0,0,0,.4);
-}
-
-.slot-foto img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.slot-nome{
-  font-size:10px;
-  color:#fff;
-  font-weight:700;
-  background:rgba(0,0,0,.55);
-  padding:2px 6px;
-  border-radius:6px;
-  white-space:nowrap;
-  max-width:70px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-/* SLOT VAZIO */
-.slot-empty{
-  width:44px;
-  height:44px;
+.slot-vazio{
+  width:78px;
+  height:78px;
   border-radius:50%;
   border:2px dashed rgba(255,255,255,.35);
-  background:rgba(0,0,0,.25);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
   display:flex;
   align-items:center;
   justify-content:center;
+  text-align:center;
+  padding:8px;
+  background:rgba(0,0,0,.20);
 }
 
-.slot-pos-label{
-  font-size:10px;
+/* CARD JOGADOR */
+.card-player{
+  width:95px;
+  text-align:center;
+}
+
+.card-player img{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #fff;
+  box-shadow:0 10px 20px rgba(0,0,0,.35);
+}
+
+.card-player span{
+  display:block;
+  margin-top:6px;
+  font-size:11px;
   color:#fff;
-  font-weight:700;
+  font-weight:800;
+  background:rgba(0,0,0,.45);
+  padding:4px 8px;
+  border-radius:12px;
 }
 
 /* SELECTS */
-.time-lista{
-  margin-top:14px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.tl-item{
+.lista-select{
   display:grid;
-  grid-template-columns:42px 1fr;
-  gap:8px;
-  align-items:center;
-  padding:10px;
-  border-radius:10px;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.03);
-}
-
-.tl-pos{
-  font-size:11px;
-  font-weight:800;
-  color:var(--text2);
-}
-
-.tl-select{
-  width:100%;
-  background:#111;
-  color:#fff;
-  border:1px solid var(--border2);
-  border-radius:8px;
-  padding:8px;
-  outline:none;
-}
-
-.tl-select:focus{
-  border-color:var(--neon);
-}
-
-/* COLUNA CENTRAL */
-.disponiveis-col{
-  display:flex;
-  flex-direction:column;
   gap:12px;
 }
 
-.disp-titulo{
-  font-family:var(--font-display);
-  font-size:22px;
-  color:var(--text);
-}
-
-.disp-sub{
-  font-size:13px;
-  color:var(--text2);
-}
-
-.disp-lista{
-  max-height:620px;
-  overflow:auto;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.disp-item{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px;
-  border-radius:12px;
-  background:rgba(255,255,255,.03);
-  border:1px solid var(--border);
-}
-
-.disp-foto{
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  overflow:hidden;
-  background:#111;
-}
-
-.disp-foto img{
+.lista-select select{
   width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-.disp-info{
-  flex:1;
-}
-
-.disp-nome{
-  display:block;
-  font-size:13px;
-  font-weight:700;
-  color:var(--text);
-}
-
-.disp-pos{
-  font-size:11px;
-  color:var(--text2);
-}
-
-.disp-ovr{
-  font-family:var(--font-display);
-  color:var(--neon);
-  font-size:18px;
-}
-
-/* BOTÃO */
-.times-actions{
-  display:flex;
-  justify-content:center;
-}
-
-.btn-salvar-times{
-  background:var(--neon);
-  color:#000;
+  padding:14px;
   border:none;
-  padding:14px 34px;
   border-radius:14px;
-  font-size:20px;
-  font-family:var(--font-display);
-  cursor:pointer;
-  font-weight:800;
+  background:#1d1d1d;
+  color:#fff;
+  font-size:14px;
+  font-weight:700;
+  outline:none;
   transition:.2s;
 }
 
-.btn-salvar-times:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 24px rgba(0,255,135,.35);
+.lista-select select:hover{
+  background:#2a2a2a;
 }
 
-.btn-salvar-times:disabled{
-  opacity:.55;
-  cursor:not-allowed;
+.lista-select select:focus{
+  border:1px solid #00ff87;
 }
 
 /* RESPONSIVO */
-@media (max-width:1000px){
-  .times-layout{
+@media(max-width:1100px){
+
+  .grid-times{
     grid-template-columns:1fr;
   }
 
-  .disponiveis-col{
-    order:-1;
+  .campo{
+    height:540px;
   }
 }
 
-/* LOADING */
-.loading-screen{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:60vh;
-}
+@media(max-width:600px){
 
-.loading-ball{
-  font-size:52px;
-  animation:spin 1s linear infinite;
-}
+  .pagina-times{
+    padding:15px;
+  }
 
-@keyframes spin{
-  from{transform:rotate(0deg);}
-  to{transform:rotate(360deg);}
+  .pagina-times h1{
+    font-size:28px;
+  }
+
+  .campo{
+    height:470px;
+  }
+
+  .box-time h2{
+    font-size:22px;
+  }
+
+  .card-player img{
+    width:52px;
+    height:52px;
+  }
+
+  .slot-vazio{
+    width:62px;
+    height:62px;
+    font-size:10px;
+  }
 }
