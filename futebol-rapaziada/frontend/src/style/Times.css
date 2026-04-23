@@ -229,7 +229,7 @@
 
 /* opções */
 .slot select option{
-  background:#ffffff;
-  color:#111;
+  background:#000000;
+  color:#ffffff;
   font-weight:700;
 }
