@@ -114,68 +114,54 @@ export default function Times() {
 
   // No componente Campo, adicione a prop 'time' para identificar o lado
 function Campo({ titulo, cor, dados, reservas, time }) {
-  const escalados = Object.values(dados).filter(Boolean);
-
   return (
-    <div className="time-col">
-      <div className="time-header" style={{ borderColor: cor }}>
+    <Layout>
+    <div className="time-col" style={{'--cor-time': cor}}>
+      <div className="time-header">
         <h2 className="time-titulo" style={{ color: cor }}>{titulo}</h2>
-        <span className="time-placar">{escalados.length} / 7</span>
-      </div>
-
-      <div className="campo-container">
-        <div className="campo">
-          <div className="campo-linha-meio" />
-          <div className="campo-circulo-meio" />
-          
-          {POSICOES_CAMPO.map(pos => {
-            const jogId = dados[pos.key];
-            const nome = nomeJogador(jogId);
-            const foto = fotoJogador(jogId);
-            
-            return (
-              <div 
-                key={pos.key} 
-                className="slot-container" 
-                style={{ left: pos.x, top: pos.y, '--cor': cor }}
-              >
-                <div className="slot-avatar" style={{ borderColor: jogId ? cor : "rgba(255,255,255,.2)" }}>
-                  {foto ? (
-                    <img src={foto} alt={nome} />
-                  ) : (
-                    <span style={{ color: 'rgba(255,255,255,0.3)' }}>
-                      {pos.label[0]}
-                    </span>
-                  )}
-                </div>
-                
-                {nome && <span className="slot-nome-badge">{nome}</span>}
-
-                <select
-                  className="slot-select"
-                  value={jogId}
-                  onChange={e => alterarTime(time, pos.key, e.target.value)}
-                >
-                  <option value="">{pos.label}</option>
-                  {jogadores.map(j => (
-                    <option key={j.id} value={j.id}>{j.nome}</option>
-                  ))}
-                </select>
-              </div>
-            );
-          })}
+        <div className="badge" style={{background: `${cor}20`, color: cor, padding: '4px 12px', borderRadius: '10px', fontSize: '12px'}}>
+          {Object.values(dados).filter(Boolean).length} / 7
         </div>
       </div>
 
-      <div className="reservas-box" style={{ borderColor: `${cor}40`, color: cor }}>
-        <p>🪑 Reservas</p>
-        <div className="reservas-selects">
+      <div className="campo-container">
+        {POSICOES_CAMPO.map(pos => {
+          const jogId = dados[pos.key];
+          const nome = nomeJogador(jogId);
+          const foto = fotoJogador(jogId);
+          
+          return (
+          
+            <div key={pos.key} className="slot-container" style={{ left: pos.x, top: pos.y }}>
+              <div className="slot-avatar" style={{ borderColor: jogId ? cor : 'rgba(255,255,255,0.1)' }}>
+                {foto ? <img src={foto} /> : <span style={{opacity: 0.3, fontSize: '20px'}}>⚽</span>}
+              </div>
+              
+              <select
+                className="slot-select"
+                value={jogId}
+                onChange={e => alterarTime(time, pos.key, e.target.value)}
+              >
+                <option value="">{pos.label}</option>
+                {jogadores.map(j => (
+                  <option key={j.id} value={j.id}>{j.nome.split(" ")[0]}</option>
+                ))}
+              </select>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="reservas-box">
+        <span style={{fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', opacity: 0.6}}>Reservas</span>
+        <div className="res-grid">
           {RESERVAS_SLOTS.map(i => (
             <select 
               key={i} 
               className="res-select" 
               value={reservas[i]} 
               onChange={e => alterarReserva(time, i, e.target.value)}
+              style={{background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', padding: '8px', borderRadius: '8px'}}
             >
               <option value="">+</option>
               {jogadores.map(j => (
@@ -186,30 +172,7 @@ function Campo({ titulo, cor, dados, reservas, time }) {
         </div>
       </div>
     </div>
+   </Layout>
   );
 }
-
-  return (
-    <Layout>
-      <div className="times-page">
-        <div className="times-page-header">
-          <h1 className="page-titulo">Montagem dos Times</h1>
-          <p className="page-sub">Configure a escalação para o próximo jogo</p>
-        </div>
-
-        {sucesso && <div className="times-sucesso">{sucesso}</div>}
-
-        <div className="times-grid">
-          <Campo titulo="Time Verde"    cor="#00ff87" dados={timeA} reservas={resA} time="A"/>
-          <Campo titulo="Time Vermelho" cor="#ff4d6d" dados={timeB} reservas={resB} time="B"/>
-        </div>
-
-        <div className="times-footer">
-          <button className="btn-salvar-times" onClick={salvar} disabled={salvando}>
-            {salvando ? "Salvando..." : "💾 Salvar Escalação"}
-          </button>
-        </div>
-      </div>
-    </Layout>
-  );
-}
+}  
