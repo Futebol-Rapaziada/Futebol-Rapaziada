@@ -107,4 +107,46 @@
 @media (max-width: 600px) {
   .fin-header { flex-direction: column; align-items: flex-start; gap: 10px; }
   .fin-table th:nth-child(3), .fin-table td:nth-child(3) { display: none; }
+}/* Estilo do Botão de Copiar */
+.btn-copiar-pix {
+  background: rgba(0, 255, 135, 0.1);
+  border: 1px solid var(--neon);
+  color: var(--neon);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.btn-copiar-pix:hover {
+  background: var(--neon);
+  color: #000;
+  box-shadow: 0 0 20px rgba(0, 255, 135, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-copiar-pix:active {
+  transform: scale(0.95);
+}
+
+
+.btn-copiar-pix.sucesso {
+  background: #00ff87;
+  color: #000;
+  border-color: #00ff87;
+}
+
+
+.pix-icon {
+  font-size: 1.1rem;
 }
