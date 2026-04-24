@@ -8,7 +8,8 @@ export default function Financeiro() {
   const [loading, setLoading] = useState(true);
   
   // Valores fixos para exemplo (você pode trazer do banco depois)
-  const VALOR_MENSAL = 18.00;
+  const VALOR_TITULAR = 18.00;
+  const VALOR_RESERVA = 9.00;
   const CHAVE_PIX = "577-704-458-17";
 
   useEffect(() => {
@@ -44,7 +45,8 @@ export default function Financeiro() {
             </div>
             <div className="ic-body">
               <p className="pix-chave">{CHAVE_PIX}</p>
-              <p className="ic-sub">Valor: <span className="val-destaque">R$ {VALOR_MENSAL.toFixed(2)}</span></p>
+              <p className="ic-sub">Titular: <span className="val-destaque">R$ {VALOR_TITULAR.toFixed(2)}</span></p>
+              <p className="ic-sub">Reserva: <span className="val-destaque">R$ {VALOR_RESERVA.toFixed(2)}</span></p>
               <button className="btn-neon-mini" onClick={() => navigator.clipboard.writeText(CHAVE_PIX)}>
                 Copiar Chave
               </button>
@@ -88,7 +90,7 @@ export default function Financeiro() {
                   <tr key={jogador.id} className={jogador.pagou ? "row-pago" : "row-pendente"}>
                     <td>
                       <div className="user-cell">
-                        <img src={jogador.fotoUrl || "/default-avatar.png"} alt="" />
+                        <img src={jogador.fotoUrl || "👤"} alt="" />
                         <span>{jogador.nome}</span>
                       </div>
                     </td>
@@ -97,7 +99,7 @@ export default function Financeiro() {
                         {jogador.pagou ? "CONFIRMADO" : "PENDENTE"}
                       </span>
                     </td>
-                    <td>R$ {VALOR_MENSAL.toFixed(2)}</td>
+                    <td>R$ {VALOR_TITULAR.toFixed(2)} ou {VALOR_RESERVA.toFixed(2)}</td>
                     <td>
                       <button className="btn-status-toggle">
                         {jogador.pagou ? "Reverter" : "Confirmar"}
