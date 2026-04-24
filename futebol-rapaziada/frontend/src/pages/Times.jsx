@@ -112,96 +112,82 @@ export default function Times() {
 
   if (loading) return <Layout><div className="loading-screen"><div className="loading-ball">⚽</div></div></Layout>;
 
-  function Campo({ titulo, cor, dados, reservas, time }) {
-    const escalados = Object.values(dados).filter(Boolean);
-    return (
-      <div className="time-col">
-        {/* Cabeçalho do time */}
-        <div className="time-header" style={{borderColor:cor}}>
-          <div className="time-dot" style={{background:cor, boxShadow:`0 0 8px ${cor}`}}/>
-          <h2 className="time-titulo" style={{color:cor}}>{titulo}</h2>
-          <span className="time-placar">{escalados.length}/7</span>
-        </div>
+  // No componente Campo, adicione a prop 'time' para identificar o lado
+function Campo({ titulo, cor, dados, reservas, time }) {
+  const escalados = Object.values(dados).filter(Boolean);
 
-        {/* Campo */}
-        <div className="campo-container">
-          <div className="campo">
-            {/* Marcações do campo */}
-            <div className="campo-linha-meio"/>
-            <div className="campo-circulo-meio"/>
-            <div className="campo-area campo-area-sup"/>
-            <div className="campo-area campo-area-inf"/>
-            <div className="campo-goleira campo-goleira-sup"/>
-            <div className="campo-goleira campo-goleira-inf"/>
+  return (
+    <div className="time-col">
+      <div className="time-header" style={{ borderColor: cor }}>
+        <h2 className="time-titulo" style={{ color: cor }}>{titulo}</h2>
+        <span className="time-placar">{escalados.length} / 7</span>
+      </div>
 
-            {/* Slots */}
-            {POSICOES_CAMPO.map(pos => {
-              const jogId = dados[pos.key];
-              const nome  = nomeJogador(jogId);
-              const foto  = fotoJogador(jogId);
-              return (
-                <div key={pos.key} className="slot-container" style={{left:pos.x, top:pos.y}}>
-                  {/* Avatar */}
-                  <div className="slot-avatar" style={{borderColor: jogId ? cor : "rgba(255,255,255,.2)"}}>
-                    {foto
-                      ? <img src={foto} alt={nome}/>
-                      : jogId
-                        ? <span className="slot-inicial">{nome?.[0]?.toUpperCase()}</span>
-                        : <span className="slot-pos-vazio">{pos.label}</span>
-                    }
-                  </div>
-                  {nome && <span className="slot-nome-badge">{nome}</span>}
-                  {/* Select */}
-                  <select
-                    className="slot-select"
-                    value={jogId}
-                    onChange={e=>alterarTime(time, pos.key, e.target.value)}
-                    style={{'--cor':cor}}
-                  >
-                    <option value="">{pos.label}</option>
-                    {jogadores.map(j=>(
-                      <option key={j.id} value={j.id}>{j.nome.split(" ")[0]}</option>
-                    ))}
-                  </select>
+      <div className="campo-container">
+        <div className="campo">
+          <div className="campo-linha-meio" />
+          <div className="campo-circulo-meio" />
+          
+          {POSICOES_CAMPO.map(pos => {
+            const jogId = dados[pos.key];
+            const nome = nomeJogador(jogId);
+            const foto = fotoJogador(jogId);
+            
+            return (
+              <div 
+                key={pos.key} 
+                className="slot-container" 
+                style={{ left: pos.x, top: pos.y, '--cor': cor }}
+              >
+                <div className="slot-avatar" style={{ borderColor: jogId ? cor : "rgba(255,255,255,.2)" }}>
+                  {foto ? (
+                    <img src={foto} alt={nome} />
+                  ) : (
+                    <span style={{ color: 'rgba(255,255,255,0.3)' }}>
+                      {pos.label[0]}
+                    </span>
+                  )}
                 </div>
-              );
-            })}
-          </div>
-        </div>
+                
+                {nome && <span className="slot-nome-badge">{nome}</span>}
 
-        {/* Lista do time */}
-        <div className="time-lista">
-          <p className="lista-titulo">Escalação</p>
-          <div className="lista-grid">
-            {POSICOES_CAMPO.map(pos => {
-              const nome = nomeJogador(dados[pos.key]);
-              return (
-                <div key={pos.key} className={`lista-item ${nome?"lista-ok":"lista-vazio"}`}>
-                  <span className="lista-pos">{pos.label}</span>
-                  <span className="lista-nome">{nome || "—"}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Reservas */}
-        <div className="reservas-box" style={{borderColor:`${cor}30`}}>
-          <p className="reservas-titulo" style={{color:cor}}>🪑 Reservas</p>
-          <div className="reservas-selects">
-            {RESERVAS_SLOTS.map(i=>(
-              <select key={i} className="res-select" value={reservas[i]} onChange={e=>alterarReserva(time,i,e.target.value)}>
-                <option value="">Reserva {i+1}</option>
-                {jogadores.map(j=>(
-                  <option key={j.id} value={j.id}>{j.nome.split(" ")[0]}</option>
-                ))}
-              </select>
-            ))}
-          </div>
+                <select
+                  className="slot-select"
+                  value={jogId}
+                  onChange={e => alterarTime(time, pos.key, e.target.value)}
+                >
+                  <option value="">{pos.label}</option>
+                  {jogadores.map(j => (
+                    <option key={j.id} value={j.id}>{j.nome}</option>
+                  ))}
+                </select>
+              </div>
+            );
+          })}
         </div>
       </div>
-    );
-  }
+
+      <div className="reservas-box" style={{ borderColor: `${cor}40`, color: cor }}>
+        <p>🪑 Reservas</p>
+        <div className="reservas-selects">
+          {RESERVAS_SLOTS.map(i => (
+            <select 
+              key={i} 
+              className="res-select" 
+              value={reservas[i]} 
+              onChange={e => alterarReserva(time, i, e.target.value)}
+            >
+              <option value="">+</option>
+              {jogadores.map(j => (
+                <option key={j.id} value={j.id}>{j.nome.split(" ")[0]}</option>
+              ))}
+            </select>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
   return (
     <Layout>
