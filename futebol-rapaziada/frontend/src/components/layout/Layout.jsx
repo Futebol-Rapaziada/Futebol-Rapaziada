@@ -9,7 +9,7 @@ const MENU = [
   { path: "/jogos",         icon: "⚽", label: "Jogos" },
   { path: "/presenca",      icon: "📋", label: "Lista de Presença" },
   { path: "/times",         icon: "👕", label: "Times" },
-  { path: "/financeiro",    icon: "💰", label: "Financeiro", em_breve: true },
+  { path: "/financeiro",    icon: "💰", label: "Financeiro" },
 ];
 
 export default function Layout({ children }) {
