@@ -1,356 +1,144 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap');
+@import './tokens.css';
 
-/* ─── TOKENS ──────────────────────────────────────────────────────────────────── */
-
-:root {
-  --bg:           #07090f;
-  --card:         #0f1520;
-  --card-border:  #1a2535;
-  --accent:       #22c55e;
-  --accent-dim:   rgba(34, 197, 94, 0.12);
-  --gold:         #f59e0b;
-  --text:         #e2e8f0;
-  --text-muted:   #4a5568;
-  --input-bg:     #090d18;
-  --input-border: #1a2535;
-  --error:        #ef4444;
-  --error-dim:    rgba(239, 68, 68, 0.12);
-  --success-dim:  rgba(34, 197, 94, 0.12);
-}
-
-/* ─── RESET ───────────────────────────────────────────────────────────────────── */
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* ─── PÁGINA ──────────────────────────────────────────────────────────────────── */
-
-.cadastro-wrap {
+.cad-wrap {
   min-height: 100vh;
   background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   padding: 2rem 1rem;
-  font-family: 'DM Sans', sans-serif;
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
 
-/* Grade de campo ao fundo */
-.cadastro-wrap::before {
-  content: '';
-  position: fixed;
-  inset: 0;
+/* Fundo decorativo */
+.cad-bg { position: fixed; inset: 0; pointer-events: none; }
+
+.cad-orb {
+  position: absolute; border-radius: 50%; filter: blur(80px);
+}
+.orb1 { width: 500px; height: 500px; background: rgba(0,255,135,.06); top: -150px; left: -100px; }
+.orb2 { width: 400px; height: 400px; background: rgba(139,92,246,.06); bottom: -100px; right: -80px; }
+
+.cad-grid {
+  position: absolute; inset: 0;
   background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 60px,
-      rgba(34, 197, 94, 0.025) 60px,
-      rgba(34, 197, 94, 0.025) 61px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 60px,
-      rgba(34, 197, 94, 0.025) 60px,
-      rgba(34, 197, 94, 0.025) 61px
-    );
-  pointer-events: none;
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(0,255,135,.03) 59px, rgba(0,255,135,.03) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(0,255,135,.03) 59px, rgba(0,255,135,.03) 60px);
 }
 
-/* ─── CARD ────────────────────────────────────────────────────────────────────── */
-
-.cadastro-card {
-  width: 100%;
-  max-width: 520px;
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  border-radius: 16px;
+/* Card */
+.cad-card {
+  width: 100%; max-width: 500px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
   padding: 2.5rem 2rem;
   position: relative;
-  box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(34, 197, 94, 0.04);
-  animation: fadeUp 0.4s ease both;
+  box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(0,255,135,.04);
+  animation: fadeUp .4s ease both;
 }
 
-/* Barra de destaque verde/dourada no topo */
-.cadastro-card::before {
+.cad-card::before {
   content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--gold));
-  border-radius: 16px 16px 0 0;
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--neon), #9b5de5);
+  border-radius: 20px 20px 0 0;
 }
 
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
 }
 
-/* ─── CABEÇALHO ───────────────────────────────────────────────────────────────── */
+/* Header */
+.cad-header { text-align: center; margin-bottom: 1.75rem; }
+.cad-tagline { font-size: .7rem; letter-spacing: 4px; color: var(--neon); text-transform: uppercase; }
+.cad-titulo  { font-family: var(--font-display); font-size: 2.4rem; letter-spacing: 2px; color: var(--text); line-height: 1; margin: .4rem 0 .5rem; }
+.cad-sub     { font-size: .85rem; color: var(--text2); }
 
-.cadastro-header {
-  text-align: center;
-  margin-bottom: 1.75rem;
-}
-
-.tagline {
-  font-size: 0.7rem;
-  letter-spacing: 4px;
-  color: var(--accent);
-  text-transform: uppercase;
-}
-
-.cadastro-title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 2.4rem;
-  letter-spacing: 2px;
-  color: var(--text);
-  line-height: 1;
-  margin: 0.4rem 0 0.5rem;
-}
-
-.cadastro-sub {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-/* ─── FOTO ────────────────────────────────────────────────────────────────────── */
-
-.foto-label {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.75rem;
-  cursor: pointer;
-}
+/* Foto */
+.foto-label { display: flex; justify-content: center; margin-bottom: .5rem; cursor: pointer; }
 
 .foto-circle {
-  width: 96px;
-  height: 96px;
-  border-radius: 50%;
-  border: 2px dashed var(--card-border);
-  background: var(--input-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  overflow: hidden;
-  position: relative;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 96px; height: 96px; border-radius: 50%;
+  border: 2px dashed var(--border2);
+  background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; overflow: hidden; position: relative;
+  transition: border-color .2s, box-shadow .2s;
+}
+.foto-circle:hover { border-color: var(--neon); box-shadow: 0 0 0 4px rgba(0,255,135,.1); }
+
+.foto-icon { pointer-events: none; }
+
+.foto-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,.6);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .2s;
+  font-size: .6rem; font-weight: 700; color: #fff; letter-spacing: 2px; text-transform: uppercase;
+}
+.foto-circle:hover .foto-overlay { opacity: 1; }
+
+.foto-obs { text-align: center; font-size: .72rem; color: var(--text3); margin-bottom: 1.25rem; }
+
+/* Seções */
+.cad-section { margin-bottom: 1.25rem; }
+.cad-section-label {
+  font-size: .68rem; font-weight: 700; letter-spacing: 2.5px;
+  color: var(--text2); text-transform: uppercase; margin-bottom: .65rem;
 }
 
-.foto-circle:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-dim);
+.cad-grid-form {
+  display: grid; grid-template-columns: 1fr 1fr; gap: .6rem;
 }
+.cad-grid-form .full { grid-column: 1 / -1; }
 
-.foto-hint {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.65);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.55rem;
-  font-weight: 600;
-  color: #fff;
-  text-align: center;
-  padding: 4px 0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.foto-circle:hover .foto-hint {
-  opacity: 1;
-}
-
-/* ─── SEÇÕES DO FORM ──────────────────────────────────────────────────────────── */
-
-.form-section {
-  margin-bottom: 1.5rem;
-}
-
-.section-label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 2.5px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  margin-bottom: 0.65rem;
-}
-
-/* ─── GRID ────────────────────────────────────────────────────────────────────── */
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.6rem;
-}
-
-.form-grid .full {
-  grid-column: 1 / -1;
-}
-
-/* ─── INPUTS ──────────────────────────────────────────────────────────────────── */
-
-.input {
-  width: 100%;
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 8px;
-  padding: 0.7rem 0.9rem;
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.88rem;
-  outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+/* Inputs */
+.cad-input {
+  width: 100%; background: rgba(255,255,255,.04);
+  border: 1px solid var(--border2); border-radius: 10px;
+  padding: .7rem .9rem; color: var(--text);
+  font-family: var(--font-body); font-size: .9rem; font-weight: 600;
+  outline: none; transition: border-color .2s, box-shadow .2s;
   appearance: none;
-  -webkit-appearance: none;
 }
-
-.input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
-}
-
-.input::placeholder {
-  color: var(--text-muted);
-}
-
-/* Estilo do select com seta customizada */
-select.input {
+.cad-input:focus { border-color: var(--neon); box-shadow: 0 0 0 3px rgba(0,255,135,.1); }
+.cad-input::placeholder { color: var(--text3); }
+select.cad-input {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234a5568' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.85rem center;
-  padding-right: 2.2rem;
-  cursor: pointer;
+  background-repeat: no-repeat; background-position: right .85rem center;
+  padding-right: 2.2rem; cursor: pointer;
 }
+select.cad-input option { background: var(--bg2); color: var(--text); }
 
-select.input option {
-  background: var(--card);
-  color: var(--text);
+/* Overall obs */
+.overall-obs { font-size: .75rem; color: var(--text3); text-align: center; margin-bottom: 1rem; font-style: italic; }
+
+/* Msgs */
+.cad-msg {
+  display: flex; align-items: flex-start; gap: .5rem;
+  font-size: .83rem; padding: .7rem .9rem; border-radius: 8px; margin-bottom: .9rem; line-height: 1.4;
 }
+.cad-msg.erro    { background: rgba(255,77,109,.08);  border: 1px solid rgba(255,77,109,.25);  color: #fca5a5; }
+.cad-msg.sucesso { background: rgba(0,255,135,.08);   border: 1px solid rgba(0,255,135,.25);   color: #86efac; }
 
-/* ─── MENSAGENS ───────────────────────────────────────────────────────────────── */
-
-.info-msg {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  text-align: center;
-  margin-bottom: 1.1rem;
-  font-style: italic;
+/* Botão */
+.cad-btn {
+  width: 100%; background: var(--neon); color: #000;
+  font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 2.5px;
+  border: none; border-radius: 10px; padding: .85rem;
+  cursor: pointer; transition: opacity .2s, transform .1s, box-shadow .2s; font-weight: 700;
 }
+.cad-btn:hover:not(:disabled) { opacity: .88; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,255,135,.25); }
+.cad-btn:disabled { opacity: .4; cursor: not-allowed; }
 
-.msg {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
-  font-size: 0.82rem;
-  padding: 0.7rem 0.9rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  line-height: 1.4;
-}
+/* Login link */
+.cad-login-link { text-align: center; margin-top: 1rem; font-size: .82rem; color: var(--text2); }
+.cad-login-link a { color: var(--neon); text-decoration: none; font-weight: 700; }
+.cad-login-link a:hover { text-decoration: underline; }
 
-.msg.erro {
-  background: var(--error-dim);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  color: #fca5a5;
-}
-
-.msg.sucesso {
-  background: var(--success-dim);
-  border: 1px solid rgba(34, 197, 94, 0.25);
-  color: #86efac;
-}
-
-/* ─── BOTÃO ───────────────────────────────────────────────────────────────────── */
-
-.btn-primary {
-  width: 100%;
-  background: var(--accent);
-  color: #07090f;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.1rem;
-  font-weight: 400;
-  letter-spacing: 2.5px;
-  border: none;
-  border-radius: 8px;
-  padding: 0.85rem;
-  cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
-}
-
-.btn-primary:hover:not(:disabled) {
-  opacity: 0.88;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.25);
-}
-
-.btn-primary:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: none;
-}
-
-.btn-primary:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-/* ─── LINK LOGIN ──────────────────────────────────────────────────────────────── */
-
-.login-link {
-  text-align: center;
-  margin-top: 1.1rem;
-  font-size: 0.82rem;
-  color: var(--text-muted);
-}
-
-.login-link a {
-  color: var(--accent);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.login-link a:hover {
-  text-decoration: underline;
-}
-
-/* ─── RESPONSIVO ──────────────────────────────────────────────────────────────── */
-
+/* Responsive */
 @media (max-width: 420px) {
-  .cadastro-card {
-    padding: 2rem 1.25rem;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-grid .full {
-    grid-column: 1;
-  }
-
-  .cadastro-title {
-    font-size: 2rem;
-  }
+  .cad-card { padding: 2rem 1.25rem; }
+  .cad-grid-form { grid-template-columns: 1fr; }
+  .cad-grid-form .full { grid-column: 1; }
 }
