@@ -6,13 +6,13 @@ import "../style/Times.css";
 const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-production.up.railway.app";
 
 const POSICOES_CAMPO = [
-  { key:"gol",  label:"GOL",  x:"50%", y:"87%" },
-  { key:"zag1", label:"ZAG",  x:"33%", y:"72%" },
-  { key:"zag2", label:"ZAG",  x:"67%", y:"72%" },
-  { key:"ala1", label:"ALA",  x:"18%", y:"52%" },
-  { key:"ala2", label:"ALA",  x:"82%", y:"52%" },
-  { key:"meia", label:"MEIA", x:"50%", y:"45%" },
-  { key:"atq",  label:"ATQ",  x:"50%", y:"22%" },
+  { key:"gol",  label:"GOL",  x:"50%", y:"88%" },
+  { key:"zag1", label:"ZAG",  x:"30%", y:"72%" },
+  { key:"zag2", label:"ZAG",  x:"70%", y:"72%" },
+  { key:"ala1", label:"ALA",  x:"15%", y:"50%" },
+  { key:"ala2", label:"ALA",  x:"85%", y:"50%" },
+  { key:"meia", label:"MEIA", x:"50%", y:"42%" },
+  { key:"atq",  label:"ATQ",  x:"50%", y:"18%" },
 ];
 
 const RESERVAS_SLOTS = [0, 1, 2];
@@ -38,7 +38,7 @@ export default function Times() {
       ]);
       setJogadores(jogs);
 
-      if (timesResp.length >= 1) {
+      if (timesResp && timesResp.length >= 1) {
         const montar = (esc) => {
           const m = {};
           (esc||[]).filter(e=>!e.reserva).forEach(e => { m[e.posicao_campo] = String(e.jogador_id||""); });
@@ -77,7 +77,7 @@ export default function Times() {
   function fotoJogador(id) {
     if (!id) return null;
     const j = jogadores.find(j=>String(j.id)===String(id));
-    return j?.fotoUrl || null;
+    return j?.fotoUrl || j?.foto || null;
   }
 
   async function salvar() {
@@ -90,6 +90,7 @@ export default function Times() {
 
       const NOMES = ["Time Verde","Time Vermelho"];
       const CORES = ["#00ff87","#ff4d6d"];
+      
       for (let i = timesResp.length; i < 2; i++) {
         const r = await fetch(`${API_URL}/times-jogo`, { method:"POST", headers, body:JSON.stringify({nome:NOMES[i],cor:CORES[i]}) });
         const n = await r.json();
@@ -97,7 +98,7 @@ export default function Times() {
       }
 
       const montar = (esc, res) => [
-        ...POSICOES_CAMPO.map(p=>({ posicao_campo:p.key, id_jogador:esc[p.key]||null, reserva:0 })),
+        ...POSICOES_CAMPO.map(p=>({ posicao_campo:p.key, id_jogador:esc[p.key] || null, reserva:0 })),
         ...res.filter(Boolean).map(id=>({ posicao_campo:"reserva", id_jogador:id, reserva:1 })),
       ];
 
@@ -112,67 +113,83 @@ export default function Times() {
 
   if (loading) return <Layout><div className="loading-screen"><div className="loading-ball">⚽</div></div></Layout>;
 
-  // No componente Campo, adicione a prop 'time' para identificar o lado
-function Campo({ titulo, cor, dados, reservas, time }) {
-  return (
-    <Layout>
-    <div className="time-col" style={{'--cor-time': cor}}>
-      <div className="time-header">
-        <h2 className="time-titulo" style={{ color: cor }}>{titulo}</h2>
-        <div className="badge" style={{background: `${cor}20`, color: cor, padding: '4px 12px', borderRadius: '10px', fontSize: '12px'}}>
-          {Object.values(dados).filter(Boolean).length} / 7
+  function Campo({ titulo, cor, dados, reservas, time }) {
+    return (
+      <div className="time-col">
+        <div className="time-header" style={{borderColor: cor}}>
+          <h2 className="time-titulo" style={{color: cor}}>{titulo}</h2>
+          <span className="time-badge" style={{background: `${cor}20`, color: cor}}>
+            {Object.values(dados).filter(Boolean).length}/7
+          </span>
         </div>
-      </div>
 
-      <div className="campo-container">
-        {POSICOES_CAMPO.map(pos => {
-          const jogId = dados[pos.key];
-          const nome = nomeJogador(jogId);
-          const foto = fotoJogador(jogId);
-          
-          return (
-          
-            <div key={pos.key} className="slot-container" style={{ left: pos.x, top: pos.y }}>
-              <div className="slot-avatar" style={{ borderColor: jogId ? cor : 'rgba(255,255,255,0.1)' }}>
-                {foto ? <img src={foto} /> : <span style={{opacity: 0.3, fontSize: '20px'}}>⚽</span>}
-              </div>
-              
-              <select
-                className="slot-select"
-                value={jogId}
-                onChange={e => alterarTime(time, pos.key, e.target.value)}
-              >
-                <option value="">{pos.label}</option>
+        <div className="campo-container">
+          <div className="campo">
+            <div className="campo-linha-meio" />
+            <div className="campo-circulo-meio" />
+            
+            {POSICOES_CAMPO.map(pos => {
+              const jogId = dados[pos.key];
+              const nome = nomeJogador(jogId);
+              const foto = fotoJogador(jogId);
+              return (
+                <div key={pos.key} className="slot-container" style={{left: pos.x, top: pos.y}}>
+                  <div className="slot-avatar" style={{borderColor: jogId ? cor : "rgba(255,255,255,0.1)"}}>
+                    {foto ? <img src={foto} alt={nome}/> : <span className="slot-icon">👤</span>}
+                  </div>
+                  {nome && <span className="slot-nome-badge" style={{background: cor}}>{nome}</span>}
+                  <select 
+                    className="slot-select" 
+                    value={jogId} 
+                    onChange={e => alterarTime(time, pos.key, e.target.value)}
+                  >
+                    <option value="">{pos.label}</option>
+                    {jogadores.map(j => (
+                      <option key={j.id} value={j.id}>{j.nome.split(" ")[0]}</option>
+                    ))}
+                  </select>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="reservas-box">
+          <p className="res-label">🪑 Reservas</p>
+          <div className="res-grid">
+            {RESERVAS_SLOTS.map(i => (
+              <select key={i} className="res-select" value={reservas[i]} onChange={e => alterarReserva(time, i, e.target.value)}>
+                <option value="">+</option>
                 {jogadores.map(j => (
                   <option key={j.id} value={j.id}>{j.nome.split(" ")[0]}</option>
                 ))}
               </select>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="reservas-box">
-        <span style={{fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', opacity: 0.6}}>Reservas</span>
-        <div className="res-grid">
-          {RESERVAS_SLOTS.map(i => (
-            <select 
-              key={i} 
-              className="res-select" 
-              value={reservas[i]} 
-              onChange={e => alterarReserva(time, i, e.target.value)}
-              style={{background: 'rgba(0,0,0,0.4)', color: '#fff', border: 'none', padding: '8px', borderRadius: '8px'}}
-            >
-              <option value="">+</option>
-              {jogadores.map(j => (
-                <option key={j.id} value={j.id}>{j.nome.split(" ")[0]}</option>
-              ))}
-            </select>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-   </Layout>
+    );
+  }
+
+  return (
+    <Layout>
+      <div className="times-page">
+        <div className="times-page-header">
+          <h1 className="page-titulo">Escalação dos Times</h1>
+          {sucesso && <div className="sucesso-toast">{sucesso}</div>}
+        </div>
+
+        <div className="times-grid">
+          <Campo titulo="Time Verde" cor="#00ff87" dados={timeA} reservas={resA} time="A" />
+          <Campo titulo="Time Vermelho" cor="#ff4d6d" dados={timeB} reservas={resB} time="B" />
+        </div>
+
+        <div className="times-footer">
+          <button className="btn-salvar-times" onClick={salvar} disabled={salvando}>
+            {salvando ? "A salvar..." : "💾 Salvar Escalação"}
+          </button>
+        </div>
+      </div>
+    </Layout>
   );
 }
-}  
