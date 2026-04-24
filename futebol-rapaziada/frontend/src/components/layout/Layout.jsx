@@ -5,11 +5,13 @@ import "../../style/Layout.css";
 const MENU = [
   { path: "/home",          icon: "🃏", label: "Meu Perfil" },
   { path: "/estatisticas",  icon: "📊", label: "Estatísticas" },
+  { path: "/jogadores",    icon: "👤", label: "Jogadores", em_breve: true },
   { path: "/campeonato",    icon: "🏆", label: "Campeonato" },
   { path: "/jogos",         icon: "⚽", label: "Jogos" },
   { path: "/presenca",      icon: "📋", label: "Lista de Presença" },
   { path: "/times",         icon: "👕", label: "Times" },
   { path: "/financeiro",    icon: "💰", label: "Financeiro" },
+  { path: "/calendario",    icon: "📆", label: "Calendario", em_breve: true },
 ];
 
 export default function Layout({ children }) {
