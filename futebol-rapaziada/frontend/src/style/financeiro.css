@@ -1,0 +1,101 @@
+.fin-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+.fin-header { text-align: center; margin-bottom: 30px; }
+
+.fin-grid-top {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.fin-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.pix-chave {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--neon);
+  word-break: break-all;
+  margin-bottom: 10px;
+}
+
+.val-destaque { color: #fff; font-weight: 800; }
+
+.btn-neon-mini {
+  background: rgba(0, 255, 135, 0.1);
+  border: 1px solid var(--border-neon);
+  color: var(--neon);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.btn-neon-mini:hover { background: var(--neon); color: #000; }
+
+/* Tabela de Pagamentos */
+.fin-lista-container {
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 20px;
+  padding: 20px;
+  border: 1px solid var(--border);
+}
+
+.fin-tabela-wrapper { overflow-x: auto; }
+
+.fin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.fin-table th {
+  padding: 15px;
+  color: var(--text2);
+  font-size: 12px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+.fin-table td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+
+.user-cell { display: flex; align-items: center; gap: 12px; }
+.user-cell img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border); }
+
+.status-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.status-badge.pago { background: rgba(0, 255, 135, 0.15); color: var(--neon); border: 1px solid var(--neon); }
+.status-badge.pendente { background: rgba(255, 77, 109, 0.15); color: var(--red); border: 1px solid var(--red); }
+
+.btn-status-toggle {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.green { color: var(--neon); }
+
+@media (max-width: 600px) {
+  .fin-table th:nth-child(3), .fin-table td:nth-child(3) { display: none; }
+}

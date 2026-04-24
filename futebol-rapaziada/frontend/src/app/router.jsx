@@ -8,6 +8,7 @@ import Campeonato   from "../pages/Campeonato";
 import Presenca     from "../pages/Presenca";
 import Jogos        from "../pages/Jogos";
 import Times        from "../pages/Times";
+import Financeiro   from "../pages/Financeiro"; 
 
 function PrivateRoute({ children }) {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -30,6 +31,7 @@ export default function RouterApp() {
         <Route path="/presenca"     element={<P><Presenca /></P>} />
         <Route path="/jogos"        element={<P><Jogos /></P>} />
         <Route path="/times"        element={<P><Times /></P>} />
+        <Route path="/financeiro"   element={<P><Financeiro /></P>} /> {/* 2. Adicionar a rota */}
 
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
