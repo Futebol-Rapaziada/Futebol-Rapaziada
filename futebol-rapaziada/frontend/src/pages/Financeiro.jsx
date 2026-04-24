@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/layout/Layout";
 import { getJogadores } from "../services/api";
-import "../style/Financeiro.css";
+import "../style/financeiro.css";
 
 export default function Financeiro() {
   const [jogadores, setJogadores] = useState([]);
