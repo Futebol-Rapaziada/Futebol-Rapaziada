@@ -4,9 +4,7 @@ import { cadastro, criarJogador } from "../services/api";
 import "../style/Cadastro.css";
 
 const POSICOES = [
-  "Goleiro","Zagueiro","Lateral Direito","Lateral Esquerdo",
-  "Volante","Meia-Defensivo","Meia","Meia-Atacante",
-  "Ponta Esquerda","Ponta Direita","Centroavante",
+  "Goleiro","Zagueiro","Lateral Direito","Lateral Esquerdo","Meia","Centroavante",
 ];
 
 function validarEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
