@@ -149,4 +149,50 @@
 
 .pix-icon {
   font-size: 1.1rem;
+}.valores-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.val-item {
+  color: var(--text2);
+  font-size: 13px;
+}
+
+.val-item b {
+  color: var(--neon);
+}
+
+.badge-tipo {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+.badge-tipo.tit {
+  background: rgba(0, 255, 135, 0.1);
+  color: var(--neon);
+  border: 1px solid rgba(0, 255, 135, 0.2);
+}
+
+.badge-tipo.res {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text2);
+  border: 1px solid var(--border);
+}
+
+.obs-fin {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 10px;
+  font-style: italic;
+}
+
+.green {
+  color: var(--neon) !important;
+  font-size: 22px;
+  font-family: var(--font-display);
 }

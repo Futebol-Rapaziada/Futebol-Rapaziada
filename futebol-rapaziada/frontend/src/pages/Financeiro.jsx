@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Layout from "../components/layout/Layout";
-import { getJogadores } from "../services/api";
+import { getJogadores, obterToken } from "../services/api";
 import "../style/financeiro.css";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-production.up.railway.app";
@@ -11,7 +11,9 @@ export default function Financeiro() {
   const [processando, setProcessando] = useState(null);
   const [copiado, setCopiado] = useState(false);
   
+  // Configuração de Valores
   const VALOR_TITULAR = 18.00;
+  const VALOR_RESERVA = 9.00;
   const CHAVE_PIX = "577-704-458-17";
 
   useEffect(() => {
@@ -29,19 +31,16 @@ export default function Financeiro() {
     }
   }
 
-  // Função para Copiar PIX
   const handleCopiar = () => {
     navigator.clipboard.writeText(CHAVE_PIX);
     setCopiado(true);
     setTimeout(() => setCopiado(false), 2000);
   };
 
-  // Função para Confirmar/Reverter Pagamento no Banco de Dados
   async function toggleStatusPagamento(jogadorId, statusAtual) {
     setProcessando(jogadorId);
     try {
-      const token = localStorage.getItem("token");
-      
+      const token = obterToken();
       const response = await fetch(`${API_URL}/jogadores/${jogadorId}`, {
         method: "PATCH",
         headers: {
@@ -55,29 +54,28 @@ export default function Financeiro() {
         setJogadores(lista => 
           lista.map(j => j.id === jogadorId ? { ...j, pagou: !statusAtual } : j)
         );
-      } else {
-        alert("Erro ao atualizar no servidor. Verifique o login.");
       }
     } catch (e) {
       console.error(e);
-      alert("Falha na conexão.");
     } finally {
       setProcessando(null);
     }
   }
 
-  const totalPagantes = jogadores.filter(j => j.pagou).length;
+  // CÁLCULO DO TOTAL ARRECADADO
+  // Aqui ele soma 18 se for titular e 9 se for reserva (ajuste a lógica de 'isReserva' conforme seu banco)
+  const totalArrecadado = jogadores
+    .filter(j => j.pagou)
+    .reduce((acc, j) => acc + (j.isReserva ? VALOR_RESERVA : VALOR_TITULAR), 0);
 
-  if (loading) return <Layout><div className="loading">Carregando dados...</div></Layout>;
+  if (loading) return <Layout><div className="loading">Carregando...</div></Layout>;
 
   return (
     <Layout>
       <div className="fin-page">
         <header className="fin-header">
-          <div className="header-info">
-            <h1 className="info-nome">Controle Financeiro</h1>
-            <p className="tag">Temporada 2026</p>
-          </div>
+          <h1 className="info-nome">Financeiro</h1>
+          <p className="tag">Temporada 2026</p>
         </header>
 
         <div className="fin-grid-top">
@@ -89,12 +87,16 @@ export default function Financeiro() {
             </div>
             <div className="ic-body" style={{ padding: '20px' }}>
               <p className="pix-chave">{CHAVE_PIX}</p>
+              <div className="valores-info">
+                <span className="val-item">Titular: <b>R$ {VALOR_TITULAR.toFixed(2)}</b></span>
+                <span className="val-item">Reserva: <b>R$ {VALOR_RESERVA.toFixed(2)}</b></span>
+              </div>
               <button 
                 className={`btn-copiar-pix ${copiado ? 'sucesso' : ''}`} 
                 onClick={handleCopiar}
               >
                 <span className="pix-icon">{copiado ? '✅' : '📋'}</span>
-                {copiado ? 'Copiado!' : 'Copiar Chave PIX'}
+                {copiado ? 'Copiado!' : 'Copiar Chave'}
               </button>
             </div>
           </div>
@@ -103,68 +105,67 @@ export default function Financeiro() {
           <div className="fin-card">
             <div className="ic-header">
               <span>📊</span>
-              <h3>Balanço Mensal</h3>
+              <h3>Balanço Atual</h3>
             </div>
             <div className="ic-body" style={{ padding: '20px' }}>
-              <div className="desemp-mini">
-                <div className="desemp-row">
-                  <span className="d-lbl">Confirmados</span>
-                  <span className="d-val">{totalPagantes} / {jogadores.length}</span>
-                </div>
-                <div className="desemp-row">
-                  <span className="d-lbl">Total em Caixa</span>
-                  <span className="d-val" style={{ color: 'var(--neon)' }}>
-                    R$ {(totalPagantes * VALOR_TITULAR).toFixed(2)}
-                  </span>
-                </div>
+              <div className="desemp-row">
+                <span className="d-lbl">Total Arrecadado</span>
+                <span className="d-val green">R$ {totalArrecadado.toFixed(2)}</span>
               </div>
+              <p className="obs-fin">* Soma de titulares e reservas pagos.</p>
             </div>
           </div>
         </div>
 
-        {/* Tabela de Jogadores */}
         <div className="info-card" style={{ marginTop: '20px' }}>
-          <div className="ic-header">
-            <h3>Lista de Mensalidades</h3>
-          </div>
+          <div className="ic-header"><h3>Lista de Pagamentos</h3></div>
           <div className="fin-tabela-wrapper">
             <table className="fin-table">
               <thead>
                 <tr>
                   <th>Jogador</th>
+                  <th>Tipo</th>
                   <th>Status</th>
                   <th>Valor</th>
-                  <th>Ações</th>
+                  <th>Ação</th>
                 </tr>
               </thead>
               <tbody>
-                {jogadores.map(jogador => (
-                  <tr key={jogador.id}>
-                    <td>
-                      <div className="user-cell">
-                        <div className="user-avatar" style={{ width: '32px', height: '32px', fontSize: '12px' }}>
-                          {jogador.fotoUrl ? <img src={jogador.fotoUrl} alt="" /> : jogador.nome?.[0]}
+                {jogadores.map(jogador => {
+                  const valorCobrado = jogador.isReserva ? VALOR_RESERVA : VALOR_TITULAR;
+                  return (
+                    <tr key={jogador.id}>
+                      <td>
+                        <div className="user-cell">
+                          <div className="user-avatar" style={{width:'30px', height:'30px'}}>
+                            {jogador.nome?.[0]}
+                          </div>
+                          <span>{jogador.nome}</span>
                         </div>
-                        <span style={{ color: 'var(--text)' }}>{jogador.nome}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`status-badge ${jogador.pagou ? "pago" : "pendente"}`}>
-                        {jogador.pagou ? "CONFIRMADO" : "PENDENTE"}
-                      </span>
-                    </td>
-                    <td style={{ color: 'var(--text2)', fontSize: '13px' }}>R$ {VALOR_TITULAR.toFixed(2)}</td>
-                    <td>
-                      <button 
-                        className="btn-status-toggle"
-                        disabled={processando === jogador.id}
-                        onClick={() => toggleStatusPagamento(jogador.id, jogador.pagou)}
-                      >
-                        {processando === jogador.id ? "..." : (jogador.pagou ? "Reverter" : "Confirmar")}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td>
+                        <span className={`badge-tipo ${jogador.isReserva ? 'res' : 'tit'}`}>
+                          {jogador.isReserva ? 'RESERVA' : 'TITULAR'}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`status-badge ${jogador.pagou ? "pago" : "pendente"}`}>
+                          {jogador.pagou ? "PAGO" : "PENDENTE"}
+                        </span>
+                      </td>
+                      <td className="valor-celula">R$ {valorCobrado.toFixed(2)}</td>
+                      <td>
+                        <button 
+                          className="btn-status-toggle"
+                          disabled={processando === jogador.id}
+                          onClick={() => toggleStatusPagamento(jogador.id, jogador.pagou)}
+                        >
+                          {processando === jogador.id ? "..." : (jogador.pagou ? "Reverter" : "Confirmar")}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
