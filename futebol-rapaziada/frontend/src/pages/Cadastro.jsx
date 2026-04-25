@@ -75,7 +75,6 @@ export default function Cadastro() {
         await criarJogador({
           nome: form.nome, posicao: form.posicao,
           idade: Number(form.idade), perna_boa: form.perna_boa,
-          fotoUrl: fotoBase64, // base64 string — sem problemas no JSON
           overall: 0, time: "",
           gols: 0, assistencias: 0, jogos: 0, cartoes: 0,
         });
@@ -108,20 +107,6 @@ export default function Cadastro() {
           <h1 className="cad-titulo">Cadastro do Jogador</h1>
           <p className="cad-sub">Crie sua conta e monte seu perfil.</p>
         </div>
-
-        {/* Foto */}
-        <label className="foto-label">
-          <input type="file" accept="image/*" onChange={handleFoto} style={{ display:"none" }} />
-          <div className="foto-circle" style={preview ? {
-            backgroundImage:`url(${preview})`,backgroundSize:"cover",backgroundPosition:"center"
-          } : {}}>
-            {!preview && <span className="foto-icon">📷</span>}
-            <div className="foto-overlay">
-              <span>{preview ? "Trocar" : "Foto"}</span>
-            </div>
-          </div>
-        </label>
-        <p className="foto-obs">Máx 2 MB · JPG, PNG ou WebP</p>
 
         {/* Dados da conta */}
         <div className="cad-section">
