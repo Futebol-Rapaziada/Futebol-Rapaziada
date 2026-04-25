@@ -176,23 +176,29 @@ export default function Home() {
 
         {/* ── CARDS INFO ── */}
         <div className="info-grid">
-          <div className="info-card">
-            <div className="ic-header"><span>👕</span><h3>Time</h3></div>
-            <div className="ic-body"><p className="ic-val">{player.time||"Sem time"}</p></div>
-          </div>
-
-          <div className={`info-card ${player.confirmado?"ic-green":"ic-red"}`}>
-            <div className="ic-header"><span>{player.confirmado?"✅":"❌"}</span><h3>Próximo Jogo</h3></div>
-            <div className="ic-body"><p className="ic-val">{player.confirmado?"Confirmado":"Não confirmado"}</p></div>
-          </div>
-
-          <div className="info-card">
-            <div className="ic-header"><span>🏆</span><h3>Campeonato</h3></div>
-            <div className="ic-body">
-              <p className="ic-val">Temporada 2026</p>
-              <p className="ic-sub">Modo Carreira</p>
+          <a href="/Times">
+            <div className="info-card">
+              <div className="ic-header"><span>👕</span><h3>Time</h3></div>
+              <div className="ic-body"><p className="ic-val">{player.time||"Sem time"}</p></div>
             </div>
-          </div>
+          </a>
+
+          <a href="/presenca">
+            <div className={`info-card ${player.confirmado?"ic-green":"ic-red"}`}>
+              <div className="ic-header"><span>{player.confirmado?"✅":"❌"}</span><h3>Próximo Jogo</h3></div>
+              <div className="ic-body"><p className="ic-val">{player.confirmado?"Confirmado":"Não confirmado"}</p></div>
+            </div>
+          </a>
+
+          <a href="/calendario">
+            <div className="info-card">
+              <div className="ic-header"><span>🏆</span><h3>Campeonato</h3></div>
+              <div className="ic-body">
+                <p className="ic-val">Temporada 2026</p>
+                <p className="ic-sub">Modo Carreira</p>
+              </div>
+            </div>
+          </a>
 
           <div className="info-card">
             <div className="ic-header"><span>📈</span><h3>Desempenho</h3></div>
