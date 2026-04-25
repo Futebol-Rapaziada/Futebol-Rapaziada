@@ -109,19 +109,7 @@ export default function Cadastro() {
           <p className="cad-sub">Crie sua conta e monte seu perfil.</p>
         </div>
 
-        {/* Foto */}
-        <label className="foto-label">
-          <input type="file" accept="image/*" onChange={handleFoto} style={{ display:"none" }} />
-          <div className="foto-circle" style={preview ? {
-            backgroundImage:`url(${preview})`,backgroundSize:"cover",backgroundPosition:"center"
-          } : {}}>
-            {!preview && <span className="foto-icon">📷</span>}
-            <div className="foto-overlay">
-              <span>{preview ? "Trocar" : "Foto"}</span>
-            </div>
-          </div>
-        </label>
-        <p className="foto-obs">Máx 2 MB · JPG, PNG ou WebP</p>
+        
 
         {/* Dados da conta */}
         <div className="cad-section">
