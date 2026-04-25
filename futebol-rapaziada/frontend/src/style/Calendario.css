@@ -1,0 +1,370 @@
+@import './tokens.css';
+
+/* ===========================
+   PÁGINA CALENDÁRIO
+=========================== */
+
+.cal-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 30px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* ── HEADER ── */
+.cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.cal-titulo {
+  font-family: var(--font-display);
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--text);
+  margin: 0 0 6px;
+}
+
+.cal-destaque {
+  color: var(--neon);
+}
+
+.cal-sub {
+  font-size: 13px;
+  color: var(--text3);
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.cal-proximo-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0, 255, 135, 0.06);
+  border: 1px solid rgba(0, 255, 135, 0.2);
+  border-radius: 14px;
+  padding: 12px 20px;
+  min-width: 90px;
+}
+
+.cpb-label {
+  font-size: 10px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.cpb-dias {
+  font-family: var(--font-display);
+  font-size: 36px;
+  color: var(--neon);
+  line-height: 1;
+  margin: 2px 0;
+}
+
+/* ── CARD PRÓXIMO JOGO ── */
+.cal-destaque-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(0,255,135,0.06) 0%, rgba(0,20,10,0.8) 60%);
+  border: 1px solid rgba(0, 255, 135, 0.25);
+  border-radius: 20px;
+  padding: 28px 32px;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  animation: fadeUp 0.5s cubic-bezier(.17,.67,.35,1.2);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.cdc-glow {
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(0,255,135,0.15), transparent 70%);
+  pointer-events: none;
+}
+
+.cdc-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cdc-rodada-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text3);
+  font-weight: 700;
+}
+
+.cdc-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: rgba(0,255,135,0.12);
+  border: 1px solid rgba(0,255,135,0.3);
+  color: var(--neon);
+  border-radius: 6px;
+  padding: 3px 10px;
+  width: fit-content;
+}
+
+.cdc-data {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--text);
+  text-transform: capitalize;
+}
+
+.cdc-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--text3);
+  font-weight: 600;
+}
+
+.cdc-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.cdc-countdown-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--text3);
+  font-weight: 700;
+  margin: 0;
+}
+
+/* ── COUNTDOWN ── */
+.countdown {
+  display: flex;
+  gap: 10px;
+}
+
+.cd-bloco {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  min-width: 58px;
+}
+
+.cd-num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--neon);
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.cd-label {
+  font-size: 10px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  margin-top: 3px;
+}
+
+/* ── LISTA ── */
+.cal-lista-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cal-lista-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-lista-titulo {
+  font-family: var(--font-display);
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: var(--text2);
+  margin: 0;
+}
+
+.cal-lista-count {
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 12px;
+}
+
+.cal-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cal-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  transition: all 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+
+.cal-item:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(0,255,135,0.15);
+  transform: translateX(4px);
+}
+
+.cal-item-next {
+  border-color: rgba(0,255,135,0.3) !important;
+  background: rgba(0,255,135,0.04) !important;
+}
+
+.ci-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.ci-num span {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--text3);
+}
+
+.cal-item-next .ci-num {
+  background: rgba(0,255,135,0.1);
+  border-color: rgba(0,255,135,0.3);
+}
+
+.cal-item-next .ci-num span {
+  color: var(--neon);
+}
+
+.ci-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.ci-data {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: capitalize;
+}
+
+.ci-hora {
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 500;
+}
+
+.ci-right {
+  flex-shrink: 0;
+}
+
+.ci-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: rgba(0,255,135,0.12);
+  border: 1px solid rgba(0,255,135,0.3);
+  color: var(--neon);
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+.ci-dias {
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 600;
+}
+
+.ci-dias b {
+  color: var(--text2);
+  font-family: var(--font-display);
+  font-size: 14px;
+}
+
+/* ===========================
+   RESPONSIVO
+=========================== */
+
+@media (max-width: 640px) {
+  .cal-destaque-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .cdc-data {
+    font-size: 18px;
+  }
+
+  .countdown {
+    gap: 6px;
+  }
+
+  .cd-bloco {
+    padding: 8px 10px;
+    min-width: 50px;
+  }
+
+  .cd-num {
+    font-size: 22px;
+  }
+
+  .cal-titulo {
+    font-size: 28px;
+  }
+
+  .cal-item {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+}

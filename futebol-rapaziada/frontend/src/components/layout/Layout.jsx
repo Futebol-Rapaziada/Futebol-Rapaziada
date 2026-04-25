@@ -11,7 +11,7 @@ const MENU = [
   { path: "/presenca",      icon: "📋", label: "Lista de Presença" },
   { path: "/times",         icon: "👕", label: "Times" },
   { path: "/financeiro",    icon: "💰", label: "Financeiro" },
-  { path: "/calendario",    icon: "📆", label: "Calendario", em_breve: true },
+  { path: "/calendario",    icon: "📆", label: "Calendario" },
 ];
 
 export default function Layout({ children }) {
