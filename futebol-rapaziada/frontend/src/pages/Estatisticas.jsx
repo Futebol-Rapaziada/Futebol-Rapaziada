@@ -8,30 +8,33 @@ const ABAS = ["Geral","Artilheiro","Garçom","Participação","Defesa","Presenç
 
 function Podio({ lista, campo, renderVal, titulo, icone }) {
   const top = lista.slice(0, 3);
-  const ordem = [0, 1, 2]; // ouro, prata, bronze (1º centro, 2º esquerda, 3º direita)
-  const alturas = ["60px","90px","45px"];
-  const labels  = ["🥈 2º","🥇 1º","🥉 3º"];
-  const cores   = ["#9ca3af","#ffd166","#cd7c2f"];
+
+  // ordem visual: 2º (esquerda), 1º (centro/alto), 3º (direita)
+  const ordemVisual = [1, 0, 2];
+  const alturas     = ["75px", "115px", "50px"];
+  const cores       = ["#9ca3af", "#ffd166", "#cd7c2f"];
+  const medalhas    = ["🥈 2º", "🥇 1º", "🥉 3º"];
 
   return (
     <div className="podio-card">
       <div className="podio-titulo"><span>{icone}</span><h3>{titulo}</h3></div>
       <div className="podio-palco">
-        {ordem.map((pos, i) => {
+        {ordemVisual.map((pos, i) => {
           const j = top[pos];
-          if (!j) return <div key={i} className="podio-slot vazio"/>;
+          if (!j) return <div key={i} className="podio-slot vazio" style={{ height: alturas[i] }} />;
           return (
-            <div key={i} className="podio-slot">
-              <div className="podio-foto">
+            <div key={i} className={`podio-slot ${i === 1 ? "podio-primeiro" : ""}`}>
+              {i === 1 && <div className="podio-coroa">👑</div>}
+              <div className="podio-foto" style={{ borderColor: cores[i] }}>
                 {j.fotoUrl
-                  ? <img src={j.fotoUrl} alt={j.nome}/>
+                  ? <img src={j.fotoUrl} alt={j.nome} />
                   : <span>👤</span>
                 }
               </div>
               <p className="podio-nome">{j.nome?.split(" ")[0]}</p>
-              <p className="podio-val" style={{color: cores[i]}}>{renderVal(j)}</p>
-              <div className="podio-base" style={{height:alturas[i], background:cores[i]}}>
-                <span className="podio-label">{labels[i]}</span>
+              <p className="podio-val" style={{ color: cores[i] }}>{renderVal(j)}</p>
+              <div className="podio-base" style={{ height: alturas[i], background: cores[i] }}>
+                <span className="podio-label">{medalhas[i]}</span>
               </div>
             </div>
           );
@@ -72,7 +75,6 @@ export default function Estatisticas() {
     return idx>=0?`${idx+1}º`:"—";
   }
 
-  // Tabela completa de todos os jogadores
   function TabelaCompleta() {
     const todos = [...jogadores].sort((a,b)=>((b.gols??0)+(b.assistencias??0))-((a.gols??0)+(a.assistencias??0)));
     return (
@@ -114,7 +116,6 @@ export default function Estatisticas() {
     );
   }
 
-  // Ranking lista detalhada
   function RankLista({ lista, renderVal }) {
     return (
       <div className="rank-lista-est">
@@ -140,7 +141,6 @@ export default function Estatisticas() {
     <Layout>
       <div className="estat-wrap">
 
-        {/* Minhas stats */}
         {eu && (
           <section className="meus-stats">
             <div className="ms-top">
@@ -177,28 +177,24 @@ export default function Estatisticas() {
           </section>
         )}
 
-        {/* Abas */}
         <div className="abas">
           {ABAS.map(a=>(
             <button key={a} className={`aba-btn ${aba===a?"ativa":""}`} onClick={()=>setAba(a)}>{a}</button>
           ))}
         </div>
 
-        {/* ── GERAL ── */}
         {aba==="Geral" && (
           <div className="estat-conteudo">
-            {/* Pódios */}
             <div className="podios-grid">
-              <Podio titulo="Artilheiros"   icone="⚽" lista={porGols}         renderVal={j=>`${j.gols??0} G`}/>
-              <Podio titulo="Garçons"        icone="🎯" lista={porAssistencias} renderVal={j=>`${j.assistencias??0} A`}/>
-              <Podio titulo="Participação"  icone="🔥" lista={porParticipacao} renderVal={j=>`${(j.gols??0)+(j.assistencias??0)} G+A`}/>
-              <Podio titulo="Mais Jogos"    icone="🏟" lista={porJogos}        renderVal={j=>`${j.jogos??0} JG`}/>
+              <Podio titulo="Artilheiros"  icone="⚽" lista={porGols}         renderVal={j=>`${j.gols??0} G`}/>
+              <Podio titulo="Garçons"       icone="🎯" lista={porAssistencias} renderVal={j=>`${j.assistencias??0} A`}/>
+              <Podio titulo="Participação" icone="🔥" lista={porParticipacao} renderVal={j=>`${(j.gols??0)+(j.assistencias??0)} G+A`}/>
+              <Podio titulo="Mais Jogos"   icone="🏟" lista={porJogos}        renderVal={j=>`${j.jogos??0} JG`}/>
             </div>
             <TabelaCompleta/>
           </div>
         )}
 
-        {/* ── ARTILHEIRO ── */}
         {aba==="Artilheiro" && (
           <div className="estat-conteudo">
             <Podio titulo="Artilheiros" icone="⚽" lista={porGols} renderVal={j=>`${j.gols??0} gols`}/>
@@ -206,7 +202,6 @@ export default function Estatisticas() {
           </div>
         )}
 
-        {/* ── GARÇOM ── */}
         {aba==="Garçom" && (
           <div className="estat-conteudo">
             <Podio titulo="Garçons" icone="🎯" lista={porAssistencias} renderVal={j=>`${j.assistencias??0} ass.`}/>
@@ -214,7 +209,6 @@ export default function Estatisticas() {
           </div>
         )}
 
-        {/* ── PARTICIPAÇÃO ── */}
         {aba==="Participação" && (
           <div className="estat-conteudo">
             <Podio titulo="Participação (G+A)" icone="🔥" lista={porParticipacao} renderVal={j=>`${(j.gols??0)+(j.assistencias??0)} G+A`}/>
@@ -222,7 +216,6 @@ export default function Estatisticas() {
           </div>
         )}
 
-        {/* ── DEFESA ── */}
         {aba==="Defesa" && (
           <div className="estat-conteudo">
             <Podio titulo="Menos Cartões" icone="🧱" lista={menosCartoes} renderVal={j=>`${j.cartoes??0} cart.`}/>
@@ -230,7 +223,6 @@ export default function Estatisticas() {
           </div>
         )}
 
-        {/* ── PRESENÇA ── */}
         {aba==="Presença" && (
           <div className="estat-conteudo">
             <Podio titulo="Mais Jogos" icone="🏟" lista={porJogos} renderVal={j=>`${j.jogos??0} jogos`}/>

@@ -23,35 +23,103 @@
 /* ── PÓDIOS GRID ── */
 .podios-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:16px; }
 
-.podio-card { background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:14px; padding:20px; display:flex; flex-direction:column; gap:16px; overflow:hidden; }
+.podio-card {
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  overflow:hidden;
+}
 
 .podio-titulo { display:flex; align-items:center; gap:8px; }
 .podio-titulo span { font-size:20px; }
 .podio-titulo h3 { font-family:var(--font-display); font-size:18px; letter-spacing:1px; color:var(--text); }
 
-/* Palco do pódio */
-.podio-palco { display:flex; align-items:flex-end; justify-content:center; gap:8px; min-height:180px; }
+/* ── PALCO DO PÓDIO ── */
+.podio-palco {
+  display: flex;
+  align-items: flex-end;        /* todos crescem para cima a partir da base */
+  justify-content: center;
+  gap: 8px;
+  min-height: 200px;
+}
 
-.podio-slot { display:flex; flex-direction:column; align-items:center; gap:4px; flex:1; }
-.podio-slot.vazio { opacity:.2; }
+.podio-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  /* a foto+nome+val ficam acima da base, alinhados ao fundo */
+}
+
+.podio-slot.vazio { opacity: .2; }
+
+/* 1º lugar: destaque extra */
+.podio-primeiro {
+  position: relative;
+}
+
+.podio-coroa {
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 2px;
+  filter: drop-shadow(0 0 6px rgba(255,209,0,.6));
+}
 
 .podio-foto {
-  width:44px; height:44px; border-radius:50%;
-  overflow:hidden; border:2px solid var(--border2);
-  display:flex; align-items:center; justify-content:center;
-  background:rgba(255,255,255,.05); font-size:22px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,.05);
+  font-size: 24px;
 }
 .podio-foto img { width:100%; height:100%; object-fit:cover; }
 
-.podio-nome { font-size:12px; font-weight:700; color:var(--text); text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:70px; }
-.podio-val  { font-family:var(--font-display); font-size:16px; text-align:center; }
-
-.podio-base {
-  width:100%; border-radius:6px 6px 0 0;
-  display:flex; align-items:center; justify-content:center;
-  min-width:60px;
+.podio-nome {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 72px;
 }
-.podio-label { font-size:11px; font-weight:700; color:rgba(0,0,0,.7); letter-spacing:.5px; writing-mode:vertical-rl; padding:6px 0; }
+
+.podio-val {
+  font-family: var(--font-display);
+  font-size: 15px;
+  text-align: center;
+  font-weight: 700;
+}
+
+/* A base do pódio — altura define quem fica mais alto */
+.podio-base {
+  width: 100%;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+}
+
+.podio-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(0,0,0,.75);
+  letter-spacing: .5px;
+  writing-mode: vertical-rl;
+  padding: 6px 0;
+}
 
 /* ── TABELA COMPLETA ── */
 .tabela-wrap { background:rgba(255,255,255,.02); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
@@ -91,7 +159,7 @@
 .rle-posicao { font-size:11px; color:var(--text2); font-weight:600; text-transform:uppercase; letter-spacing:1px; }
 .rle-val  { font-family:var(--font-display); font-size:17px; color:var(--neon); white-space:nowrap; }
 
-/* Abas */
+/* ── ABAS ── */
 .abas { display:flex; flex-wrap:wrap; gap:8px; }
 .aba-btn { background:rgba(255,255,255,.03); border:1px solid var(--border); color:var(--text2); padding:8px 18px; border-radius:20px; font-family:var(--font-body); font-size:14px; font-weight:700; letter-spacing:1px; cursor:pointer; transition:all .2s; }
 .aba-btn:hover { color:var(--text); border-color:var(--border2); }
