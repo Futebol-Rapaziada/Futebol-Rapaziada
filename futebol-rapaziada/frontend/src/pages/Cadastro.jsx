@@ -109,8 +109,6 @@ export default function Cadastro() {
           <p className="cad-sub">Crie sua conta e monte seu perfil.</p>
         </div>
 
-        
-
         {/* Dados da conta */}
         <div className="cad-section">
           <p className="cad-section-label">Dados da Conta</p>
