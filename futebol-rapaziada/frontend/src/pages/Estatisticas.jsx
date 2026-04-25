@@ -8,7 +8,7 @@ const ABAS = ["Geral","Artilheiro","Garçom","Participação","Defesa","Presenç
 
 function Podio({ lista, campo, renderVal, titulo, icone }) {
   const top = lista.slice(0, 3);
-  const ordem = [1, 0, 2]; // prata, ouro, bronze (visual pódio)
+  const ordem = [0, 1, 2]; // ouro, prata, bronze (1º centro, 2º esquerda, 3º direita)
   const alturas = ["60px","90px","45px"];
   const labels  = ["🥈 2º","🥇 1º","🥉 3º"];
   const cores   = ["#9ca3af","#ffd166","#cd7c2f"];

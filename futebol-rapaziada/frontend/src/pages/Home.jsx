@@ -176,21 +176,21 @@ export default function Home() {
 
         {/* ── CARDS INFO ── */}
         <div className="info-grid">
-          <a href="/Times">
+          <a onClick={()=>navigate("/times")}>
             <div className="info-card">
               <div className="ic-header"><span>👕</span><h3>Time</h3></div>
               <div className="ic-body"><p className="ic-val">{player.time||"Sem time"}</p></div>
             </div>
           </a>
 
-          <a href="/presenca">
+          <a onClick={()=>navigate("/presenca")}>
             <div className={`info-card ${player.confirmado?"ic-green":"ic-red"}`}>
               <div className="ic-header"><span>{player.confirmado?"✅":"❌"}</span><h3>Próximo Jogo</h3></div>
               <div className="ic-body"><p className="ic-val">{player.confirmado?"Confirmado":"Não confirmado"}</p></div>
             </div>
           </a>
 
-          <a href="/calendario">
+          <a onClick={()=>navigate("/calendario")}>
             <div className="info-card">
               <div className="ic-header"><span>🏆</span><h3>Campeonato</h3></div>
               <div className="ic-body">
@@ -200,21 +200,23 @@ export default function Home() {
             </div>
           </a>
 
-          <div className="info-card">
-            <div className="ic-header"><span>📈</span><h3>Desempenho</h3></div>
-            <div className="ic-body">
-              {[
-                { l:"Média Gols",  v: player.jogos>0?(player.gols/player.jogos).toFixed(2):"0.00" },
-                { l:"Média Ass.",  v: player.jogos>0?(player.assistencias/player.jogos).toFixed(2):"0.00" },
-                { l:"G+A / Jogo",  v: player.jogos>0?(((player.gols??0)+(player.assistencias??0))/player.jogos).toFixed(2):"0.00" },
-              ].map(({l,v})=>(
-                <div key={l} className="desemp-row">
-                  <span className="d-lbl">{l}</span>
-                  <span className="d-val">{v}</span>
-                </div>
-              ))}
+          <a onClick={()=>navigate("/estatisticas")}>
+            <div className="info-card">
+              <div className="ic-header"><span>📈</span><h3>Desempenho</h3></div>
+              <div className="ic-body">
+                {[
+                  { l:"Média Gols",  v: player.jogos>0?(player.gols/player.jogos).toFixed(2):"0.00" },
+                  { l:"Média Ass.",  v: player.jogos>0?(player.assistencias/player.jogos).toFixed(2):"0.00" },
+                  { l:"G+A / Jogo",  v: player.jogos>0?(((player.gols??0)+(player.assistencias??0))/player.jogos).toFixed(2):"0.00" },
+                ].map(({l,v})=>(
+                  <div key={l} className="desemp-row">
+                    <span className="d-lbl">{l}</span>
+                    <span className="d-val">{v}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          </a>
         </div>
 
       </div>
