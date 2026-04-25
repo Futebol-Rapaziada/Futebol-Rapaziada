@@ -13,7 +13,7 @@ function Podio({ lista, campo, renderVal, titulo, icone }) {
   const ordemVisual = [1, 0, 2];
   const alturas     = ["75px", "115px", "50px"];
   const cores       = ["#9ca3af", "#ffd166", "#cd7c2f"];
-  const medalhas    = ["🥈 º", "🥇 º", "🥉 º"];
+  const medalhas    = ["🥈 ", "🥇 ", "🥉"];
 
   return (
     <div className="podio-card">
