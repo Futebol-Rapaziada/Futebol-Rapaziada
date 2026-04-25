@@ -5,7 +5,7 @@ import "../../style/Layout.css";
 const MENU = [
   { path: "/home",          icon: "🃏", label: "Meu Perfil" },
   { path: "/estatisticas",  icon: "📊", label: "Estatísticas" },
-  { path: "/jogadores",    icon: "👤", label: "Jogadores", em_breve: true },
+  { path: "/jogadores",    icon: "👤", label: "Jogadores"},
   { path: "/campeonato",    icon: "🏆", label: "Campeonato" },
   { path: "/jogos",         icon: "⚽", label: "Jogos" },
   { path: "/presenca",      icon: "📋", label: "Lista de Presença" },
