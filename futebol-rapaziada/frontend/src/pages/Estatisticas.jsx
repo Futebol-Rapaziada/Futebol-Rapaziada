@@ -9,11 +9,11 @@ const ABAS = ["Geral","Artilheiro","Garçom","Participação","Defesa","Presenç
 function Podio({ lista, campo, renderVal, titulo, icone }) {
   const top = lista.slice(0, 3);
 
-  // ordem visual: 2º (esquerda), 1º (centro/alto), 3º (direita)
+  
   const ordemVisual = [1, 0, 2];
   const alturas     = ["75px", "115px", "50px"];
   const cores       = ["#9ca3af", "#ffd166", "#cd7c2f"];
-  const medalhas    = ["🥈 2º", "🥇 1º", "🥉 3º"];
+  const medalhas    = ["🥈 º", "🥇 º", "🥉 º"];
 
   return (
     <div className="podio-card">
