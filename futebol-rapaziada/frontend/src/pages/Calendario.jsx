@@ -154,7 +154,7 @@ export default function Calendario() {
               </div>
               <div className="cp-meta">
                 <span>🕚 23:00</span>
-                <span>📍 Campo do Rapaziada</span>
+                <span>📍 Fair-Play</span>
                 <span>⚽ Rodada {proximo.rodada}</span>
               </div>
             </div>
