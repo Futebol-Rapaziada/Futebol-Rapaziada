@@ -75,6 +75,7 @@ export default function Cadastro() {
         await criarJogador({
           nome: form.nome, posicao: form.posicao,
           idade: Number(form.idade), perna_boa: form.perna_boa,
+          fotoUrl: fotoBase64, // base64 string — sem problemas no JSON
           overall: 0, time: "",
           gols: 0, assistencias: 0, jogos: 0, cartoes: 0,
         });
@@ -107,6 +108,8 @@ export default function Cadastro() {
           <h1 className="cad-titulo">Cadastro do Jogador</h1>
           <p className="cad-sub">Crie sua conta e monte seu perfil.</p>
         </div>
+
+      
 
         {/* Dados da conta */}
         <div className="cad-section">
