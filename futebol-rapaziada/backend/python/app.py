@@ -583,26 +583,39 @@ def criar_midia():
     verify_jwt_in_request()
     jogador_id = int(get_jwt_identity())
 
-    dados = request.get_json()
-    titulo    = dados.get("titulo")
-    descricao = dados.get("descricao", "")
-    tag       = dados.get("tag")
-    video_url = dados.get("video_url")
+    titulo    = request.form.get("titulo")
+    descricao = request.form.get("descricao", "")
+    tag       = request.form.get("tag")
+    arquivo   = request.files.get("video")
 
-    if not titulo or not tag or not video_url:
-        return jsonify({"erro": "titulo, tag e video_url são obrigatórios"}), 400
+    if not titulo or not tag or not arquivo:
+        return jsonify({"erro": "titulo, tag e video são obrigatórios"}), 400
+
+    # Por enquanto salva a URL como vazia — quando tiver o storage (R2/Supabase)
+    # é aqui que você faz o upload e pega a URL de volta
+    video_url = ""  # <- substituir pelo upload no storage futuramente
 
     conn = obter_conexao()
-    cursor = conn.cursor()
+    cursor = conn.cursor(dictionary=True)
     cursor.execute(
         "INSERT INTO midias (titulo, descricao, tag, video_url, jogador_id) VALUES (%s, %s, %s, %s, %s)",
         (titulo, descricao, tag, video_url, jogador_id)
     )
     conn.commit()
     novo_id = cursor.lastrowid
-    cursor.close(); conn.close()
 
-    return jsonify({"id": novo_id, "mensagem": "Mídia criada!"}), 201
+    cursor.execute("""
+        SELECT m.*, j.nome as autor_nome, j.id_jogador as autor_id
+        FROM midias m
+        JOIN jogadores j ON j.id_jogador = m.jogador_id
+        WHERE m.id = %s
+    """, (novo_id,))
+    midia = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    midia["autor"] = {"id": midia.pop("autor_id"), "nome": midia.pop("autor_nome")}
+    return jsonify(midia), 201
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────────
 
