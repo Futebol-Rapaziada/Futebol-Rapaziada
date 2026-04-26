@@ -341,7 +341,7 @@ def get_times_jogo():
     for time in times:
         cursor.execute("""
             SELECT e.id, e.posicao_campo, e.reserva,
-                j.id as jogador_id, j.nome, j.posicao, j.fotoUrl, j.overall
+                j.id_jogador as jogador_id, j.nome, j.posicao, j.fotoUrl, j.overall
             FROM escalacao e
             LEFT JOIN jogadores j ON e.id_jogador = j.id
             WHERE e.id_time = %s
