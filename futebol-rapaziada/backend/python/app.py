@@ -430,6 +430,180 @@ def limpar_escalacao(id_time):
     cursor.close(); conn.close()
     return jsonify({"mensagem": "Escalação limpa!"})
 
+# ─── MÍDIAS ──────────────────────────────────────────────────────────────────────
+
+@app.route('/midias', methods=['GET'])
+def get_midias():
+    tag    = request.args.get('tag')
+    busca  = request.args.get('busca')
+    ordem  = request.args.get('ordem', 'recente')
+    pagina = int(request.args.get('pagina', 1))
+    por_pagina = 10
+    offset = (pagina - 1) * por_pagina
+
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+
+    where = "WHERE 1=1"
+    params = []
+
+    if tag:
+        where += " AND m.tag = %s"
+        params.append(tag)
+    if busca:
+        where += " AND (m.titulo LIKE %s OR j.nome LIKE %s)"
+        params.extend([f"%{busca}%", f"%{busca}%"])
+
+    order_map = {
+        "curtidas": "m.curtidas DESC",
+        "views":    "m.visualizacoes DESC",
+        "recente":  "m.criado_em DESC"
+    }
+    order_sql = order_map.get(ordem, "m.criado_em DESC")
+
+    cursor.execute(f"""
+        SELECT COUNT(*) as total FROM midias m
+        JOIN jogadores j ON j.id_jogador = m.jogador_id
+        {where}
+    """, params)
+    total = cursor.fetchone()["total"]
+
+    cursor.execute(f"""
+        SELECT m.*, j.nome as autor_nome, j.id_jogador as autor_id
+        FROM midias m
+        JOIN jogadores j ON j.id_jogador = m.jogador_id
+        {where}
+        ORDER BY {order_sql}
+        LIMIT %s OFFSET %s
+    """, params + [por_pagina, offset])
+    videos = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    for v in videos:
+        v["autor"] = {"id": v.pop("autor_id"), "nome": v.pop("autor_nome")}
+
+    return jsonify({"total": total, "pagina": pagina, "por_pagina": por_pagina, "videos": videos})
+
+
+@app.route('/midias/<int:id>', methods=['GET'])
+def get_midia(id):
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("UPDATE midias SET visualizacoes = visualizacoes + 1 WHERE id = %s", (id,))
+    conn.commit()
+
+    cursor.execute("""
+        SELECT m.*, j.nome as autor_nome, j.id_jogador as autor_id
+        FROM midias m
+        JOIN jogadores j ON j.id_jogador = m.jogador_id
+        WHERE m.id = %s
+    """, (id,))
+    video = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if not video:
+        return jsonify({"erro": "Vídeo não encontrado"}), 404
+
+    video["autor"] = {"id": video.pop("autor_id"), "nome": video.pop("autor_nome")}
+    return jsonify(video)
+
+
+@app.route('/midias/<int:id>/curtir', methods=['POST'])
+def curtir_midia(id):
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+    verify_jwt_in_request()
+    jogador_id = int(get_jwt_identity())
+
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute(
+        "SELECT id FROM midia_curtidas WHERE midia_id = %s AND jogador_id = %s",
+        (id, jogador_id)
+    )
+    ja_curtiu = cursor.fetchone()
+
+    if ja_curtiu:
+        cursor.execute(
+            "DELETE FROM midia_curtidas WHERE midia_id = %s AND jogador_id = %s",
+            (id, jogador_id)
+        )
+        cursor.execute("UPDATE midias SET curtidas = curtidas - 1 WHERE id = %s", (id,))
+        curtido = False
+    else:
+        cursor.execute(
+            "INSERT INTO midia_curtidas (midia_id, jogador_id) VALUES (%s, %s)",
+            (id, jogador_id)
+        )
+        cursor.execute("UPDATE midias SET curtidas = curtidas + 1 WHERE id = %s", (id,))
+        curtido = True
+
+    conn.commit()
+    cursor.execute("SELECT curtidas FROM midias WHERE id = %s", (id,))
+    total = cursor.fetchone()["curtidas"]
+    cursor.close()
+    conn.close()
+
+    return jsonify({"curtido": curtido, "total_curtidas": total})
+
+
+@app.route('/midias/<int:id>', methods=['DELETE'])
+def deletar_midia(id):
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+    verify_jwt_in_request()
+    jogador_id = int(get_jwt_identity())
+
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM midias WHERE id = %s", (id,))
+    midia = cursor.fetchone()
+
+    if not midia:
+        cursor.close(); conn.close()
+        return jsonify({"erro": "Vídeo não encontrado"}), 404
+
+    if midia["jogador_id"] != jogador_id:
+        cursor.close(); conn.close()
+        return jsonify({"erro": "Sem permissão"}), 403
+
+    cursor.execute("DELETE FROM midias WHERE id = %s", (id,))
+    conn.commit()
+    cursor.close(); conn.close()
+    return jsonify({"mensagem": "Vídeo deletado!"})
+
+
+@app.route('/midias', methods=['POST'])
+def criar_midia():
+    from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
+    verify_jwt_in_request()
+    jogador_id = int(get_jwt_identity())
+
+    dados = request.get_json()
+    titulo    = dados.get("titulo")
+    descricao = dados.get("descricao", "")
+    tag       = dados.get("tag")
+    video_url = dados.get("video_url")
+
+    if not titulo or not tag or not video_url:
+        return jsonify({"erro": "titulo, tag e video_url são obrigatórios"}), 400
+
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO midias (titulo, descricao, tag, video_url, jogador_id) VALUES (%s, %s, %s, %s, %s)",
+        (titulo, descricao, tag, video_url, jogador_id)
+    )
+    conn.commit()
+    novo_id = cursor.lastrowid
+    cursor.close(); conn.close()
+
+    return jsonify({"id": novo_id, "mensagem": "Mídia criada!"}), 201
+
 # ─── MAIN ─────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
