@@ -101,6 +101,69 @@ export async function cadastro(nome, email, senha) {
 /* =========================
    DADOS GERAIS
 ========================= */
+// ─── Adicionar no final do seu api.js ────────────────────────────────────────
+// Cole essas funções no arquivo frontend/src/services/api.js
+
+/* =========================
+   MÍDIAS
+========================= */
+
+// Listar vídeos — params: { tag, busca, ordem, pagina }
+export async function getMidias(params = {}) {
+  const query = new URLSearchParams();
+  if (params.tag && params.tag !== "Todos") query.set("tag", params.tag);
+  if (params.busca)  query.set("busca",  params.busca);
+  if (params.ordem)  query.set("ordem",  params.ordem);
+  if (params.pagina) query.set("pagina", params.pagina);
+
+  const qs = query.toString();
+  return request(`/midias${qs ? "?" + qs : ""}`);
+}
+
+// Detalhe de um vídeo (já incrementa view no back)
+export async function getMidia(id) {
+  return request(`/midias/${id}`);
+}
+
+// Upload de vídeo — usa fetch direto (multipart/form-data, sem Content-Type JSON)
+export async function postMidia(form) {
+  const fd = new FormData();
+  fd.append("titulo",    form.titulo);
+  fd.append("descricao", form.descricao || "");
+  fd.append("tag",       form.tag);
+  fd.append("video",     form.arquivo); // File vindo do <input type="file">
+
+  const token = obterToken();
+
+  const response = await fetch(`${API_URL}/midias`, {
+    method: "POST",
+    headers: {
+      // SEM Content-Type aqui — o browser define automaticamente com o boundary do multipart
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: fd,
+  });
+
+  let data = null;
+  try { data = await response.json(); } catch { data = null; }
+
+  if (!response.ok) {
+    throw new Error(data?.erro || data?.mensagem || "Erro ao fazer upload");
+  }
+
+  return data; // { id, titulo, video_url, mensagem }
+}
+
+// Curtir / Descurtir (toggle — back decide se adiciona ou remove)
+export async function curtirMidia(id) {
+  return request(`/midias/${id}/curtir`, { method: "POST" });
+  // Retorna: { curtido: bool, total_curtidas: number }
+}
+
+// Deletar vídeo (só o dono ou admin)
+export async function deleteMidia(id) {
+  return request(`/midias/${id}`, { method: "DELETE" });
+}
 
 export async function getCampeonatos() {
   return request("/campeonatos");

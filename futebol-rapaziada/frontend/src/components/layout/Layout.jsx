@@ -12,6 +12,7 @@ const MENU = [
   { path: "/times",         icon: "👕", label: "Times" },
   { path: "/financeiro",    icon: "💰", label: "Financeiro" },
   { path: "/calendario",    icon: "📆", label: "Calendario" },
+  { path: "/midia",    icon: "📷", label: "Midia" },
 ];
 
 export default function Layout({ children }) {
