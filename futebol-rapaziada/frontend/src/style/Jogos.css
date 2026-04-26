@@ -1,10 +1,162 @@
-@import './tokens.css';
+/* ============================================================
+   Jogos.css — Cards de Resultado
+   ============================================================ */
 
-.jogos-wrap{display:flex;flex-direction:column;gap:24px;}
+.jogos-wrap {
+  padding: 2rem 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
 
-.jogos-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px 20px;background:rgba(255,255,255,.02);border:1px dashed var(--border2);border-radius:16px;text-align:center;}
-.je-icone{font-size:56px;}
-.jogos-empty h2{font-family:var(--font-display);font-size:24px;letter-spacing:2px;color:var(--text2);}
-.jogos-empty p{font-size:14px;color:var(--text2);}
+.page-titulo {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.25rem;
+}
 
-.camp-aviso{background:rgba(255,255,255,.02);border:1px dashed var(--border2);border-radius:10px;padding:14px 20px;font-size:13px;color:var(--text2);text-align:center;}
+.page-sub {
+  color: #888;
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+/* ── Lista de jogos ─────────────────────────────────────── */
+.jogos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Card individual ────────────────────────────────────── */
+.jogo-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.jogo-card:hover {
+  border-color: #3a3a3a;
+  transform: translateY(-2px);
+}
+
+/* ── Data do jogo ───────────────────────────────────────── */
+.jogo-card__data {
+  font-size: 0.8rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Placar ─────────────────────────────────────────────── */
+.jogo-card__placar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.jogo-card__time {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.jogo-card__time:last-child {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.jogo-card__time-nome {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.jogo-card__gols {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  min-width: 2rem;
+  text-align: center;
+}
+
+.jogo-card__time--vencedor .jogo-card__gols {
+  color: #4ade80; /* verde vitória */
+}
+
+.jogo-card__time--vencedor .jogo-card__time-nome {
+  color: #fff;
+}
+
+.jogo-card__vs {
+  font-size: 1.2rem;
+  color: #444;
+  font-weight: 700;
+}
+
+/* ── Rodapé / badge ─────────────────────────────────────── */
+.jogo-card__rodape {
+  border-top: 1px solid #2a2a2a;
+  padding-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+}
+
+.jogo-card__badge {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+}
+
+.jogo-card__badge--vitoria {
+  background: #14532d;
+  color: #4ade80;
+}
+
+.jogo-card__badge--empate {
+  background: #292524;
+  color: #a8a29e;
+}
+
+/* ── Estado vazio / erro / loading ─────────────────────── */
+.jogos-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #666;
+}
+
+.je-icone {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.jogos-empty h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #aaa;
+  margin-bottom: 0.5rem;
+}
+
+.jogos-empty p {
+  font-size: 0.9rem;
+}
+
+.camp-aviso {
+  background: #1c1917;
+  border: 1px dashed #3a3a3a;
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: #888;
+}

@@ -512,10 +512,139 @@
 .midia-modal::-webkit-scrollbar-track { background: #0a0e1a; }
 .midia-modal::-webkit-scrollbar-thumb { background: #1e2d40; border-radius: 3px; }
 
-/* ── Responsivo ── */
+/* ══════════════════════════════════════
+   RESPONSIVO — MOBILE
+══════════════════════════════════════ */
 @media (max-width: 640px) {
-  .midias-container { padding: 18px 16px; }
-  .midias-filtros   { flex-direction: column; align-items: flex-start; }
-  .midias-order     { margin-left: 0; }
-  .midias-search-wrap { max-width: 100%; }
+
+  /* ── Container ── */
+  .midias-container {
+    padding: 16px 14px;
+  }
+
+  /* ── Header ── */
+  .midias-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .midias-title {
+    font-size: 20px;
+  }
+  .midias-post-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  /* ── Filtros: vira coluna ── */
+  .midias-filtros {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  /* ── Busca: largura total ── */
+  .midias-search-wrap {
+    max-width: 100%;
+    width: 100%;
+  }
+  .midias-search {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 12px 10px 34px;
+  }
+
+  /* ── Tags: scroll horizontal (não quebra linha) ── */
+  .midias-tags {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .midias-tags::-webkit-scrollbar { display: none; }
+
+  .midia-tag-filter {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    font-size: 11px;
+  }
+
+  /* ── Ordenação: scroll horizontal também ── */
+  .midias-order {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-left: 0;
+    gap: 6px;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .midias-order::-webkit-scrollbar { display: none; }
+
+  .midias-order-btn {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  /* ── Grid: 1 coluna no mobile ── */
+  .midias-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  /* ── Card ── */
+  .midia-card:hover {
+    transform: none; /* Sem hover no touch */
+  }
+
+  /* ── Modal de upload: ocupa a tela toda ── */
+  .midia-overlay {
+    padding: 0;
+    align-items: flex-end; /* Sobe de baixo, estilo bottom sheet */
+  }
+  .midia-modal {
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px;
+    max-height: 92vh;
+    max-width: 100%;
+  }
+
+  /* ── Modal de vídeo: tela cheia ── */
+  .midia-modal-video {
+    border-radius: 0;
+    max-height: 100vh;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .midia-player {
+    padding-bottom: 56.25%;
+    flex-shrink: 0;
+  }
+  .midia-modal-info {
+    padding: 14px 16px 20px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .midia-modal-video-title {
+    font-size: 16px;
+  }
+
+  /* ── Tag picker no modal ── */
+  .midia-tag-row {
+    gap: 6px;
+  }
+  .midia-tag-pick {
+    padding: 6px 12px;
+    font-size: 11px;
+  }
 }
