@@ -1,169 +1,208 @@
 @import './tokens.css';
 
-/* ESTRUTURA GERAL */
-.estat-wrap { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 28px; 
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 10px; /* Margem interna para não colar nos bordos do telemóvel */
-    box-sizing: border-box;
+/* ── RESET BASE ── */
+*, *::before, *::after { box-sizing: border-box; }
+
+/* ── ESTRUTURA GERAL ── */
+.estat-wrap {
+  display: flex; flex-direction: column; gap: 16px;
+  width: 100%; max-width: 100%; overflow-x: hidden;
 }
+.estat-conteudo { display: flex; flex-direction: column; gap: 16px; }
 
-.estat-conteudo { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 24px; 
+/* ── MINHAS STATS ── */
+.meus-stats {
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(0,255,135,.15);
+  border-radius: 14px; padding: 14px;
+  display: flex; flex-direction: column; gap: 14px;
+  width: 100%;
 }
-
-/* ── MINHAS STATS (TOP CARD) ── */
-.meus-stats { 
-    background: rgba(255, 255, 255, .02); 
-    border: 1px solid rgba(0, 255, 135, .15); 
-    border-radius: 16px; 
-    padding: 22px; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 18px; 
+.ms-top {
+  display: flex; flex-direction: column; gap: 12px;
 }
-
-.ms-top { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 20px; 
-    align-items: center; 
+.ms-id {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(0,255,135,.05);
+  border: 1px solid rgba(0,255,135,.15);
+  border-radius: 12px; padding: 12px 14px; width: 100%;
 }
-
-/* Ajuste do OVR e Nome no Mobile */
-@media (max-width: 600px) {
-    .ms-top { flex-direction: column; text-align: center; justify-content: center; }
-    .ms-id { width: 100%; justify-content: center; }
-    .ms-ovr { font-size: 38px; }
+.ms-ovr {
+  font-family: var(--font-display); font-size: 40px;
+  color: var(--neon); line-height: 1;
+  text-shadow: 0 0 20px rgba(0,255,135,.4); flex-shrink: 0;
 }
+.ms-nome { font-family: var(--font-display); font-size: 18px; color: var(--text); margin: 0; }
+.ms-pos  { font-size: 11px; color: var(--text2); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
 
-.ms-id { display: flex; align-items: center; gap: 14px; background: rgba(0, 255, 135, .05); border: 1px solid rgba(0, 255, 135, .15); border-radius: 12px; padding: 14px 18px; }
-.ms-ovr { font-family: var(--font-display); font-size: 48px; color: var(--neon); line-height: 1; text-shadow: 0 0 20px rgba(0, 255, 135, .4); }
-.ms-nome { font-family: var(--font-display); font-size: 22px; letter-spacing: 1px; color: var(--text); }
-.ms-pos { font-size: 12px; color: var(--text2); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
-
-/* Grid de Mini Boxes (Gols, Assist, etc) */
-.ms-boxes { 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 10px; 
-    flex: 1; 
-    width: 100%;
+/* Mini Boxes */
+.ms-boxes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px; width: 100%;
 }
-
-.ms-box { 
-    flex: 1; 
-    min-width: 70px; /* Garante que caibam pelo menos 2 ou 3 por linha no telemóvel */
-    background: rgba(255, 255, 255, .03); 
-    border: 1px solid var(--border); 
-    border-radius: 12px; 
-    padding: 13px 10px; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 4px; 
-    transition: all .2s; 
+.ms-box {
+  background: rgba(255,255,255,.03); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 6px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
 }
+.msb-i { font-size: 16px; }
+.msb-v { font-family: var(--font-display); font-size: 18px; color: var(--text); font-weight: 700; }
+.msb-l { font-size: 10px; color: var(--text2); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
 
-.ms-ranks { display: flex; flex-wrap: wrap; gap: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
-
-/* ── PÓDIOS GRID ── */
-.podios-grid { 
-    display: grid; 
-    /* Cria colunas automáticas: no PC ficam 3, no telemóvel 1 */
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-    gap: 16px; 
+.ms-ranks {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding-top: 12px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text2);
 }
-
-.podio-card { 
-    background: rgba(255, 255, 255, .02); 
-    border: 1px solid var(--border); 
-    border-radius: 14px; 
-    padding: 20px; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 16px; 
-}
-
-/* ── PALCO DO PÓDIO (RESPONSIVIDADE DA BASE) ── */
-.podio-palco { 
-    display: flex; 
-    align-items: flex-end; 
-    justify-content: center; 
-    gap: 4px; 
-    min-height: 200px; 
-}
-
-.podio-slot { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
-.podio-base { width: 100%; border-radius: 6px 6px 0 0; display: flex; align-items: center; justify-content: center; min-width: 50px; }
-
-@media (max-width: 400px) {
-    .podio-base { min-width: 40px; }
-    .podio-nome { font-size: 10px; max-width: 60px; }
-    .podio-foto { width: 38px; height: 38px; }
-}
-
-.podio-foto { width: 48px; height: 48px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border2); display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, .05); font-size: 24px; }
-.podio-foto img { width: 100%; height: 100%; object-fit: cover; }
-.podio-val { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--neon); }
-
-/* ── TABELA (SOLUÇÃO DEFINITIVA MOBILE) ── */
-.tabela-wrap { 
-    background: rgba(255, 255, 255, .02); 
-    border: 1px solid var(--border); 
-    border-radius: 14px; 
-    overflow: hidden; 
-    width: 100%;
-}
-
-.tabela-scroll { 
-    overflow-x: auto; 
-    width: 100%;
-    -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
-}
-
-.estat-tabela { 
-    width: 100%; 
-    border-collapse: collapse; 
-    min-width: 600px; /* Isto impede a tabela de "encolher" as colunas no mobile */
-}
-
-.estat-tabela th, .estat-tabela td { padding: 12px; }
+.ms-ranks strong { color: var(--text); }
 
 /* ── ABAS ── */
-.abas { 
-    display: flex; 
-    flex-wrap: nowrap; /* Impede quebra de linha */
-    overflow-x: auto; /* Permite deslizar os botões se houver muitos */
-    gap: 8px; 
-    padding-bottom: 4px;
-    scrollbar-width: none;
+.abas {
+  display: flex; flex-wrap: nowrap; overflow-x: auto;
+  gap: 6px; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; padding-bottom: 2px;
 }
 .abas::-webkit-scrollbar { display: none; }
-
-.aba-btn { 
-    flex: 0 0 auto; /* Mantém o tamanho original do botão no scroll */
-    white-space: nowrap; 
-    background: rgba(255, 255, 255, .03); 
-    border: 1px solid var(--border); 
-    color: var(--text2); 
-    padding: 8px 18px; 
-    border-radius: 20px; 
-    font-size: 14px; 
-    font-weight: 700; 
+.aba-btn {
+  flex: 0 0 auto; white-space: nowrap;
+  background: rgba(255,255,255,.03); border: 1px solid var(--border);
+  color: var(--text2); padding: 6px 14px; border-radius: 20px;
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: all .15s;
+}
+.aba-btn.ativa {
+  background: rgba(0,255,135,.12);
+  border-color: rgba(0,255,135,.3); color: var(--neon);
 }
 
-/* RANK LISTA (Para versões mobile que usam lista em vez de tabela) */
-.rank-lista-est { display: flex; flex-direction: column; gap: 8px; }
-.rle-item { display: flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, .02); border: 1px solid var(--border); border-radius: 10px; padding: 10px 18px; }
+/* ── PÓDIO ── */
+.podios-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px; width: 100%;
+}
+.podio-card {
+  background: rgba(255,255,255,.02); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px;
+  display: flex; flex-direction: column; gap: 12px; width: 100%;
+}
+.podio-titulo {
+  display: flex; align-items: center; gap: 8px;
+}
+.podio-titulo h3 { font-size: 14px; margin: 0; color: var(--text); }
 
-/* Loading */
+.podio-palco {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 4px; min-height: 160px; width: 100%;
+}
+.podio-slot {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px; flex: 1; min-width: 0;
+}
+.podio-slot.vazio { opacity: 0; pointer-events: none; }
+.podio-coroa { font-size: 16px; }
+.podio-foto {
+  width: 40px; height: 40px; border-radius: 50%;
+  overflow: hidden; border: 2px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.05); font-size: 20px; flex-shrink: 0;
+}
+.podio-foto img { width: 100%; height: 100%; object-fit: cover; }
+.podio-nome {
+  font-size: 10px; text-align: center; color: var(--text2);
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  padding: 0 2px;
+}
+.podio-val { font-family: var(--font-display); font-size: 13px; font-weight: 700; }
+.podio-base {
+  width: 100%; border-radius: 6px 6px 0 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.podio-label { font-size: 12px; }
+
+/* ── TABELA ── */
+.tabela-wrap {
+  background: rgba(255,255,255,.02); border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; width: 100%;
+}
+.tabela-titulo { font-size: 13px; color: var(--text2); padding: 12px 14px 0; margin: 0; }
+.tabela-scroll {
+  overflow-x: auto; width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+.estat-tabela {
+  width: 100%; min-width: 500px;
+  border-collapse: collapse;
+}
+.estat-tabela thead tr {
+  background: rgba(255,255,255,.03);
+  border-bottom: 1px solid var(--border2);
+}
+.estat-tabela th {
+  padding: 9px 6px; text-align: center;
+  font-size: 10px; font-weight: 700; color: var(--text2);
+  text-transform: uppercase; white-space: nowrap;
+}
+.estat-tabela th:nth-child(2),
+.estat-tabela th:nth-child(3) { text-align: left; }
+.estat-tabela td {
+  padding: 9px 6px; text-align: center;
+  font-size: 13px; font-weight: 600; color: var(--text);
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+.estat-tabela tr:last-child td { border-bottom: none; }
+.estat-tabela tr.eu td        { background: rgba(0,255,135,.05); }
+.estat-tabela tr.eu td:first-child { border-left: 2px solid var(--neon); }
+
+.td-pos     { color: var(--text2); }
+.td-nome    { text-align: left !important; max-width: 90px; overflow: hidden; text-overflow: ellipsis; }
+.td-posicao { text-align: left !important; font-size: 10px; color: var(--text2); text-transform: uppercase; }
+.td-dest    { color: #ffd166 !important; }
+.td-gpa     { color: var(--neon); font-weight: 700; }
+.td-ovr     { display: inline-block; background: rgba(0,255,135,.12); color: var(--neon); padding: 2px 7px; border-radius: 6px; font-family: var(--font-display); font-size: 13px; font-weight: 700; }
+.tab-foto   { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; margin-right: 4px; vertical-align: middle; }
+.tab-av     { font-size: 13px; margin-right: 3px; }
+.tag-eu     { font-size: 9px; background: rgba(0,255,135,.15); color: var(--neon); padding: 1px 4px; border-radius: 4px; margin-left: 4px; font-weight: 700; }
+
+/* ── RANK LISTA ── */
+.rank-lista-est { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+.rle-item {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.02); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 12px;
+  min-width: 0; width: 100%;
+}
+.rle-item.eu {
+  background: rgba(0,255,135,.06);
+  border-color: rgba(0,255,135,.2);
+  border-left: 3px solid var(--neon);
+}
+.rle-pos  { font-size: 14px; flex-shrink: 0; min-width: 26px; }
+.rle-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; overflow: hidden; }
+.rle-nome {
+  font-size: 14px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 4px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.rle-posicao { font-size: 10px; color: var(--text2); text-transform: uppercase; }
+.rle-val { flex-shrink: 0; font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--neon); white-space: nowrap; }
+
+/* ── LOADING ── */
 .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 60vh; gap: 16px; }
-.loading-ball { font-size: 48px; animation: spin 1s linear infinite; }
-@keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
+.loading-ball   { font-size: 48px; animation: spin 1s linear infinite; }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+/* ── DESKTOP ── */
+@media (min-width: 640px) {
+  .estat-wrap     { gap: 24px; }
+  .estat-conteudo { gap: 20px; }
+  .meus-stats     { padding: 20px; }
+  .ms-top         { flex-direction: row; align-items: center; }
+  .ms-id          { width: auto; }
+  .ms-ovr         { font-size: 48px; }
+  .ms-boxes       { grid-template-columns: repeat(6, 1fr); }
+  .podios-grid    { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .podios-grid { grid-template-columns: repeat(4, 1fr); }
+}
