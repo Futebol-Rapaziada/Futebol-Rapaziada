@@ -591,7 +591,7 @@ def criar_midia():
         return jsonify({}), 200
     from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
     verify_jwt_in_request()
-    jogador_id = int(get_jwt_identity())
+    id_usuario = int(get_jwt_identity())
 
     titulo    = request.form.get("titulo")
     descricao = request.form.get("descricao", "")
@@ -601,12 +601,26 @@ def criar_midia():
     if not titulo or not tag or not arquivo:
         return jsonify({"erro": "titulo, tag e video são obrigatórios"}), 400
 
-    # Por enquanto salva a URL como vazia — quando tiver o storage (R2/Supabase)
-    # é aqui que você faz o upload e pega a URL de volta
-    video_url = ""  # <- substituir pelo upload no storage futuramente
-
     conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
+
+    # Busca o nome do usuário logado na tabela cadastro
+    cursor.execute("SELECT nome FROM cadastro WHERE id_usuarios = %s", (id_usuario,))
+    usuario = cursor.fetchone()
+    if not usuario:
+        cursor.close(); conn.close()
+        return jsonify({"erro": "Usuário não encontrado"}), 404
+
+    # Busca o jogador com o mesmo nome
+    cursor.execute("SELECT id_jogador FROM jogadores WHERE nome = %s LIMIT 1", (usuario["nome"],))
+    jogador = cursor.fetchone()
+    if not jogador:
+        cursor.close(); conn.close()
+        return jsonify({"erro": "Jogador não encontrado. Peça para um admin te cadastrar como jogador."}), 404
+
+    jogador_id = jogador["id_jogador"]
+    video_url = ""
+
     cursor.execute(
         "INSERT INTO midias (titulo, descricao, tag, video_url, jogador_id) VALUES (%s, %s, %s, %s, %s)",
         (titulo, descricao, tag, video_url, jogador_id)
