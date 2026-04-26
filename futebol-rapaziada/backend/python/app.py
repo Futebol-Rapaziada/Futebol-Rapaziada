@@ -432,8 +432,10 @@ def limpar_escalacao(id_time):
 
 # ─── MÍDIAS ──────────────────────────────────────────────────────────────────────
 
-@app.route('/midias', methods=['GET'])
+@app.route('/midias', methods=['GET', 'OPTIONS'])
 def get_midias():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
     tag    = request.args.get('tag')
     busca  = request.args.get('busca')
     ordem  = request.args.get('ordem', 'recente')
@@ -487,8 +489,10 @@ def get_midias():
     return jsonify({"total": total, "pagina": pagina, "por_pagina": por_pagina, "videos": videos})
 
 
-@app.route('/midias/<int:id>', methods=['GET'])
+@app.route('/midias/<int:id>', methods=['GET', 'OPTIONS'])
 def get_midia(id):
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
     conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
 
@@ -512,8 +516,10 @@ def get_midia(id):
     return jsonify(video)
 
 
-@app.route('/midias/<int:id>/curtir', methods=['POST'])
+@app.route('/midias/<int:id>/curtir', methods=['POST', 'OPTIONS'])
 def curtir_midia(id):
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
     from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
     verify_jwt_in_request()
     jogador_id = int(get_jwt_identity())
@@ -551,8 +557,10 @@ def curtir_midia(id):
     return jsonify({"curtido": curtido, "total_curtidas": total})
 
 
-@app.route('/midias/<int:id>', methods=['DELETE'])
+@app.route('/midias/<int:id>', methods=['DELETE', 'OPTIONS'])
 def deletar_midia(id):
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
     from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
     verify_jwt_in_request()
     jogador_id = int(get_jwt_identity())
@@ -577,8 +585,10 @@ def deletar_midia(id):
     return jsonify({"mensagem": "Vídeo deletado!"})
 
 
-@app.route('/midias', methods=['POST'])
+@app.route('/midias', methods=['POST', 'OPTIONS'])
 def criar_midia():
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
     from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
     verify_jwt_in_request()
     jogador_id = int(get_jwt_identity())
