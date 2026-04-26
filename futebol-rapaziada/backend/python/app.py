@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, request, Response
 from flask_jwt_extended import JWTManager, create_access_token
 from database import obter_conexao
+from supabase import create_client
 import bcrypt
 import os
+import uuid
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,7 +26,7 @@ def origem_permitida(origin):
     ]
     if origin in allowed:
         return True
-    if origin.endswith(".vercel.app"):  # libera todos os previews da Vercel
+    if origin.endswith(".vercel.app"):
         return True
     return False
 
@@ -72,7 +74,6 @@ def cadastro():
         return jsonify({'erro': 'Email já cadastrado'}), 409
 
     senha_hash = bcrypt.hashpw(senha.encode('utf-8'), bcrypt.gensalt())
-    
     cursor.execute(
         "INSERT INTO cadastro (nome, email, senha) VALUES (%s, %s, %s)",
         (nome, email, senha_hash)
@@ -80,7 +81,6 @@ def cadastro():
     conn.commit()
     cursor.close()
     conn.close()
-
     return jsonify({'mensagem': 'Usuário cadastrado com sucesso'}), 201
 
 
@@ -150,8 +150,6 @@ def atualizar_usuario(id):
     conn.close()
     return jsonify({"mensagem": "Usuário atualizado!"})
 
-# ─── DELETAR USUARIO ─────────────────────────────────────────────────────────────────
-
 @app.route("/usuarios/<int:id>", methods=["DELETE"])
 def deletar_usuario(id):
     conn = obter_conexao()
@@ -162,7 +160,8 @@ def deletar_usuario(id):
     conn.close()
     return jsonify({"mensagem": "Usuário deletado!"})
 
-# ─── ALTERAR OS DADOS ─────────────────────────────────────────────────────────────────
+
+# ─── JOGADORES ───────────────────────────────────────────────────────────────────
 
 @app.route('/jogadores/<int:id>', methods=['PUT'])
 def atualizar_jogador(id):
@@ -177,22 +176,68 @@ def atualizar_jogador(id):
         WHERE id = %s
         """,
         (
-            dados["nome"],
-            dados["posicao"],
-            dados["idade"],
-            dados["perna_boa"],
-            dados["fotoUrl"],
-            dados["gols"],
-            dados["assistencias"],
-            dados["jogos"],
-            dados["cartoes"],
-            id,
+            dados["nome"], dados["posicao"], dados["idade"], dados["perna_boa"],
+            dados["fotoUrl"], dados["gols"], dados["assistencias"], dados["jogos"],
+            dados["cartoes"], id,
         )
     )
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify({"mensagem": "Jogador atualizado!"})
+
+@app.route('/jogadores', methods=['GET'])
+def get_jogadores():
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM jogadores")
+    dados = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(dados)
+
+@app.route('/jogadores', methods=['POST'])
+def criar_jogador():
+    dados = request.json
+    id_time = dados.get("time") or None
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO jogadores (nome, posicao, id_time, idade, perna_boa, overall, fotoUrl, gols, assistencias, jogos, cartoes) "
+        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+        (
+            dados["nome"][:90], dados["posicao"], id_time, dados["idade"], dados["perna_boa"],
+            dados.get("overall", 0), dados["fotoUrl"], dados["gols"],
+            dados["assistencias"], dados["jogos"], dados["cartoes"]
+        )
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Jogador cadastrado!"}), 201
+
+@app.route('/jogadores/<int:id>', methods=['DELETE'])
+def deletar_jogador(id):
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM jogadores WHERE id = %s", (id,))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Jogador deletado!"})
+
+@app.route('/jogadores/<int:id>/confirmar', methods=['PATCH'])
+def confirmar_jogador(id):
+    dados = request.json
+    confirmado = 1 if dados.get("confirmado") else 0
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE jogadores SET confirmado = %s WHERE id = %s", (confirmado, id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Presença atualizada!", "confirmado": confirmado})
+
 
 # ─── CAMPEONATOS ─────────────────────────────────────────────────────────────────
 
@@ -231,57 +276,6 @@ def get_financeiro():
     cursor.close()
     conn.close()
     return jsonify(dados)
-
-
-# ─── JOGADORES ───────────────────────────────────────────────────────────────────
-
-@app.route('/jogadores', methods=['GET'])
-def get_jogadores():
-    conn = obter_conexao()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM jogadores")
-    dados = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return jsonify(dados)
-
-@app.route('/jogadores', methods=['POST'])
-def criar_jogador():
-    dados = request.json
-    id_time = dados.get("time") or None
-    conn = obter_conexao()
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO jogadores (nome, posicao, id_time, idade, perna_boa, overall, fotoUrl, gols, assistencias, jogos, cartoes) "
-        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (
-            dados["nome"][:90],
-            dados["posicao"],
-            id_time,
-            dados["idade"],
-            dados["perna_boa"],
-            dados.get("overall", 0),
-            dados["fotoUrl"],
-            dados["gols"],
-            dados["assistencias"],
-            dados["jogos"],
-            dados["cartoes"]
-        )
-    )
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"mensagem": "Jogador cadastrado!"}), 201
-
-@app.route('/jogadores/<int:id>', methods=['DELETE'])
-def deletar_jogador(id):
-    conn = obter_conexao()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM jogadores WHERE id = %s", (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"mensagem": "Jogador deletado!"})
 
 
 # ─── JOGOS ───────────────────────────────────────────────────────────────────────
@@ -335,17 +329,6 @@ def get_times():
     conn.close()
     return jsonify(dados)
 
-@app.route('/jogadores/<int:id>/confirmar', methods=['PATCH'])
-def confirmar_jogador(id):
-    dados = request.json
-    confirmado = 1 if dados.get("confirmado") else 0
-    conn = obter_conexao()
-    cursor = conn.cursor()
-    cursor.execute("UPDATE jogadores SET confirmado = %s WHERE id = %s", (confirmado, id))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"mensagem": "Presença atualizada!", "confirmado": confirmado})
 
 # ─── TIMES DO JOGO ───────────────────────────────────────────────────────────────
 
@@ -355,7 +338,6 @@ def get_times_jogo():
     cursor = conn.cursor(dictionary=True)
     cursor.execute("SELECT * FROM times_jogo ORDER BY id")
     times = cursor.fetchall()
-
     for time in times:
         cursor.execute("""
             SELECT e.id, e.posicao_campo, e.reserva,
@@ -366,7 +348,6 @@ def get_times_jogo():
             ORDER BY e.reserva, e.posicao_campo
         """, (time["id"],))
         time["escalacao"] = cursor.fetchall()
-
     cursor.close(); conn.close()
     return jsonify(times)
 
@@ -399,24 +380,15 @@ def deletar_time_jogo(id):
 def salvar_escalacao():
     dados = request.json
     id_time = dados.get("id_time")
-    slots   = dados.get("slots", [])  # [{ posicao_campo, id_jogador, reserva }]
-
+    slots   = dados.get("slots", [])
     conn = obter_conexao()
     cursor = conn.cursor()
-
-    # Deleta escalação atual do time
     cursor.execute("DELETE FROM escalacao WHERE id_time = %s", (id_time,))
-
-    # Insere nova escalação
     for slot in slots:
         cursor.execute(
             "INSERT INTO escalacao (id_time, id_jogador, posicao_campo, reserva) VALUES (%s, %s, %s, %s)",
-            (id_time,
-            slot.get("id_jogador") or None,
-            slot.get("posicao_campo"),
-            1 if slot.get("reserva") else 0)
+            (id_time, slot.get("id_jogador") or None, slot.get("posicao_campo"), 1 if slot.get("reserva") else 0)
         )
-
     conn.commit()
     cursor.close(); conn.close()
     return jsonify({"mensagem": "Escalação salva!"})
@@ -429,6 +401,7 @@ def limpar_escalacao(id_time):
     conn.commit()
     cursor.close(); conn.close()
     return jsonify({"mensagem": "Escalação limpa!"})
+
 
 # ─── MÍDIAS ──────────────────────────────────────────────────────────────────────
 
@@ -479,7 +452,6 @@ def get_midias():
         LIMIT %s OFFSET %s
     """, params + [por_pagina, offset])
     videos = cursor.fetchall()
-
     cursor.close()
     conn.close()
 
@@ -495,10 +467,8 @@ def get_midia(id):
         return jsonify({}), 200
     conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
-
     cursor.execute("UPDATE midias SET visualizacoes = visualizacoes + 1 WHERE id = %s", (id,))
     conn.commit()
-
     cursor.execute("""
         SELECT m.*, j.nome as autor_nome, j.id_jogador as autor_id
         FROM midias m
@@ -508,10 +478,8 @@ def get_midia(id):
     video = cursor.fetchone()
     cursor.close()
     conn.close()
-
     if not video:
         return jsonify({"erro": "Vídeo não encontrado"}), 404
-
     video["autor"] = {"id": video.pop("autor_id"), "nome": video.pop("autor_nome")}
     return jsonify(video)
 
@@ -526,34 +494,24 @@ def curtir_midia(id):
 
     conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
-
     cursor.execute(
         "SELECT id FROM midia_curtidas WHERE midia_id = %s AND jogador_id = %s",
         (id, jogador_id)
     )
     ja_curtiu = cursor.fetchone()
-
     if ja_curtiu:
-        cursor.execute(
-            "DELETE FROM midia_curtidas WHERE midia_id = %s AND jogador_id = %s",
-            (id, jogador_id)
-        )
+        cursor.execute("DELETE FROM midia_curtidas WHERE midia_id = %s AND jogador_id = %s", (id, jogador_id))
         cursor.execute("UPDATE midias SET curtidas = curtidas - 1 WHERE id = %s", (id,))
         curtido = False
     else:
-        cursor.execute(
-            "INSERT INTO midia_curtidas (midia_id, jogador_id) VALUES (%s, %s)",
-            (id, jogador_id)
-        )
+        cursor.execute("INSERT INTO midia_curtidas (midia_id, jogador_id) VALUES (%s, %s)", (id, jogador_id))
         cursor.execute("UPDATE midias SET curtidas = curtidas + 1 WHERE id = %s", (id,))
         curtido = True
-
     conn.commit()
     cursor.execute("SELECT curtidas FROM midias WHERE id = %s", (id,))
     total = cursor.fetchone()["curtidas"]
     cursor.close()
     conn.close()
-
     return jsonify({"curtido": curtido, "total_curtidas": total})
 
 
@@ -567,18 +525,14 @@ def deletar_midia(id):
 
     conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
-
     cursor.execute("SELECT * FROM midias WHERE id = %s", (id,))
     midia = cursor.fetchone()
-
     if not midia:
         cursor.close(); conn.close()
         return jsonify({"erro": "Vídeo não encontrado"}), 404
-
     if midia["jogador_id"] != jogador_id:
         cursor.close(); conn.close()
         return jsonify({"erro": "Sem permissão"}), 403
-
     cursor.execute("DELETE FROM midias WHERE id = %s", (id,))
     conn.commit()
     cursor.close(); conn.close()
@@ -604,22 +558,36 @@ def criar_midia():
     conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
 
-    # Busca o nome do usuário logado na tabela cadastro
     cursor.execute("SELECT nome FROM cadastro WHERE id_usuarios = %s", (id_usuario,))
     usuario = cursor.fetchone()
     if not usuario:
         cursor.close(); conn.close()
         return jsonify({"erro": "Usuário não encontrado"}), 404
 
-    # Busca o jogador com o mesmo nome
     cursor.execute("SELECT id_jogador FROM jogadores WHERE nome = %s LIMIT 1", (usuario["nome"],))
     jogador = cursor.fetchone()
     if not jogador:
         cursor.close(); conn.close()
-        return jsonify({"erro": "Jogador não encontrado. Peça para um admin te cadastrar como jogador."}), 404
+        return jsonify({"erro": "Jogador não encontrado"}), 404
 
     jogador_id = jogador["id_jogador"]
-    video_url = ""
+
+    # ── Upload no Supabase Storage ──────────────────────────────────────────
+    extensao = arquivo.filename.rsplit('.', 1)[-1].lower()
+    nome_arquivo = f"{uuid.uuid4()}.{extensao}"
+    conteudo = arquivo.read()
+
+    supabase_client = create_client(
+        os.getenv("SUPABASE_URL"),
+        os.getenv("SUPABASE_KEY")
+    )
+    supabase_client.storage.from_("videos").upload(
+        path=nome_arquivo,
+        file=conteudo,
+        file_options={"content-type": arquivo.mimetype}
+    )
+    video_url = f"{os.getenv('SUPABASE_URL')}/storage/v1/object/public/videos/{nome_arquivo}"
+    # ───────────────────────────────────────────────────────────────────────
 
     cursor.execute(
         "INSERT INTO midias (titulo, descricao, tag, video_url, jogador_id) VALUES (%s, %s, %s, %s, %s)",
@@ -640,6 +608,7 @@ def criar_midia():
 
     midia["autor"] = {"id": midia.pop("autor_id"), "nome": midia.pop("autor_nome")}
     return jsonify(midia), 201
+
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────────
 
