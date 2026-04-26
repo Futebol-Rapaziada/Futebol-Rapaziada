@@ -25,6 +25,9 @@ const MOCK = [
   { id: 3, titulo: "Highlight do racha de sexta", descricao: "Os melhores momentos do racha!",           tag: "highlight", autor: "Leo",    data: "22/04/2026", curtidas: 8,  visualizacoes: 55 },
 ];
 
+// ─── Helpers de autor ─────────────────────────────────────────────────────────
+const autorNome = (autor) => autor?.nome ?? autor ?? "?";
+
 // ─── Sub-componentes ──────────────────────────────────────────────────────────
 
 function Avatar({ name, size = 30 }) {
@@ -73,6 +76,7 @@ function VideoCard({ video, onOpen, onLike }) {
     setLiked((l) => !l);
     onLike(video.id, !liked);
   }
+  const nome = autorNome(video.autor);
   return (
     <div className="midia-card">
       <Thumbnail video={video} onClick={() => onOpen(video)} />
@@ -82,10 +86,10 @@ function VideoCard({ video, onOpen, onLike }) {
         <p className="midia-card-desc">{video.descricao}</p>
         <div className="midia-card-footer">
           <div className="midia-card-autor">
-            <Avatar name={video.autor} />
+            <Avatar name={nome} />
             <div>
-              <div className="midia-autor-nome">{video.autor}</div>
-              <div className="midia-autor-data">{video.data}</div>
+              <div className="midia-autor-nome">{nome}</div>
+              <div className="midia-autor-data">{video.data ?? video.criado_em?.slice(0,10)}</div>
             </div>
           </div>
           <button className={`midia-like-btn${liked ? " liked" : ""}`} onClick={handleLike}>
@@ -170,6 +174,7 @@ function UploadModal({ onClose, onSubmit, loading }) {
 // ─── Modal de Visualização ────────────────────────────────────────────────────
 function VideoModal({ video, onClose }) {
   if (!video) return null;
+  const nome = autorNome(video.autor);
   return (
     <div className="midia-overlay" onClick={onClose}>
       <div className="midia-modal midia-modal-video" onClick={(e) => e.stopPropagation()}>
@@ -201,10 +206,10 @@ function VideoModal({ video, onClose }) {
           </div>
           <p className="midia-modal-desc">{video.descricao}</p>
           <div className="midia-card-autor" style={{ marginTop:14 }}>
-            <Avatar name={video.autor} size={34} />
+            <Avatar name={nome} size={34} />
             <div>
-              <div className="midia-autor-nome">{video.autor}</div>
-              <div className="midia-autor-data">{video.data} · {video.visualizacoes ?? 0} views</div>
+              <div className="midia-autor-nome">{nome}</div>
+              <div className="midia-autor-data">{video.data ?? video.criado_em?.slice(0,10)} · {video.visualizacoes ?? 0} views</div>
             </div>
             <div style={{ marginLeft:"auto", color:"#f59e0b", fontWeight:700 }}>
               🔥 {video.curtidas ?? 0}
@@ -227,7 +232,6 @@ const Midias = () => {
   const [loading, setLoading]         = useState(false);
   const [erro, setErro]               = useState(null);
 
-  // ── Carregar vídeos ───────────────────────────────────────────────────────
   useEffect(() => {
     async function carregar() {
       try {
@@ -236,13 +240,12 @@ const Midias = () => {
         setErro(null);
       } catch (err) {
         console.warn("API indisponível, usando mock:", err.message);
-        setVideos(MOCK); // ⚠️ Remover quando a API estiver no ar
+        setVideos(MOCK);
       }
     }
     carregar();
   }, [filtroTag, busca, ordenar]);
 
-  // ── Curtir (otimista) ─────────────────────────────────────────────────────
   async function handleLike(id, liked) {
     setVideos((vs) =>
       vs.map((v) => v.id === id ? { ...v, curtidas: liked ? (v.curtidas ?? 0) + 1 : (v.curtidas ?? 0) - 1 } : v)
@@ -251,14 +254,12 @@ const Midias = () => {
       await curtirMidia(id);
     } catch (err) {
       console.error("Erro ao curtir:", err.message);
-      // Reverte se falhou
       setVideos((vs) =>
         vs.map((v) => v.id === id ? { ...v, curtidas: liked ? (v.curtidas ?? 0) - 1 : (v.curtidas ?? 0) + 1 } : v)
       );
     }
   }
 
-  // ── Upload ────────────────────────────────────────────────────────────────
   async function handleUpload(form) {
     setLoading(true);
     setErro(null);
@@ -268,7 +269,6 @@ const Midias = () => {
       setShowUpload(false);
     } catch (err) {
       console.warn("API indisponível, adicionando localmente:", err.message);
-      // Fallback local: vídeo fica na memória até API estar pronta
       const user = JSON.parse(localStorage.getItem("user") || "{}");
       const novoLocal = {
         id: Date.now(),
@@ -279,7 +279,7 @@ const Midias = () => {
         data:          new Date().toLocaleDateString("pt-BR"),
         curtidas:      0,
         visualizacoes: 0,
-        video_url:     URL.createObjectURL(form.arquivo), // Só existe nessa sessão
+        video_url:     URL.createObjectURL(form.arquivo),
       };
       setVideos((vs) => [novoLocal, ...vs]);
       setShowUpload(false);
@@ -288,10 +288,9 @@ const Midias = () => {
     }
   }
 
-  // ── Filtro local (redundante se a API já filtra, mas garante consistência) ─
   const filtrados = videos
     .filter((v) => filtroTag === "Todos" || v.tag === filtroTag)
-    .filter((v) => !busca || v.titulo?.toLowerCase().includes(busca.toLowerCase()) || v.autor?.toLowerCase().includes(busca.toLowerCase()))
+    .filter((v) => !busca || v.titulo?.toLowerCase().includes(busca.toLowerCase()) || autorNome(v.autor).toLowerCase().includes(busca.toLowerCase()))
     .sort((a, b) => {
       if (ordenar === "curtidas") return (b.curtidas ?? 0) - (a.curtidas ?? 0);
       if (ordenar === "views")    return (b.visualizacoes ?? 0) - (a.visualizacoes ?? 0);
@@ -301,7 +300,6 @@ const Midias = () => {
   return (
     <Layout>
     <div className="midias-container">
-      {/* Header */}
       <div className="midias-header">
         <div>
           <h2 className="midias-title">🎬 Clipes da Rapaziada</h2>
@@ -318,7 +316,6 @@ const Midias = () => {
         </div>
       )}
 
-      {/* Filtros */}
       <div className="midias-filtros">
         <div className="midias-search-wrap">
           <span className="midias-search-icon">🔍</span>
@@ -348,7 +345,6 @@ const Midias = () => {
         </div>
       </div>
 
-      {/* Grid */}
       {filtrados.length === 0
         ? <div className="midias-empty"><span>🎬</span><p>Nenhum clipe encontrado.<br/>Poste o primeiro!</p></div>
         : <div className="midias-grid">{filtrados.map((v) => <VideoCard key={v.id} video={v} onOpen={setVideoAberto} onLike={handleLike} />)}</div>
