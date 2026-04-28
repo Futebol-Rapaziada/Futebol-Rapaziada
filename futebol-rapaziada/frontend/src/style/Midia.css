@@ -4,13 +4,12 @@
 .reel-container {
   position: relative;
   width: 100%;
-  height: 100vh;
+  /* Troque 100vh por 100dvh */
+  height: 100dvh; 
   background: #080c17;
-  color: #f1f5f9;
-  font-family: inherit;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; /* Isso impede que qualquer coisa saia do limite */
 }
 
 /* ══ Top Bar ════════════════════════════════════════════════════════════════ */
@@ -114,23 +113,21 @@
 
 /* ══ Feed ═══════════════════════════════════════════════════════════════════ */
 .reel-feed {
-  flex: 1;
+  flex: 1; /* Faz o feed ocupar todo o espaço restante abaixo da topbar */
+  width: 100%;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  height: 100vh;
+  scrollbar-width: none; /* Esconde a barra no Firefox */
 }
 .reel-feed::-webkit-scrollbar { display: none; }
 
 .reel-item-wrapper {
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  height: 100vh;
+  /* Garante que o item tenha a altura exata do container pai */
+  height: 100%; 
   width: 100%;
+  scroll-snap-align: start;
   position: relative;
 }
-
 /* ══ Reel Item ══════════════════════════════════════════════════════════════ */
 .reel-item {
   width: 100%;
@@ -143,23 +140,19 @@
 
 /* ── Mídia ── */
 .reel-media {
-position: absolute;
+  position: absolute;
   inset: 0;
   cursor: pointer;
   overflow: hidden;
-  /* Adicione estas linhas para centralizar o vídeo verticalmente */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #000;
+  display: flex;           /* Adicionado para centralizar */
+  align-items: center;     /* Centraliza verticalmente */
+  justify-content: center; /* Centraliza horizontalmente */
+  background-color: #000;  /* Cor de fundo para as bordas */
 }
 .reel-video {
   width: 100%;
   height: 100%;
-  /* MUDE de cover para contain: isso evita o corte */
-  object-fit: contain; 
-  display: block;
-  /* Garante que o fundo seja preto para as bordas de vídeos horizontais */
+  object-fit: contain; /* Fundamental para não cortar a imagem */
   background-color: #000;
 }
 .reel-placeholder {
