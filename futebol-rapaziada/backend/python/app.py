@@ -609,6 +609,22 @@ def criar_midia():
     midia["autor"] = {"id": midia.pop("autor_id"), "nome": midia.pop("autor_nome")}
     return jsonify(midia), 201
 
+# ─── FINANCEIRO ─────────────────────────────────────────────────────────────────────────
+
+@app.route('/jogadores/<int:id>/pagamento', methods=['PATCH', 'OPTIONS'])
+def toggle_pagamento(id):
+    if request.method == 'OPTIONS':
+        return jsonify({}), 200
+    dados = request.json
+    pagou = 1 if dados.get("pagou") else 0
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE jogadores SET pagou = %s WHERE id_jogador = %s", (pagou, id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Status atualizado!", "pagou": pagou})
+
 # ─── MAIN ─────────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
