@@ -11,8 +11,8 @@ export default function Financeiro() {
   const [processando, setProcessando] = useState(null);
   const [copiado, setCopiado] = useState(false);
   
-  const VALOR_TITULAR = 18.00;
-  const VALOR_RESERVA = 9.00;
+  const VALOR_TITULAR = 15.70;
+  const VALOR_RESERVA = 7.80;
   const CHAVE_PIX = "577-704-458-17";
 
   useEffect(() => {
