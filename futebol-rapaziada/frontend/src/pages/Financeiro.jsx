@@ -134,7 +134,7 @@ export default function Financeiro() {
                 {jogadores.map(jogador => {
                   const valorCobrado = jogador.isReserva ? VALOR_RESERVA : VALOR_TITULAR;
                   return (
-                    <tr key={jogador.id}>
+                    <tr key={jogador.id_jogador}>
                       <td>
                         <div className="user-cell">
                           <div className="user-avatar" style={{width:'30px', height:'30px'}}>
@@ -157,10 +157,10 @@ export default function Financeiro() {
                       <td>
                         <button 
                           className="btn-status-toggle"
-                          disabled={processando === jogador.id}
-                          onClick={() => toggleStatusPagamento(jogador.id, jogador.pagou)}
+                          disabled={processando === jogador.id_jogador}
+                          onClick={() => toggleStatusPagamento(jogador.id_jogador, jogador.pagou)}
                         >
-                          {processando === jogador.id ? "..." : (jogador.pagou ? "Reverter" : "Confirmar")}
+                          {processando === jogador.id_jogador ? "..." : (jogador.pagou ? "Reverter" : "Confirmar")}
                         </button>
                       </td>
                     </tr>
