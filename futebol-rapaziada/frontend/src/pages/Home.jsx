@@ -190,7 +190,6 @@ export default function Home() {
 
             <div className="home-btns">
               <button className="btn-neon" onClick={()=>setPainel(true)}>✏️ Editar Perfil</button>
-              <button className="btn-danger" onClick={deletar}>🗑 Deletar</button>
             </div>
           </div>
         </div>
