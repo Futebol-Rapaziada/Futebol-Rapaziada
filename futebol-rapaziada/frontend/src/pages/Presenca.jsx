@@ -27,7 +27,6 @@ export default function Presenca() {
     finally { setLoading(false); }
   }
 
-  // Verifica se é o próprio jogador ou admin
   function podeConfirmar(j) {
     return j.nome?.toLowerCase() === usuarioLogado?.nome?.toLowerCase()
       || usuarioLogado?.admin === true
@@ -35,11 +34,11 @@ export default function Presenca() {
   }
 
   async function toggleConfirmado(j) {
-    setAtual(old => ({ ...old, [j.id]: true }));
+    setAtual(old => ({ ...old, [j.id_jogador]: true }));
     try {
       const token = localStorage.getItem("token");
       const novoStatus = !(j.confirmado === 1 || j.confirmado === true);
-      await fetch(`${API_URL}/jogadores/${j.id}/confirmar`, {
+      await fetch(`${API_URL}/jogadores/${j.id_jogador}/confirmar`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +48,7 @@ export default function Presenca() {
       });
       await carregar();
     } catch (e) { console.error(e); }
-    finally { setAtual(old => ({ ...old, [j.id]: false })); }
+    finally { setAtual(old => ({ ...old, [j.id_jogador]: false })); }
   }
 
   function isConfirmado(j) {
@@ -71,7 +70,6 @@ export default function Presenca() {
         <h1 className="page-titulo">Lista de Presença</h1>
         <p className="page-sub">Confirme sua presença para o próximo jogo</p>
 
-        {/* Meu status — destaque */}
         {(() => {
           const eu = jogadores.find(j => isEu(j));
           if (!eu) return null;
@@ -88,9 +86,9 @@ export default function Presenca() {
               <button
                 className={`btn-confirmar ${conf ? "btn-desconf" : "btn-conf"}`}
                 onClick={() => toggleConfirmado(eu)}
-                disabled={atualizando[eu.id]}
+                disabled={atualizando[eu.id_jogador]}
               >
-                {atualizando[eu.id]
+                {atualizando[eu.id_jogador]
                   ? "..."
                   : conf ? "❌ Desconfirmar" : "✅ Confirmar presença"
                 }
@@ -99,7 +97,6 @@ export default function Presenca() {
           );
         })()}
 
-        {/* Contadores */}
         <div className="pres-contadores">
           <div className="pres-cnt pres-cnt-ok">
             <span className="cnt-num">{confirmados.length}</span>
@@ -115,14 +112,13 @@ export default function Presenca() {
           </div>
         </div>
 
-        {/* Lista confirmados */}
         <section className="pres-section">
           <h2 className="pres-section-titulo">✅ Confirmados ({confirmados.length})</h2>
           <div className="pres-lista">
             {confirmados.length === 0
               ? <p className="pres-vazio">Nenhum confirmado ainda.</p>
               : confirmados.map(j => (
-                <div key={j.id} className={`pres-item pres-ok ${isEu(j) ? "pres-eu" : ""}`}>
+                <div key={j.id_jogador} className={`pres-item pres-ok ${isEu(j) ? "pres-eu" : ""}`}>
                   <span className="pi-avatar">👤</span>
                   <div className="pi-info">
                     <span className="pi-nome">
@@ -137,9 +133,9 @@ export default function Presenca() {
                       <button
                         className="btn-mini btn-mini-desconf"
                         onClick={() => toggleConfirmado(j)}
-                        disabled={atualizando[j.id]}
+                        disabled={atualizando[j.id_jogador]}
                       >
-                        {atualizando[j.id] ? "..." : "Desconfirmar"}
+                        {atualizando[j.id_jogador] ? "..." : "Desconfirmar"}
                       </button>
                     )}
                   </div>
@@ -149,14 +145,13 @@ export default function Presenca() {
           </div>
         </section>
 
-        {/* Lista não confirmados */}
         <section className="pres-section">
           <h2 className="pres-section-titulo">❌ Pendentes ({naoConfirmados.length})</h2>
           <div className="pres-lista">
             {naoConfirmados.length === 0
               ? <p className="pres-vazio">🎉 Todos confirmaram!</p>
               : naoConfirmados.map(j => (
-                <div key={j.id} className={`pres-item pres-nd ${isEu(j) ? "pres-eu" : ""}`}>
+                <div key={j.id_jogador} className={`pres-item pres-nd ${isEu(j) ? "pres-eu" : ""}`}>
                   <span className="pi-avatar">👤</span>
                   <div className="pi-info">
                     <span className="pi-nome">
@@ -171,9 +166,9 @@ export default function Presenca() {
                       <button
                         className="btn-mini btn-mini-conf"
                         onClick={() => toggleConfirmado(j)}
-                        disabled={atualizando[j.id]}
+                        disabled={atualizando[j.id_jogador]}
                       >
-                        {atualizando[j.id] ? "..." : "Confirmar"}
+                        {atualizando[j.id_jogador] ? "..." : "Confirmar"}
                       </button>
                     )}
                   </div>
