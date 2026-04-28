@@ -181,3 +181,23 @@
 .btn-salvar:disabled{opacity:.5;cursor:not-allowed;}
 
 @media(max-width:680px){.home-row{flex-direction:column;align-items:center;}.home-info{width:100%;}}
+
+
+
+/* Apenas muda a cor do valor para verde, mantendo o tamanho dos outros cards */
+.valor-verde {
+  color: #22c55e !important;
+}
+
+/* Deixa o fundo do ícone levemente verde */
+.icon-verde {
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #22c55e !important;
+  border-radius: 8px;
+  padding: 2px;
+}
+
+/* Se quiser que o card inteiro tenha uma borda verde fina para destacar: */
+.card-info:has(.valor-verde) {
+  border: 1px solid rgba(34, 197, 94, 0.3) !important;
+}
