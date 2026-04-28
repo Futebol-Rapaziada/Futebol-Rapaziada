@@ -615,15 +615,23 @@ def criar_midia():
 def toggle_pagamento(id):
     if request.method == 'OPTIONS':
         return jsonify({}), 200
+    
     dados = request.json
     pagou = 1 if dados.get("pagou") else 0
+    
     conn = obter_conexao()
     cursor = conn.cursor()
-    cursor.execute("UPDATE jogadores SET confirmado = %s WHERE id_jogador = %s", (confirmar_jogador, id))
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return jsonify({"mensagem": "Status atualizado!", "pagou": pagou})
+    
+    # CORREÇÃO: Usando a variável 'pagou' e verificando o nome da coluna de ID
+    try:
+        cursor.execute("UPDATE jogadores SET confirmado = %s WHERE id_jogador = %s", (pagou, id))
+        conn.commit()
+        return jsonify({"mensagem": "Status atualizado!", "pagou": pagou}), 200
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────────
 
