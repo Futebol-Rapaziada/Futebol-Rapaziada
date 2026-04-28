@@ -143,16 +143,23 @@
 
 /* ── Mídia ── */
 .reel-media {
-  position: absolute;
+position: absolute;
   inset: 0;
   cursor: pointer;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000; /* Fundo para vídeos horizontais no PC */
 }
 .reel-video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  /* Altere de cover para contain */
+  object-fit: contain; 
   display: block;
+  /* Garante que o fundo atrás do vídeo seja preto para as bordas */
+  background-color: #000;
 }
 .reel-placeholder {
   width: 100%;
