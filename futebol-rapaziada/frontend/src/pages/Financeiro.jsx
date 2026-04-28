@@ -11,7 +11,6 @@ export default function Financeiro() {
   const [processando, setProcessando] = useState(null);
   const [copiado, setCopiado] = useState(false);
   
-  // Configuração de Valores
   const VALOR_TITULAR = 18.00;
   const VALOR_RESERVA = 9.00;
   const CHAVE_PIX = "577-704-458-17";
@@ -41,7 +40,7 @@ export default function Financeiro() {
     setProcessando(jogadorId);
     try {
       const token = obterToken();
-      const response = await fetch(`${API_URL}/jogadores/${jogadorId}`, {
+      const response = await fetch(`${API_URL}/jogadores/${jogadorId}/pagamento`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +51,7 @@ export default function Financeiro() {
 
       if (response.ok) {
         setJogadores(lista => 
-          lista.map(j => j.id === jogadorId ? { ...j, pagou: !statusAtual } : j)
+          lista.map(j => j.id_jogador === jogadorId ? { ...j, pagou: !statusAtual } : j)
         );
       }
     } catch (e) {
@@ -62,8 +61,6 @@ export default function Financeiro() {
     }
   }
 
-  // CÁLCULO DO TOTAL ARRECADADO
-  // Aqui ele soma 18 se for titular e 9 se for reserva (ajuste a lógica de 'isReserva' conforme seu banco)
   const totalArrecadado = jogadores
     .filter(j => j.pagou)
     .reduce((acc, j) => acc + (j.isReserva ? VALOR_RESERVA : VALOR_TITULAR), 0);
@@ -79,7 +76,6 @@ export default function Financeiro() {
         </header>
 
         <div className="fin-grid-top">
-          {/* Card PIX */}
           <div className="fin-card">
             <div className="ic-header">
               <span>🔑</span>
@@ -101,7 +97,6 @@ export default function Financeiro() {
             </div>
           </div>
 
-          {/* Card Resumo */}
           <div className="fin-card">
             <div className="ic-header">
               <span>📊</span>
