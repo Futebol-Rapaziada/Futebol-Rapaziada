@@ -36,7 +36,7 @@ def add_cors_headers(response):
     if origem_permitida(origin):
         response.headers["Access-Control-Allow-Origin"] = origin
     response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     return response
 
@@ -48,7 +48,7 @@ def handle_preflight():
         if origem_permitida(origin):
             res.headers["Access-Control-Allow-Origin"] = origin
         res.headers["Access-Control-Allow-Credentials"] = "true"
-        res.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        res.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
         res.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
         return res, 204
 
@@ -587,7 +587,7 @@ def criar_midia():
         file_options={"content-type": arquivo.mimetype}
     )
     video_url = f"{os.getenv('SUPABASE_URL')}/storage/v1/object/public/videos/{nome_arquivo}"
-    # ───────────────────────────────────────────────────────────────────────
+    # ─── VIDEO ────────────────────────────────────────────────────────────────────
 
     cursor.execute(
         "INSERT INTO midias (titulo, descricao, tag, video_url, jogador_id) VALUES (%s, %s, %s, %s, %s)",
@@ -608,7 +608,6 @@ def criar_midia():
 
     midia["autor"] = {"id": midia.pop("autor_id"), "nome": midia.pop("autor_nome")}
     return jsonify(midia), 201
-
 
 # ─── MAIN ─────────────────────────────────────────────────────────────────────────
 
