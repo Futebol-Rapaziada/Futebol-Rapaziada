@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, Response
 from flask_jwt_extended import JWTManager, create_access_token
 from database import obter_conexao
-from supabase import create_client
+from supabase import create_client, Client
 import bcrypt
 import os
 import uuid
