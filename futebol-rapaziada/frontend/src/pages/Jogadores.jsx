@@ -55,11 +55,7 @@ function CartaJogador({ jogador }) {
         </div>
 
         <div className="carta-foto z1">
-          {jogador.fotoURL && jogador.fotoURL !== "" ? (
-            <img src={jogador.fotoURL} alt={jogador.nome} />
-          ) : (
             <span>👤</span>
-          )}
         </div>
 
         <div className="carta-nome z1">
