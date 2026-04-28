@@ -9,7 +9,7 @@ const MENU = [
   { path: "/campeonato",    icon: "🏆", label: "Campeonato" },
   { path: "/jogos",         icon: "⚽", label: "Jogos" },
   { path: "/presenca",      icon: "📋", label: "Lista de Presença" },
-  { path: "/times",         icon: "👕", label: "Times" },
+  { path: "/times",         icon: "👕", label: "Times", em_breve: true},
   { path: "/financeiro",    icon: "💰", label: "Financeiro" },
   { path: "/calendario",    icon: "📆", label: "Calendario" },
   { path: "/midia",    icon: "📷", label: "Midia" },

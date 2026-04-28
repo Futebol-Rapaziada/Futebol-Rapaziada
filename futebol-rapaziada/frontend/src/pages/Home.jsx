@@ -7,6 +7,26 @@ import "../style/Home.css";
 const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-production.up.railway.app";
 const POSICOES = ["Goleiro","Zagueiro","Lateral Direito","Lateral Esquerdo","Meia","Centroavante"];
 
+// Função para calcular o próximo jogo (14 em 14 dias)
+const obterDadosProximoJogo = () => {
+  const ref = new Date(2025, 4, 1, 23, 0, 0); 
+  while (ref.getDay() !== 5) ref.setDate(ref.getDate() + 1);
+  const hoje = new Date();
+  let dataJogo = new Date(ref);
+  let i = 0;
+  while (dataJogo < hoje) {
+    i++;
+    dataJogo = new Date(ref);
+    dataJogo.setDate(ref.getDate() + i * 14);
+  }
+  const diff = dataJogo - hoje;
+  const dias = Math.ceil(diff / 86400000);
+  return {
+    contagem: dias === 0 ? "HOJE" : `Em ${dias} dias`,
+    data: dataJogo.toLocaleDateString("pt-BR", { day: '2-digit', month: 'short' })
+  };
+};
+
 function getTipo(ovr) {
   const v = Number(ovr ?? 0);
   if (v >= 67) return "lenda";
@@ -21,6 +41,7 @@ function atribColor(v) {
 }
 
 export default function Home() {
+  const proximoJogo = obterDadosProximoJogo();
   const navigate = useNavigate();
   const usuarioLogado = JSON.parse(localStorage.getItem("user"));
   const [player, setPlayer]   = useState(null);
@@ -169,28 +190,43 @@ export default function Home() {
 
             <div className="home-btns">
               <button className="btn-neon" onClick={()=>setPainel(true)}>✏️ Editar Perfil</button>
-              <button className="btn-danger" onClick={deletar}>🗑 Deletar</button>
             </div>
           </div>
         </div>
 
         {/* ── CARDS INFO ── */}
         <div className="info-grid">
-          
-            <div className="info-card">
-              <div className="ic-header"><span>👕</span><h3>Time</h3></div>
-              <div className="ic-body"><p className="ic-val">{player.time||"Sem time"}</p></div>
-            </div>
-          
-
-          
+        
+        
             <div className={`info-card ${player.confirmado?"ic-green":"ic-red"}`}>
               <div className="ic-header"><span>{player.confirmado?"✅":"❌"}</span><h3>Próximo Jogo</h3></div>
               <div className="ic-body"><p className="ic-val">{player.confirmado?"Confirmado":"Não confirmado"}</p></div>
             </div>
           
 
-          
+  {/* CARD DO PRÓXIMO JOGO - ESTRUTURA IGUAL AOS OUTROS */}
+  <div className="info-card" onClick={() => navigate("/calendario")}>
+    <div className="ic-header">
+      <span className="ci-icon highlight-verde">📅</span>
+      <p className="ci-label">Próxima Partida</p>
+    </div>
+    <div className="ic-body">
+      <h3 className="ic-val">{proximoJogo.contagem}</h3>
+      <p className="ic-sub">{proximoJogo.data}</p>
+    </div>
+  </div>
+
+
+           <div className="info-card" onClick={() => navigate("/calendario")}>
+    <div className="ic-header">
+      <span className="ci-icon">🗓️</span>
+      <p className="ci-label">Calendário</p>
+    </div>
+    <div className="ic-body">
+      <h3 className="ic-val">Jogos</h3>
+      <p className="ic-sub">Ver todas as datas</p>
+    </div>
+  </div>
             <div className="info-card">
               <div className="ic-header"><span>🏆</span><h3>Campeonato</h3></div>
               <div className="ic-body">
@@ -234,8 +270,6 @@ export default function Home() {
               <p className="p-label">Dados</p>
               <label className="p-fl">Nome</label>
               <input className="p-input" value={form.nome} onChange={set("nome")}/>
-              <label className="p-fl">URL da foto</label>
-              <input className="p-input" placeholder="https://..." value={form.fotoUrl} onChange={set("fotoUrl")}/>
               <label className="p-fl">Posição</label>
               <select className="p-input" value={form.posicao} onChange={set("posicao")}>
                 {POSICOES.map(p=><option key={p}>{p}</option>)}
@@ -252,24 +286,6 @@ export default function Home() {
                   </select>
                 </div>
               </div>
-            </div>
-
-            <div className="p-section">
-              <p className="p-label">Estatísticas</p>
-              <p className="p-obs">⭐ Overall e atributos FIFA são definidos pela administração.</p>
-              {[
-                {k:"gols",l:"Gols"},{k:"assistencias",l:"Assistências"},
-                {k:"jogos",l:"Jogos"},{k:"cartoes",l:"Cartões"},
-              ].map(({k,l})=>(
-                <div key={k} className="stat-row">
-                  <span className="sr-lbl">{l}</span>
-                  <div className="sr-ctrl">
-                    <button className="sr-btn" onClick={()=>adj(k,-1)}>−</button>
-                    <span className="sr-val">{form[k]}</span>
-                    <button className="sr-btn" onClick={()=>adj(k,+1)}>+</button>
-                  </div>
-                </div>
-              ))}
             </div>
 
             {msg.texto && <div className={`msg ${msg.tipo==="ok"?"msg-ok":"msg-err"}`}>{msg.texto}</div>}
