@@ -232,7 +232,7 @@ def confirmar_jogador(id):
     confirmado = 1 if dados.get("confirmado") else 0
     conn = obter_conexao()
     cursor = conn.cursor()
-    cursor.execute("UPDATE jogadores SET confirmado = %s WHERE id = %s", (confirmado, id))
+    cursor.execute("UPDATE jogadores SET confirmado = %s WHERE id_jogador = %s", (confirmado, id))
     conn.commit()
     cursor.close()
     conn.close()
