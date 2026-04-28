@@ -619,7 +619,7 @@ def toggle_pagamento(id):
     pagou = 1 if dados.get("pagou") else 0
     conn = obter_conexao()
     cursor = conn.cursor()
-    cursor.execute("UPDATE jogadores SET pagou = %s WHERE id_jogador = %s", (pagou, id))
+    cursor.execute("UPDATE jogadores SET confirmado = %s WHERE id_jogador = %s", (confirmar_jogador, id))
     conn.commit()
     cursor.close()
     conn.close()
