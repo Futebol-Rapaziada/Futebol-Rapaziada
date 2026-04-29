@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, Response
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, verify_jwt_in_request, get_jwt_identity
 from database import obter_conexao
 from supabase import create_client, Client
 import bcrypt
@@ -9,9 +9,34 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from functools import wraps
+
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)
+
+# ─── DECORATOR ADMIN ───────────────────────────────────────────────────────────────
+
+def _check_admin():
+    verify_jwt_in_request()
+    user_id = get_jwt_identity()
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT admin FROM cadastro WHERE id_usuarios = %s", (user_id,))
+    user = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if not user or not user.get("admin"):
+        return False
+    return True
+
+def admin_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        if not _check_admin():
+            return jsonify({"erro": "Acesso negado"}), 403
+        return fn(*args, **kwargs)
+    return wrapper
 
 # ─── CORS ────────────────────────────────────────────────────────────────────────
 
@@ -608,6 +633,73 @@ def criar_midia():
 
     midia["autor"] = {"id": midia.pop("autor_id"), "nome": midia.pop("autor_nome")}
     return jsonify(midia), 201
+
+# ─── ADMIN ─────────────────────────────────────────────────────────────────────────
+
+@app.route('/admin/jogadores/<int:id>/overall', methods=['PATCH'])
+@admin_required
+def admin_atualizar_overall(id):
+    dados = request.json
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE jogadores SET overall = %s, pac = %s, sho = %s, pas = %s, dri = %s, def = %s, phy = %s WHERE id = %s",
+        (dados.get("overall"), dados.get("pac"), dados.get("sho"), dados.get("pas"),
+        dados.get("dri"), dados.get("def"), dados.get("phy"), id)
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Overall atualizado!"})
+
+
+@app.route('/admin/jogadores/<int:id>/stats', methods=['PATCH'])
+@admin_required
+def admin_atualizar_stats(id):
+    dados = request.json
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute(
+        """UPDATE jogadores SET
+            gols = COALESCE(gols, 0) + %s,
+            assistencias = COALESCE(assistencias, 0) + %s,
+            jogos = COALESCE(jogos, 0) + %s,
+            cartoes = COALESCE(cartoes, 0) + %s
+            WHERE id = %s""",
+        (dados.get("gols", 0), dados.get("assistencias", 0),
+        dados.get("jogos", 0), dados.get("cartoes", 0), id)
+    )
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Estatísticas atualizadas!"})
+
+
+@app.route('/admin/jogadores/<int:id>/pagamento', methods=['PATCH'])
+@admin_required
+def admin_confirmar_pagamento(id):
+    dados = request.json
+    pagou = 1 if dados.get("pagou") else 0
+    conn = obter_conexao()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE jogadores SET pagou = %s WHERE id = %s", (pagou, id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"mensagem": "Pagamento atualizado!", "pagou": pagou})
+
+
+@app.route('/admin/usuarios', methods=['GET'])
+@admin_required
+def admin_get_usuarios():
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT id_usuarios, nome, email, admin FROM cadastro")
+    resultado = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return jsonify(resultado)
+
 
 # ─── FINANCEIRO ─────────────────────────────────────────────────────────────────────────
 
