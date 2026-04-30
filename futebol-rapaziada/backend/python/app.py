@@ -134,9 +134,10 @@ def login():
         "user": {
             "id": usuario["id_usuarios"],
             "nome": usuario["nome"],
-            "email": usuario["email"]
-        }
-    })
+            "email": usuario["email"],
+            "isAdmin": bool(usuario.get("admin"))
+    }
+})
 
 
 # ─── USUÁRIOS ────────────────────────────────────────────────────────────────────
