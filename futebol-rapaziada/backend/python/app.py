@@ -659,7 +659,7 @@ def admin_atualizar_overall(id):
     conn = obter_conexao()
     cursor = conn.cursor()
     cursor.execute(
-        "UPDATE jogadores SET overall = %s, pac = %s, sho = %s, pas = %s, dri = %s, def = %s, phy = %s WHERE id = %s",
+        "UPDATE jogadores SET overall = %s, pac = %s, sho = %s, pas = %s, dri = %s, def = %s, phy = %s WHERE id_jogador = %s",
         (dados.get("overall"), dados.get("pac"), dados.get("sho"), dados.get("pas"),
         dados.get("dri"), dados.get("def"), dados.get("phy"), id)
     )
