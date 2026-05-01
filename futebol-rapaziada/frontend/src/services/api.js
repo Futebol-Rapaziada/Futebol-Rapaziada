@@ -64,6 +64,10 @@ export async function deletarJogador(id) {
   });
 }
 
+export async function getOverallJogador(id) {
+  return request(`/jogadores/${id}/overall`);
+}
+
 /* =========================
    LOGIN / CADASTRO
 ========================= */

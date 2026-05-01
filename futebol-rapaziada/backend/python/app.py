@@ -222,6 +222,21 @@ def get_jogadores():
     conn.close()
     return jsonify(dados)
 
+@app.route('/jogadores/<int:id>/overall', methods=['GET'])
+def get_overall_jogador(id):
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute(
+        "SELECT id, nome, overall, pac, sho, pas, dri, def, phy FROM jogadores WHERE id = %s",
+        (id,)
+    )
+    jogador = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if not jogador:
+        return jsonify({"erro": "Jogador não encontrado"}), 404
+    return jsonify(jogador)
+
 @app.route('/jogadores', methods=['POST'])
 def criar_jogador():
     dados = request.json
