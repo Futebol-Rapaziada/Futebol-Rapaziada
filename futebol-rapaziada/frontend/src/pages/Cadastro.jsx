@@ -63,10 +63,11 @@ export default function Cadastro() {
 
       // 2. Salva user no localStorage
       if (dataUser?.id) {
-        localStorage.setItem("user", JSON.stringify({
-          id: dataUser.id, nome: form.nome, email: form.email,
-        }));
-      }
+  localStorage.setItem("user", JSON.stringify({
+    id: dataUser.id, nome: form.nome, email: form.email,
+    isAdmin: false, // novo usuário nunca começa como admin
+  }));
+} 
 
       // 3. Cria perfil do jogador
       try {

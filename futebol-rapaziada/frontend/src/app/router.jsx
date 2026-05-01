@@ -9,9 +9,10 @@ import Presenca     from "../pages/Presenca";
 import Jogos        from "../pages/Jogos";
 import Times        from "../pages/Times";
 import Financeiro   from "../pages/Financeiro"; 
-import Jogadores   from "../pages/Jogadores"; 
+import Jogadores    from "../pages/Jogadores"; 
 import Calendario   from "../pages/Calendario"; 
-import Midia  from "../pages/Midia";
+import Midia        from "../pages/Midia";
+import Admin        from "../pages/Admin"; // 👈 novo
 
 function PrivateRoute({ children }) {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -19,7 +20,16 @@ function PrivateRoute({ children }) {
   return children;
 }
 
+// 👈 novo
+function AdminRoute({ children }) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) return <Navigate to="/login" />;
+  if (!user.isAdmin) return <Navigate to="/home" />;
+  return children;
+}
+
 const P = ({ children }) => <PrivateRoute>{children}</PrivateRoute>;
+const A = ({ children }) => <AdminRoute>{children}</AdminRoute>; // 👈 novo
 
 export default function RouterApp() {
   return (
@@ -34,10 +44,11 @@ export default function RouterApp() {
         <Route path="/presenca"     element={<P><Presenca /></P>} />
         <Route path="/jogos"        element={<P><Jogos /></P>} />
         <Route path="/times"        element={<P><Times /></P>} />
-        <Route path="/financeiro"   element={<P><Financeiro /></P>} /> {/* 2. Adicionar a rota */}
-        <Route path="/jogadores"        element={<P><Jogadores /></P>} />
-        <Route path="/calendario"        element={<P><Calendario /></P>} />
-        <Route path="/midia"        element={<P><Midia/></P>} />
+        <Route path="/financeiro"   element={<P><Financeiro /></P>} />
+        <Route path="/jogadores"    element={<P><Jogadores /></P>} />
+        <Route path="/calendario"   element={<P><Calendario /></P>} />
+        <Route path="/midia"        element={<P><Midia /></P>} />
+        <Route path="/admin"        element={<A><Admin /></A>} /> {/* 👈 novo */}
 
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

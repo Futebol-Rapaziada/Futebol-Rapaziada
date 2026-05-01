@@ -1,0 +1,315 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap');
+@import './tokens.css';
+
+/* ─── WRAP ───────────────────────────────────────────────────────────────── */
+.adm-wrap {
+  min-height: 100vh;
+  background: var(--bg);
+  padding: 2rem 1.5rem;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ─── FUNDO DECORATIVO ───────────────────────────────────────────────────── */
+.adm-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+.adm-orb {
+  position: absolute; border-radius: 50%; filter: blur(80px);
+}
+.adm-orb.orb1 { width: 500px; height: 500px; background: rgba(0,255,135,.05); top: -150px; left: -100px; }
+.adm-orb.orb2 { width: 400px; height: 400px; background: rgba(139,92,246,.05); bottom: -100px; right: -80px; }
+
+.adm-grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(0,255,135,.02) 59px, rgba(0,255,135,.02) 60px),
+    repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(0,255,135,.02) 59px, rgba(0,255,135,.02) 60px);
+}
+
+/* ─── CONTAINER ──────────────────────────────────────────────────────────── */
+.adm-container {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto;
+}
+
+/* ─── HEADER ─────────────────────────────────────────────────────────────── */
+.adm-header {
+  display: flex; align-items: center; gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.adm-back {
+  background: var(--bg2); border: 1px solid var(--border);
+  color: var(--text2); border-radius: 10px;
+  padding: .5rem 1rem; font-size: .85rem; font-weight: 700;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+  font-family: var(--font-body);
+}
+.adm-back:hover { border-color: var(--neon); color: var(--neon); }
+
+.adm-tagline {
+  font-size: .68rem; letter-spacing: 3px;
+  color: var(--neon); text-transform: uppercase;
+  display: block; margin-bottom: .2rem;
+}
+
+.adm-titulo {
+  font-family: var(--font-display); font-size: 2.2rem;
+  letter-spacing: 2px; color: var(--text); line-height: 1; margin: 0;
+}
+
+/* ─── MENSAGEM FEEDBACK ──────────────────────────────────────────────────── */
+.adm-msg {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .75rem 1rem; border-radius: 10px;
+  font-size: .85rem; font-weight: 600;
+  margin-bottom: 1.25rem; animation: fadeUp .3s ease both;
+}
+.adm-msg.sucesso { background: rgba(0,255,135,.08); border: 1px solid rgba(0,255,135,.25); color: #86efac; }
+.adm-msg.erro    { background: rgba(255,77,109,.08); border: 1px solid rgba(255,77,109,.25); color: #fca5a5; }
+
+/* ─── ABAS ───────────────────────────────────────────────────────────────── */
+.adm-abas {
+  display: flex; gap: .5rem; flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+  background: var(--bg2); border: 1px solid var(--border);
+  padding: .4rem; border-radius: 14px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+
+.adm-aba {
+  flex: 1; min-width: 120px;
+  background: transparent; border: none;
+  color: var(--text2); font-family: var(--font-body);
+  font-size: .85rem; font-weight: 700; letter-spacing: .5px;
+  padding: .6rem 1rem; border-radius: 10px;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.adm-aba:hover { color: var(--text); background: rgba(255,255,255,.04); }
+.adm-aba.ativo {
+  background: var(--neon); color: #000;
+  box-shadow: 0 4px 16px rgba(0,255,135,.25);
+}
+
+/* ─── LOADING ────────────────────────────────────────────────────────────── */
+.adm-loading {
+  text-align: center; color: var(--text2);
+  padding: 3rem; font-size: 1rem; letter-spacing: 2px;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100%{ opacity:.4 } 50%{ opacity:1 } }
+
+/* ─── SECTION TITLE ──────────────────────────────────────────────────────── */
+.adm-section-title {
+  font-family: var(--font-display); font-size: 1.5rem;
+  letter-spacing: 1.5px; color: var(--text);
+  margin: 0 0 .4rem;
+}
+.adm-section-obs {
+  font-size: .8rem; color: var(--text3);
+  margin: 0 0 1.25rem; font-style: italic;
+}
+
+/* ─── CARDS GRID ─────────────────────────────────────────────────────────── */
+.adm-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+/* ─── CARD ───────────────────────────────────────────────────────────────── */
+.adm-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; padding: 1.25rem;
+  position: relative; overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+  animation: fadeUp .35s ease both;
+  box-sizing: border-box;
+}
+.adm-card:hover {
+  border-color: rgba(0,255,135,.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,.3);
+}
+.adm-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--neon), #9b5de5);
+}
+
+.adm-card-header {
+  display: flex; align-items: center; gap: .85rem;
+  margin-bottom: 1rem; padding-bottom: .85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.adm-card-foto {
+  width: 46px; height: 46px; border-radius: 50%;
+  object-fit: cover; border: 2px solid var(--border2); flex-shrink: 0;
+}
+
+.adm-card-nome { font-weight: 700; font-size: .95rem; color: var(--text); margin: 0 0 .15rem; }
+.adm-card-pos  { font-size: .75rem; color: var(--text3); margin: 0; }
+
+.adm-overall-badge {
+  margin-left: auto;
+  background: linear-gradient(135deg, var(--neon), #00cc6a);
+  color: #000; font-family: var(--font-display);
+  font-size: 1.4rem; width: 46px; height: 46px;
+  border-radius: 10px; display: flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,255,135,.3);
+}
+
+/* ─── ATRIBUTOS ──────────────────────────────────────────────────────────── */
+.adm-atributos {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: .5rem; margin-bottom: 1rem;
+}
+
+.adm-attr { display: flex; flex-direction: column; gap: .25rem; }
+
+.adm-attr-label {
+  font-size: .6rem; font-weight: 700; letter-spacing: 1.5px;
+  color: var(--text3); text-transform: uppercase; text-align: center;
+}
+
+.adm-attr-input {
+  width: 100%; background: rgba(255,255,255,.04);
+  border: 1px solid var(--border2); border-radius: 8px;
+  padding: .45rem .3rem; color: var(--text);
+  font-family: var(--font-body); font-size: .9rem;
+  font-weight: 700; text-align: center; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  -moz-appearance: textfield; box-sizing: border-box;
+}
+.adm-attr-input:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 0 2px rgba(0,255,135,.12);
+}
+.adm-attr-input::-webkit-inner-spin-button,
+.adm-attr-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+/* ─── STATS ATUAIS ───────────────────────────────────────────────────────── */
+.adm-stats-atuais {
+  display: flex; flex-wrap: wrap; gap: .5rem 1rem;
+  background: rgba(255,255,255,.03); border-radius: 8px;
+  padding: .5rem .75rem; margin-bottom: .85rem;
+  font-size: .8rem; color: var(--text2);
+}
+.adm-stats-atuais b { color: var(--neon); }
+
+/* ─── BOTÃO SALVAR ───────────────────────────────────────────────────────── */
+.adm-btn-salvar {
+  width: 100%; background: var(--neon); color: #000;
+  font-family: var(--font-display); font-size: 1rem;
+  letter-spacing: 2px; border: none; border-radius: 10px;
+  padding: .65rem; cursor: pointer;
+  transition: opacity .2s, transform .1s, box-shadow .2s; font-weight: 700;
+}
+.adm-btn-salvar:hover:not(:disabled) {
+  opacity: .88; transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,255,135,.25);
+}
+.adm-btn-salvar:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ─── PAGAMENTOS RESUMO ──────────────────────────────────────────────────── */
+.adm-pag-resumo {
+  display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+}
+
+.adm-pag-stat {
+  flex: 1; min-width: 130px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 14px; padding: 1.25rem;
+  display: flex; flex-direction: column; align-items: center; gap: .3rem;
+}
+.adm-pag-stat.verde    { border-color: rgba(0,255,135,.25); }
+.adm-pag-stat.vermelho { border-color: rgba(255,77,109,.25); }
+
+.adm-pag-num {
+  font-family: var(--font-display); font-size: 2.8rem; line-height: 1;
+}
+.adm-pag-stat.verde    .adm-pag-num { color: var(--neon); }
+.adm-pag-stat.vermelho .adm-pag-num { color: #ff6b6b; }
+
+.adm-pag-label {
+  font-size: .72rem; color: var(--text2);
+  font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+}
+
+/* ─── TABELA ─────────────────────────────────────────────────────────────── */
+.adm-pag-tabela {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+}
+
+.adm-pag-thead {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 1rem; padding: .75rem 1.25rem;
+  background: rgba(255,255,255,.03);
+  border-bottom: 1px solid var(--border);
+  font-size: .68rem; font-weight: 700;
+  letter-spacing: 2.5px; color: var(--text3); text-transform: uppercase;
+}
+
+.adm-pag-row {
+  display: grid; grid-template-columns: 1fr auto auto;
+  gap: 1rem; align-items: center;
+  padding: .9rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  transition: background .15s;
+}
+.adm-pag-row:last-child { border-bottom: none; }
+.adm-pag-row:hover { background: rgba(255,255,255,.02); }
+
+.adm-pag-jogador { display: flex; align-items: center; gap: .75rem; }
+
+.adm-pag-foto {
+  width: 38px; height: 38px; border-radius: 50%;
+  object-fit: cover; border: 1px solid var(--border2); flex-shrink: 0;
+}
+
+.adm-pag-nome { font-size: .9rem; font-weight: 700; color: var(--text); margin: 0 0 .1rem; }
+.adm-pag-pos  { font-size: .72rem; color: var(--text3); margin: 0; }
+
+/* ─── BADGES ─────────────────────────────────────────────────────────────── */
+.adm-pag-badge {
+  font-size: .72rem; font-weight: 700;
+  padding: .3rem .75rem; border-radius: 20px; white-space: nowrap;
+}
+.adm-pag-badge.pago     { background: rgba(0,255,135,.1);  color: #86efac; border: 1px solid rgba(0,255,135,.2); }
+.adm-pag-badge.pendente { background: rgba(255,77,109,.1); color: #fca5a5; border: 1px solid rgba(255,77,109,.2); }
+
+/* ─── BOTÕES PAGAMENTO ───────────────────────────────────────────────────── */
+.adm-pag-btn {
+  font-size: .78rem; font-weight: 700;
+  padding: .4rem .9rem; border-radius: 8px;
+  border: none; cursor: pointer;
+  transition: opacity .2s, transform .1s;
+  white-space: nowrap; font-family: var(--font-body);
+}
+.adm-pag-btn:hover { opacity: .82; transform: translateY(-1px); }
+.adm-pag-btn.confirmar { background: var(--neon); color: #000; }
+.adm-pag-btn.cancelar  { background: rgba(255,77,109,.15); color: #fca5a5; border: 1px solid rgba(255,77,109,.3); }
+
+/* ─── ANIMAÇÕES ──────────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .adm-wrap { padding: 1.25rem 1rem; }
+  .adm-titulo { font-size: 1.8rem; }
+  .adm-cards { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .adm-titulo { font-size: 1.5rem; }
+  .adm-aba { font-size: .75rem; padding: .5rem .6rem; min-width: 90px; }
+  .adm-atributos { grid-template-columns: repeat(4, 1fr); gap: .35rem; }
+  .adm-pag-thead,
+  .adm-pag-row { padding: .75rem 1rem; gap: .5rem; }
+  .adm-pag-badge { font-size: .65rem; padding: .25rem .5rem; }
+  .adm-pag-btn   { font-size: .72rem; padding: .35rem .65rem; }
+}

@@ -3,22 +3,23 @@ import { useNavigate, useLocation, Link } from "react-router-dom";
 import "../../style/Layout.css";
 
 const MENU = [
-  { path: "/home",          icon: "🃏", label: "Meu Perfil" },
-  { path: "/estatisticas",  icon: "📊", label: "Estatísticas" },
-  { path: "/jogadores",    icon: "👤", label: "Jogadores"},
-  { path: "/campeonato",    icon: "🏆", label: "Campeonato" },
-  { path: "/jogos",         icon: "⚽", label: "Jogos" },
-  { path: "/presenca",      icon: "📋", label: "Lista de Presença" },
-  { path: "/times",         icon: "👕", label: "Times", em_breve: true},
-  { path: "/financeiro",    icon: "💰", label: "Financeiro" },
-  { path: "/calendario",    icon: "📆", label: "Calendario" },
-  { path: "/midia",    icon: "📷", label: "Midia" },
+  { path: "/home",         icon: "🃏", label: "Meu Perfil" },
+  { path: "/estatisticas", icon: "📊", label: "Estatísticas" },
+  { path: "/jogadores",    icon: "👤", label: "Jogadores" },
+  { path: "/campeonato",   icon: "🏆", label: "Campeonato" },
+  { path: "/jogos",        icon: "⚽", label: "Jogos" },
+  { path: "/presenca",     icon: "📋", label: "Lista de Presença" },
+  { path: "/times",        icon: "👕", label: "Times", em_breve: true },
+  { path: "/financeiro",   icon: "💰", label: "Financeiro" },
+  { path: "/calendario",   icon: "📆", label: "Calendario" },
+  { path: "/midia",        icon: "📷", label: "Midia" },
+  // ✅ NADA AQUI — o link admin vai lá embaixo no return
 ];
 
 export default function Layout({ children }) {
-  const navigate  = useNavigate();
-  const location  = useLocation();
-  const usuario   = JSON.parse(localStorage.getItem("user"));
+  const navigate = useNavigate();
+  const location = useLocation();
+  const usuario  = JSON.parse(localStorage.getItem("user"));
   const [aberto, setAberto] = useState(false);
 
   function sair() {
@@ -52,6 +53,14 @@ export default function Layout({ children }) {
         </nav>
 
         <div className="sidebar-footer">
+          {/* ✅ Link admin — só aparece para admins */}
+          {usuario?.isAdmin && (
+            <Link to="/admin" className="sidebar-item" onClick={() => setAberto(false)}>
+              <span className="sidebar-icon">🔒</span>
+              <span className="sidebar-label">Painel Admin</span>
+            </Link>
+          )}
+
           <div className="sidebar-user">
             <div className="user-avatar">
               {usuario?.nome?.[0]?.toUpperCase() ?? "?"}

@@ -153,6 +153,34 @@ export async function postMidia(form) {
 
   return data; // { id, titulo, video_url, mensagem }
 }
+/* =========================
+   ADMINISTRAÇÃO
+========================= */
+
+export async function atualizarOverall(id, dados) {
+  return request(`/admin/jogadores/${id}/overall`, {
+    method: "PATCH",
+    body: JSON.stringify(dados),
+  });
+}
+
+export async function atualizarStats(id, dados) {
+  return request(`/admin/jogadores/${id}/stats`, {
+    method: "PATCH",
+    body: JSON.stringify(dados),
+  });
+}
+
+export async function confirmarPagamento(id, pagou) {
+  return request(`/admin/jogadores/${id}/pagamento`, {
+    method: "PATCH",
+    body: JSON.stringify({ pagou }),
+  });
+}
+
+export async function getAdminUsuarios() {
+  return request("/admin/usuarios");
+}
 
 // Curtir / Descurtir (toggle — back decide se adiciona ou remove)
 export async function curtirMidia(id) {
