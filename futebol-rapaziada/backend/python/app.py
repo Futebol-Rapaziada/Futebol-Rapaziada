@@ -227,7 +227,7 @@ def get_overall_jogador(id):
     conn = obter_conexao()
     cursor = conn.cursor(dictionary=True)
     cursor.execute(
-        "SELECT id, nome, overall, pac, sho, pas, dri, def, phy FROM jogadores WHERE id = %s",
+        "SELECT id_jogador, nome, overall, pac, sho, pas, dri, def, phy FROM jogadores WHERE id_jogador = %s",
         (id,)
     )
     jogador = cursor.fetchone()
@@ -681,7 +681,7 @@ def admin_atualizar_stats(id):
             assistencias = COALESCE(assistencias, 0) + %s,
             jogos = COALESCE(jogos, 0) + %s,
             cartoes = COALESCE(cartoes, 0) + %s
-            WHERE id = %s""",
+            WHERE id_jogador = %s""",
         (dados.get("gols", 0), dados.get("assistencias", 0),
         dados.get("jogos", 0), dados.get("cartoes", 0), id)
     )
@@ -698,7 +698,7 @@ def admin_confirmar_pagamento(id):
     pagou = 1 if dados.get("pagou") else 0
     conn = obter_conexao()
     cursor = conn.cursor()
-    cursor.execute("UPDATE jogadores SET pagou = %s WHERE id = %s", (pagou, id))
+    cursor.execute("UPDATE jogadores SET pagou = %s WHERE id_jogador = %s", (pagou, id))
     conn.commit()
     cursor.close()
     conn.close()
