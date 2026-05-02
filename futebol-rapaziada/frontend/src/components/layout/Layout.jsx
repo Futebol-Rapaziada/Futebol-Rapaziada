@@ -4,16 +4,15 @@ import "../../style/Layout.css";
 
 const MENU = [
   { path: "/home",         icon: "🃏", label: "Meu Perfil" },
-  { path: "/estatisticas", icon: "📊", label: "Estatísticas" },
-  { path: "/jogadores",    icon: "👤", label: "Jogadores" },
-  { path: "/campeonato",   icon: "🏆", label: "Campeonato" },
-  { path: "/jogos",        icon: "⚽", label: "Jogos" },
-  { path: "/presenca",     icon: "📋", label: "Lista de Presença" },
-  { path: "/times",        icon: "👕", label: "Times", em_breve: true },
-  { path: "/financeiro",   icon: "💰", label: "Financeiro" },
+    { path: "/jogadores",    icon: "👤", label: "Jogadores" },
   { path: "/calendario",   icon: "📆", label: "Calendario" },
   { path: "/midia",        icon: "📷", label: "Midia" },
-  // ✅ NADA AQUI — o link admin vai lá embaixo no return
+    { path: "/presenca",     icon: "📋", label: "Lista de Presença" },
+  { path: "/estatisticas", icon: "📊", label: "Estatísticas" },
+    { path: "/financeiro",   icon: "💰", label: "Financeiro" },
+  { path: "/campeonato",   icon: "🏆", label: "Campeonato" },
+  { path: "/jogos",        icon: "⚽", label: "Jogos" },,
+  { path: "/times",        icon: "👕", label: "Times", em_breve: true },
 ];
 
 export default function Layout({ children }) {
