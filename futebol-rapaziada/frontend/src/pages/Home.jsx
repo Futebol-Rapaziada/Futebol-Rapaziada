@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getJogadores, deletarJogador } from "../services/api";
 import Layout from "../components/layout/Layout";
-import { getTipo, getAtribs, atribColor, TIER_INFO } from "../utils/playerTier";
+import CartaFifa from "../components/CartaFifa";
+import { getTipo, TIER_INFO } from "../utils/playerTier";
 import "../style/Home.css";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-production.up.railway.app";
@@ -91,76 +92,19 @@ export default function Home() {
     finally { setSalv(false); }
   }
 
-  async function deletar() {
-    if (!player?.id || !window.confirm("Deletar seu perfil?")) return;
-    await deletarJogador(player.id);
-    localStorage.removeItem("user"); localStorage.removeItem("token");
-    navigate("/");
-  }
-
   if (loading) return <Layout><div className="loading-screen"><div className="loading-ball">⚽</div></div></Layout>;
   if (!player) return <Layout><div className="loading-screen"><p>Nenhum perfil encontrado.</p></div></Layout>;
 
-  const tipo   = getTipo(player, todos);
-  const atribs = getAtribs(player);
-  const tier   = TIER_INFO[tipo];
+  const tipo = getTipo(player, todos);
+  const tier = TIER_INFO[tipo];
 
   return (
     <Layout>
       <div className="home-wrap">
         <div className="home-row">
 
-          {/* CARTA */}
-          <div className="carta-wrap">
-            <div className={`carta carta-${tipo}`}>
-              {tipo === "legend"   && <div className="carta-bg-legend"><div className="orb o1"/><div className="orb o2"/><div className="orb o3"/></div>}
-              {tipo === "champion" && <div className="carta-bg-champion"><div className="orb c1"/><div className="orb c2"/></div>}
-              {tipo === "ouro"     && <div className="carta-bg-ouro"><div className="s1"/><div className="s2"/></div>}
-              {tipo === "prata"    && <div className="carta-bg-prata"><div className="p1"/><div className="p2"/></div>}
-              {tipo === "bronze"   && <div className="carta-bg-bronze"><div className="b1"/><div className="b2"/></div>}
-
-              {tipo === "legend"   && <div className="carta-crown carta-star z1">✦</div>}
-              {tipo === "champion" && <div className="carta-crown carta-king z1">♛</div>}
-
-              <div className="carta-top z1">
-                <div className="carta-ovr">{player.overall || "0"}</div>
-                <div className="carta-pos">{player.posicao || "—"}</div>
-                <div className="carta-flag">🇧🇷</div>
-              </div>
-
-              <div className="carta-foto z1">
-                {player.fotoUrl ? <img src={player.fotoUrl} alt={player.nome}/> : <span>👤</span>}
-              </div>
-
-              <div className="carta-nome z1">{player.nome?.split(" ")[0]?.toUpperCase()}</div>
-              <div className="carta-div z1"/>
-
-              <div className="carta-atribs z1">
-                <div className="atrib-col">
-                  {atribs.slice(0,3).map(a => (
-                    <div key={a.k} className="atrib">
-                      <span className="av" style={{color: atribColor(a.v)}}>{a.v}</span>
-                      <span className="al">{a.l}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="atrib-sep"/>
-                <div className="atrib-col">
-                  {atribs.slice(3).map(a => (
-                    <div key={a.k} className="atrib">
-                      <span className="av" style={{color: atribColor(a.v)}}>{a.v}</span>
-                      <span className="al">{a.l}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className={`tier-badge tier-${tipo}`}>
-              <span>{tier.badge}</span>
-              <span className="tier-sub">· {tier.sub}</span>
-            </div>
-          </div>
+          {/* CARTA — usa componente compartilhado */}
+          <CartaFifa jogador={player} todos={todos} showBadge={true} />
 
           {/* INFO */}
           <div className="home-info">

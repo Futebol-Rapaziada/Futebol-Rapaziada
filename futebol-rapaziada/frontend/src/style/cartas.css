@@ -1,0 +1,275 @@
+/* ============================================================
+   cartas.css — estilos compartilhados de cartas FIFA
+   Importado por Home.css e Jogadores.css
+   ============================================================ */
+
+/* ── BASE ─────────────────────────────────────────────────── */
+.carta {
+  width: 272px; border-radius: 18px; padding: 18px 18px 22px;
+  position: relative; overflow: hidden;
+  animation: cardIn .5s cubic-bezier(.17,.67,.35,1.2);
+  transition: transform .25s, box-shadow .25s;
+}
+.carta:hover { transform: translateY(-6px) scale(1.02); }
+
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(20px) scale(.94); }
+  to   { opacity:1; transform:none; }
+}
+
+.z1 { position: relative; z-index: 1; }
+.carta-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+
+/* ── ELEMENTOS COMUNS ─────────────────────────────────────── */
+.carta-top   { display:flex; flex-direction:column; align-items:flex-start; gap:1px; }
+.carta-ovr   { font-family:var(--font-display); font-size:50px; line-height:1; }
+.carta-pos   { font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
+.carta-flag  { font-size:18px; margin-top:2px; }
+.carta-crown { position:absolute; top:12px; left:50%; transform:translateX(-50%); z-index:2; font-size:18px; }
+
+.carta-foto {
+  width:148px; height:148px; margin:-58px auto 0;
+  border-radius:50%; overflow:hidden; border:3px solid;
+  display:flex; align-items:center; justify-content:center;
+  position:relative; z-index:1;
+}
+.carta-foto img  { width:100%; height:100%; object-fit:cover; }
+.carta-foto span { font-size:58px; opacity:.4; }
+
+.carta-nome   { text-align:center; font-family:var(--font-display); font-size:26px; letter-spacing:3px; margin-top:10px; }
+.carta-div    { width:82%; height:1px; margin:10px auto; }
+.carta-atribs { display:flex; justify-content:center; align-items:center; gap:0; padding:0 8px; }
+.atrib-col    { display:flex; flex-direction:column; gap:4px; flex:1; align-items:center; }
+.atrib-sep    { width:1px; margin:0 10px; align-self:stretch; }
+.atrib        { display:flex; align-items:center; gap:6px; width:100%; justify-content:center; }
+.av           { font-family:var(--font-display); font-size:20px; line-height:1; min-width:28px; text-align:right; }
+.al           { font-size:11px; font-weight:700; letter-spacing:1px; min-width:30px; }
+
+/* ══════════════════════════════════════════════════════════
+   CARTAS PADRÃO
+══════════════════════════════════════════════════════════ */
+
+/* ── PRETO (novato) ───────────────────────────────────────── */
+.carta-preto {
+  background: linear-gradient(160deg, #0a0a0a, #050505 50%, #0d0d0d);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.02), 0 24px 60px rgba(0,0,0,.95);
+}
+.carta-bg-preto { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.carta-preto .carta-ovr  { color:#555; }
+.carta-preto .carta-pos  { color:#444; }
+.carta-preto .carta-nome { color:#666; }
+.carta-preto .carta-div  { background:rgba(255,255,255,.05); }
+.carta-preto .al         { color:rgba(255,255,255,.2); }
+.carta-preto .atrib-sep  { background:rgba(255,255,255,.05); }
+.carta-preto .carta-foto { border-color:rgba(255,255,255,.1); background:rgba(255,255,255,.02); }
+
+/* ── BRONZE ───────────────────────────────────────────────── */
+.carta-bronze {
+  background: linear-gradient(160deg,#1f1008,#100800 50%,#1a0d05);
+  border: 2px solid rgba(180,100,40,.4);
+  box-shadow: 0 0 0 1px rgba(200,120,60,.08), 0 24px 60px rgba(0,0,0,.9), 0 0 30px rgba(160,80,30,.1);
+}
+.carta-bg-bronze { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.b1,.b2 { position:absolute; transform:rotate(-30deg); clip-path:polygon(30% 0%,100% 0%,70% 100%,0% 100%); }
+.b1 { width:220px; height:500px; top:-100px; left:-70px; background:rgba(180,100,40,.06); }
+.b2 { width:130px; height:300px; top:-40px; right:20px; background:rgba(140,70,20,.05); }
+.carta-bronze .carta-ovr  { color:#cd7f32; text-shadow:0 0 14px rgba(205,127,50,.4); }
+.carta-bronze .carta-pos  { color:#a0622a; }
+.carta-bronze .carta-nome { color:#e8a870; text-shadow:0 0 10px rgba(205,127,50,.3); }
+.carta-bronze .carta-div  { background:rgba(180,100,40,.2); }
+.carta-bronze .al         { color:rgba(200,140,80,.45); }
+.carta-bronze .atrib-sep  { background:rgba(180,100,40,.2); }
+.carta-bronze .carta-foto { border-color:rgba(180,100,40,.4); background:rgba(0,0,0,.2); }
+
+/* ── PRATA ────────────────────────────────────────────────── */
+.carta-prata {
+  background: linear-gradient(160deg,#1a1a1f,#0f0f14 50%,#16161c);
+  border: 2px solid rgba(160,170,190,.4);
+  box-shadow: 0 0 0 1px rgba(200,210,230,.06), 0 24px 60px rgba(0,0,0,.85), 0 0 35px rgba(160,170,190,.1);
+}
+.carta-bg-prata { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.p1,.p2 { position:absolute; transform:rotate(-30deg); clip-path:polygon(30% 0%,100% 0%,70% 100%,0% 100%); }
+.p1 { width:220px; height:500px; top:-100px; left:-70px; background:rgba(200,210,230,.06); }
+.p2 { width:130px; height:300px; top:-40px; right:20px; background:rgba(180,190,210,.04); }
+.carta-prata .carta-ovr  { color:#c0c8d8; text-shadow:0 0 14px rgba(192,200,216,.4); }
+.carta-prata .carta-pos  { color:#8a9ab0; }
+.carta-prata .carta-nome { color:#d4dae8; text-shadow:0 0 10px rgba(192,200,216,.2); }
+.carta-prata .carta-div  { background:rgba(160,170,190,.18); }
+.carta-prata .al         { color:rgba(160,170,190,.45); }
+.carta-prata .atrib-sep  { background:rgba(160,170,190,.18); }
+.carta-prata .carta-foto { border-color:rgba(160,170,190,.4); background:rgba(255,255,255,.04); }
+
+/* ── OURO ─────────────────────────────────────────────────── */
+.carta-ouro {
+  background: linear-gradient(150deg,#f5edd0,#e8d898 30%,#cfa940 60%,#b8902a);
+  border: 2px solid #c9962a;
+  box-shadow: 0 0 0 1px rgba(255,220,100,.35), 0 24px 60px rgba(0,0,0,.55), 0 0 48px rgba(212,168,67,.18);
+}
+.carta-bg-ouro { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.s1 { position:absolute; width:220px; height:550px; top:-130px; left:-50px; background:rgba(255,255,255,.12); transform:rotate(-30deg); clip-path:polygon(30% 0%,100% 0%,70% 100%,0% 100%); }
+.s2 { position:absolute; width:130px; height:320px; top:-60px; right:10px; background:rgba(0,60,180,.08); transform:rotate(-30deg); }
+.carta-ouro .carta-ovr  { color:#1a0e00; }
+.carta-ouro .carta-pos  { color:#2a1800; }
+.carta-ouro .carta-nome { color:#1a0e00; }
+.carta-ouro .carta-div  { background:rgba(0,0,0,.12); }
+.carta-ouro .al         { color:rgba(0,0,0,.4); }
+.carta-ouro .atrib-sep  { background:rgba(0,0,0,.12); }
+.carta-ouro .carta-foto { border-color:rgba(255,220,100,.5); background:rgba(0,0,0,.12); }
+
+/* ══════════════════════════════════════════════════════════
+   CARTAS ESPECIAIS
+══════════════════════════════════════════════════════════ */
+
+/* ── VERMELHO (GOAT / 1º campeonato) ─────────────────────── */
+.carta-vermelho {
+  background: linear-gradient(160deg,#1a0000,#3d0000 45%,#1a0010 100%);
+  border: 2px solid rgba(220,30,60,.7);
+  box-shadow:
+    0 0 0 1px rgba(220,30,60,.2),
+    0 24px 60px rgba(0,0,0,.9),
+    0 0 70px rgba(220,30,60,.35),
+    0 0 130px rgba(220,30,60,.15),
+    inset 0 1px 0 rgba(255,80,100,.2);
+}
+.carta-bg-vermelho { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.vm1 { position:absolute; border-radius:50%; filter:blur(45px); width:220px; height:220px; background:rgba(220,30,60,.45); top:-70px; left:-50px; }
+.vm2 { position:absolute; border-radius:50%; filter:blur(45px); width:160px; height:160px; background:rgba(255,50,0,.25); top:20px; right:-35px; }
+.vm3 { position:absolute; border-radius:50%; filter:blur(45px); width:100px; height:100px; background:rgba(255,100,100,.15); bottom:-20px; left:40px; }
+.carta-vermelho .carta-crown { color:rgba(255,120,140,.8); text-shadow:0 0 20px rgba(220,30,60,1); }
+.carta-vermelho .carta-ovr   { color:#ffe4e8; text-shadow:0 0 22px rgba(220,30,60,.9); }
+.carta-vermelho .carta-pos   { color:#ff8090; }
+.carta-vermelho .carta-nome  { color:#fff0f2; text-shadow:0 0 16px rgba(220,30,60,.6); }
+.carta-vermelho .carta-div   { background:rgba(220,30,60,.3); }
+.carta-vermelho .al          { color:rgba(255,140,155,.5); }
+.carta-vermelho .atrib-sep   { background:rgba(220,30,60,.25); }
+.carta-vermelho .carta-foto  { border-color:rgba(220,30,60,.6); background:rgba(120,0,20,.15); box-shadow:0 0 22px rgba(220,30,60,.35); }
+
+/* ── ROXO (Artilheiro) ────────────────────────────────────── */
+.carta-roxo {
+  background: linear-gradient(160deg,#0a001a,#1a0040 45%,#0d1060 100%);
+  border: 2px solid rgba(139,92,246,.65);
+  box-shadow:
+    0 0 0 1px rgba(139,92,246,.2),
+    0 24px 60px rgba(0,0,0,.9),
+    0 0 70px rgba(139,92,246,.3),
+    0 0 130px rgba(139,92,246,.12),
+    inset 0 1px 0 rgba(139,92,246,.2);
+}
+.carta-bg-roxo { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.rx1 { position:absolute; border-radius:50%; filter:blur(45px); width:220px; height:220px; background:rgba(99,102,241,.4); top:-70px; left:-50px; }
+.rx2 { position:absolute; border-radius:50%; filter:blur(45px); width:160px; height:160px; background:rgba(236,72,153,.25); top:20px; right:-35px; }
+.rx3 { position:absolute; border-radius:50%; filter:blur(45px); width:100px; height:100px; background:rgba(167,139,250,.15); bottom:-20px; left:40px; }
+.carta-roxo .carta-crown { color:rgba(167,139,250,.8); text-shadow:0 0 22px rgba(139,92,246,1); }
+.carta-roxo .carta-ovr   { color:#ede9fe; text-shadow:0 0 22px rgba(139,92,246,.8); }
+.carta-roxo .carta-pos   { color:#a78bfa; }
+.carta-roxo .carta-nome  { color:#f3f0ff; text-shadow:0 0 16px rgba(139,92,246,.5); }
+.carta-roxo .carta-div   { background:rgba(139,92,246,.22); }
+.carta-roxo .al          { color:rgba(167,139,250,.5); }
+.carta-roxo .atrib-sep   { background:rgba(139,92,246,.2); }
+.carta-roxo .carta-foto  { border-color:rgba(139,92,246,.5); background:rgba(99,102,241,.1); box-shadow:0 0 22px rgba(139,92,246,.3); }
+
+/* ── LARANJA (Garçom) ─────────────────────────────────────── */
+.carta-laranja {
+  background: linear-gradient(160deg,#1a0a00,#3d1a00 45%,#2a1000 100%);
+  border: 2px solid rgba(255,140,0,.65);
+  box-shadow:
+    0 0 0 1px rgba(255,140,0,.2),
+    0 24px 60px rgba(0,0,0,.9),
+    0 0 70px rgba(255,140,0,.3),
+    0 0 130px rgba(255,140,0,.12),
+    inset 0 1px 0 rgba(255,180,60,.2);
+}
+.carta-bg-laranja { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.la1 { position:absolute; border-radius:50%; filter:blur(45px); width:220px; height:220px; background:rgba(255,140,0,.4); top:-70px; left:-50px; }
+.la2 { position:absolute; border-radius:50%; filter:blur(45px); width:160px; height:160px; background:rgba(255,80,0,.2); top:20px; right:-35px; }
+.la3 { position:absolute; border-radius:50%; filter:blur(45px); width:100px; height:100px; background:rgba(255,200,50,.15); bottom:-20px; left:40px; }
+.carta-laranja .carta-crown { color:rgba(255,200,80,.9); text-shadow:0 0 20px rgba(255,140,0,1); }
+.carta-laranja .carta-ovr   { color:#fff3e0; text-shadow:0 0 22px rgba(255,140,0,.9); }
+.carta-laranja .carta-pos   { color:#ffb347; }
+.carta-laranja .carta-nome  { color:#fff8f0; text-shadow:0 0 16px rgba(255,140,0,.6); }
+.carta-laranja .carta-div   { background:rgba(255,140,0,.3); }
+.carta-laranja .al          { color:rgba(255,180,80,.5); }
+.carta-laranja .atrib-sep   { background:rgba(255,140,0,.25); }
+.carta-laranja .carta-foto  { border-color:rgba(255,140,0,.6); background:rgba(120,60,0,.15); box-shadow:0 0 22px rgba(255,140,0,.3); }
+
+/* ── VERDE (Paredão — Goleiro) ────────────────────────────── */
+.carta-verde {
+  background: linear-gradient(160deg,#001a0a,#003d1a 45%,#001a10 100%);
+  border: 2px solid rgba(0,200,80,.65);
+  box-shadow:
+    0 0 0 1px rgba(0,200,80,.2),
+    0 24px 60px rgba(0,0,0,.9),
+    0 0 70px rgba(0,200,80,.3),
+    0 0 130px rgba(0,200,80,.12),
+    inset 0 1px 0 rgba(80,255,140,.2);
+}
+.carta-bg-verde { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.vd1 { position:absolute; border-radius:50%; filter:blur(45px); width:220px; height:220px; background:rgba(0,200,80,.4); top:-70px; left:-50px; }
+.vd2 { position:absolute; border-radius:50%; filter:blur(45px); width:160px; height:160px; background:rgba(0,255,100,.2); top:20px; right:-35px; }
+.vd3 { position:absolute; border-radius:50%; filter:blur(45px); width:100px; height:100px; background:rgba(100,255,150,.15); bottom:-20px; left:40px; }
+.carta-verde .carta-crown { color:rgba(100,255,150,.9); text-shadow:0 0 20px rgba(0,200,80,1); }
+.carta-verde .carta-ovr   { color:#e0fff0; text-shadow:0 0 22px rgba(0,200,80,.9); }
+.carta-verde .carta-pos   { color:#4dff91; }
+.carta-verde .carta-nome  { color:#f0fff8; text-shadow:0 0 16px rgba(0,200,80,.6); }
+.carta-verde .carta-div   { background:rgba(0,200,80,.3); }
+.carta-verde .al          { color:rgba(80,255,140,.5); }
+.carta-verde .atrib-sep   { background:rgba(0,200,80,.25); }
+.carta-verde .carta-foto  { border-color:rgba(0,200,80,.6); background:rgba(0,60,20,.15); box-shadow:0 0 22px rgba(0,200,80,.3); }
+
+/* ── AZUL (Xerife — não-goleiro) ──────────────────────────── */
+.carta-azul {
+  background: linear-gradient(160deg,#00081a,#00123d 45%,#000d2a 100%);
+  border: 2px solid rgba(0,120,255,.65);
+  box-shadow:
+    0 0 0 1px rgba(0,120,255,.2),
+    0 24px 60px rgba(0,0,0,.9),
+    0 0 70px rgba(0,120,255,.3),
+    0 0 130px rgba(0,120,255,.12),
+    inset 0 1px 0 rgba(60,160,255,.2);
+}
+.carta-bg-azul { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.az1 { position:absolute; border-radius:50%; filter:blur(45px); width:220px; height:220px; background:rgba(0,120,255,.4); top:-70px; left:-50px; }
+.az2 { position:absolute; border-radius:50%; filter:blur(45px); width:160px; height:160px; background:rgba(0,200,255,.2); top:20px; right:-35px; }
+.az3 { position:absolute; border-radius:50%; filter:blur(45px); width:100px; height:100px; background:rgba(100,180,255,.15); bottom:-20px; left:40px; }
+.carta-azul .carta-crown { color:rgba(100,180,255,.9); text-shadow:0 0 20px rgba(0,120,255,1); }
+.carta-azul .carta-ovr   { color:#e0f0ff; text-shadow:0 0 22px rgba(0,120,255,.9); }
+.carta-azul .carta-pos   { color:#4da6ff; }
+.carta-azul .carta-nome  { color:#f0f8ff; text-shadow:0 0 16px rgba(0,120,255,.6); }
+.carta-azul .carta-div   { background:rgba(0,120,255,.3); }
+.carta-azul .al          { color:rgba(80,160,255,.5); }
+.carta-azul .atrib-sep   { background:rgba(0,120,255,.25); }
+.carta-azul .carta-foto  { border-color:rgba(0,120,255,.6); background:rgba(0,20,80,.15); box-shadow:0 0 22px rgba(0,120,255,.3); }
+
+/* ══════════════════════════════════════════════════════════
+   TIER BADGES
+══════════════════════════════════════════════════════════ */
+.tier-badge {
+  font-family:var(--font-body); font-size:12px; font-weight:700;
+  letter-spacing:1.5px; text-transform:uppercase;
+  padding:5px 16px; border-radius:20px;
+  display:flex; align-items:center; gap:6px;
+}
+.tier-sub { font-size:10px; opacity:.7; letter-spacing:1px; font-weight:600; }
+
+/* Badges da carta */
+.tier-vermelho { background:rgba(220,30,60,.1);    border:1px solid rgba(220,30,60,.4);   color:#ff6080; }
+.tier-roxo     { background:rgba(139,92,246,.12);  border:1px solid rgba(139,92,246,.4);  color:#a78bfa; }
+.tier-laranja  { background:rgba(255,140,0,.1);    border:1px solid rgba(255,140,0,.4);   color:#ffb347; }
+.tier-verde    { background:rgba(0,200,80,.1);     border:1px solid rgba(0,200,80,.4);    color:#4dff91; }
+.tier-azul     { background:rgba(0,120,255,.1);    border:1px solid rgba(0,120,255,.4);   color:#4da6ff; }
+.tier-ouro     { background:rgba(212,168,67,.1);   border:1px solid rgba(212,168,67,.3);  color:#d4a843; }
+.tier-prata    { background:rgba(160,170,190,.08); border:1px solid rgba(160,170,190,.25);color:#b0bcd0; }
+.tier-bronze   { background:rgba(180,100,40,.08);  border:1px solid rgba(180,100,40,.25); color:#cd7f32; }
+.tier-preto    { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); color:#555; }
+
+/* Tags inline (info-tags no Home) */
+.tier-tag-vermelho { background:rgba(220,30,60,.1)!important;    border-color:rgba(220,30,60,.35)!important;   color:#ff6080!important; }
+.tier-tag-roxo     { background:rgba(139,92,246,.12)!important;  border-color:rgba(139,92,246,.35)!important;  color:#a78bfa!important; }
+.tier-tag-laranja  { background:rgba(255,140,0,.1)!important;    border-color:rgba(255,140,0,.35)!important;   color:#ffb347!important; }
+.tier-tag-verde    { background:rgba(0,200,80,.1)!important;     border-color:rgba(0,200,80,.35)!important;    color:#4dff91!important; }
+.tier-tag-azul     { background:rgba(0,120,255,.1)!important;    border-color:rgba(0,120,255,.35)!important;   color:#4da6ff!important; }
+.tier-tag-ouro     { background:rgba(212,168,67,.1)!important;   border-color:rgba(212,168,67,.3)!important;   color:#d4a843!important; }
+.tier-tag-prata    { background:rgba(160,170,190,.08)!important; border-color:rgba(160,170,190,.2)!important;  color:#b0bcd0!important; }
+.tier-tag-bronze   { background:rgba(180,100,40,.08)!important;  border-color:rgba(180,100,40,.2)!important;   color:#cd7f32!important; }
+.tier-tag-preto    { background:rgba(255,255,255,.04)!important; border-color:rgba(255,255,255,.08)!important; color:#555!important; }
