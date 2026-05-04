@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getJogadores, deletarJogador } from "../services/api";
 import Layout from "../components/layout/Layout";
+import { getTipo, getAtribs, atribColor, TIER_INFO } from "../utils/playerTier";
 import "../style/Home.css";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-production.up.railway.app";
 const POSICOES = ["Goleiro","Zagueiro","Lateral Direito","Lateral Esquerdo","Meia","Centroavante"];
 
-// ─── PRÓXIMO JOGO ─────────────────────────────────────────────────────────────
 const obterDadosProximoJogo = () => {
   const ref = new Date(2025, 4, 1, 23, 0, 0);
   while (ref.getDay() !== 5) ref.setDate(ref.getDate() + 1);
@@ -27,109 +27,18 @@ const obterDadosProximoJogo = () => {
   };
 };
 
-// ─── PONTUAÇÃO CAMPEONATO (igual ao Campeonato.jsx) ───────────────────────────
-const PONTOS = { gol: 3, assistencia: 2, defesa: 2, vitoria: 5, cartao_am: -1, cartao_vm: -3 };
-
-function calcPontos(j) {
-  return (
-    (j.gols         ?? 0) * PONTOS.gol        +
-    (j.assistencias ?? 0) * PONTOS.assistencia +
-    (j.defesas      ?? 0) * PONTOS.defesa      +
-    (j.vitorias     ?? 0) * PONTOS.vitoria     +
-    (j.cartoes      ?? 0) * PONTOS.cartao_am   +
-    (j.cartoes_vermelhos ?? 0) * PONTOS.cartao_vm
-  );
-}
-
-// ─── TIPO DO CARD ─────────────────────────────────────────────────────────────
-function getTipo(player, todos) {
-  if (!todos || todos.length === 0) return getTipoPorOverall(player);
-
-  // 1. Legend = 1º no campeonato por pontos
-  const porPontos = [...todos].sort((a, b) => calcPontos(b) - calcPontos(a));
-  if (porPontos[0]?.id_jogador === player.id_jogador || porPontos[0]?.id === player.id) {
-    return "legend";
-  }
-
-  // 2. Champion = 1º em gols, assistências ou G+A
-  const porGols    = [...todos].sort((a, b) => (b.gols ?? 0) - (a.gols ?? 0));
-  const porAssists = [...todos].sort((a, b) => (b.assistencias ?? 0) - (a.assistencias ?? 0));
-  const porGa      = [...todos].sort((a, b) =>
-    ((b.gols ?? 0) + (b.assistencias ?? 0)) - ((a.gols ?? 0) + (a.assistencias ?? 0))
-  );
-
-  const isLider = (lista) => {
-    const top = lista[0];
-    return top?.id_jogador === player.id_jogador || top?.id === player.id;
-  };
-
-  if (isLider(porGols) || isLider(porAssists) || isLider(porGa)) {
-    return "champion";
-  }
-
-  // 3. Por overall
-  return getTipoPorOverall(player);
-}
-
-function getTipoPorOverall(player) {
-  const ovr = Number(player?.overall ?? 0);
-  if (ovr >= 75) return "ouro";
-  if (ovr >= 50) return "prata";
-  return "bronze";
-}
-
-// ─── COR DOS ATRIBUTOS ────────────────────────────────────────────────────────
-function atribColor(v) {
-  if (v >= 70) return "#00ff87";
-  if (v >= 50) return "#ffd166";
-  return "#ff4d6d";
-}
-
-// ─── ATRIBUTOS POR POSIÇÃO ────────────────────────────────────────────────────
-function getAtribs(player) {
-  const isGoleiro = player?.posicao === "Goleiro";
-  if (isGoleiro) {
-    return [
-      { k: "pac", l: "DIV", v: player.pac ?? 0 },
-      { k: "sho", l: "HAN", v: player.sho ?? 0 },
-      { k: "pas", l: "KIC", v: player.pas ?? 0 },
-      { k: "dri", l: "REF", v: player.dri ?? 0 },
-      { k: "def", l: "SPE", v: player.def ?? 0 },
-      { k: "phy", l: "POS", v: player.phy ?? 0 },
-    ];
-  }
-  return [
-    { k: "pac", l: "PAC", v: player.pac ?? 0 },
-    { k: "sho", l: "SHO", v: player.sho ?? 0 },
-    { k: "pas", l: "PAS", v: player.pas ?? 0 },
-    { k: "dri", l: "DRI", v: player.dri ?? 0 },
-    { k: "def", l: "DEF", v: player.def ?? 0 },
-    { k: "phy", l: "PHY", v: player.phy ?? 0 },
-  ];
-}
-
-// ─── TIER INFO ────────────────────────────────────────────────────────────────
-const TIER_INFO = {
-  legend:   { badge: "🌟 Legend",   sub: "1º no Campeonato" },
-  champion: { badge: "👑 Champion", sub: "Líder em Pódio"   },
-  ouro:     { badge: "🥇 Ouro",     sub: "Overall 75–99"    },
-  prata:    { badge: "🥈 Prata",    sub: "Overall 50–74"    },
-  bronze:   { badge: "🥉 Bronze",   sub: "Overall 0–49"     },
-};
-
-// ─── COMPONENTE PRINCIPAL ─────────────────────────────────────────────────────
 export default function Home() {
-  const proximoJogo  = obterDadosProximoJogo();
-  const navigate     = useNavigate();
+  const proximoJogo   = obterDadosProximoJogo();
+  const navigate      = useNavigate();
   const usuarioLogado = JSON.parse(localStorage.getItem("user"));
 
-  const [player,   setPlayer]   = useState(null);
-  const [todos,    setTodos]    = useState([]);
-  const [loading,  setLoading]  = useState(true);
-  const [painel,   setPainel]   = useState(false);
-  const [salvando, setSalv]     = useState(false);
-  const [msg,      setMsg]      = useState({ tipo: "", texto: "" });
-  const [form,     setForm]     = useState({
+  const [player,   setPlayer]  = useState(null);
+  const [todos,    setTodos]   = useState([]);
+  const [loading,  setLoading] = useState(true);
+  const [painel,   setPainel]  = useState(false);
+  const [salvando, setSalv]    = useState(false);
+  const [msg,      setMsg]     = useState({ tipo: "", texto: "" });
+  const [form,     setForm]    = useState({
     nome: "", posicao: "", idade: "", perna_boa: "Direita",
     fotoUrl: "", gols: 0, assistencias: 0, jogos: 0, cartoes: 0,
   });
@@ -199,36 +108,17 @@ export default function Home() {
   return (
     <Layout>
       <div className="home-wrap">
-
-        {/* ── LINHA PRINCIPAL ── */}
         <div className="home-row">
 
-          {/* CARTA FIFA */}
+          {/* CARTA */}
           <div className="carta-wrap">
             <div className={`carta carta-${tipo}`}>
+              {tipo === "legend"   && <div className="carta-bg-legend"><div className="orb o1"/><div className="orb o2"/><div className="orb o3"/></div>}
+              {tipo === "champion" && <div className="carta-bg-champion"><div className="orb c1"/><div className="orb c2"/></div>}
+              {tipo === "ouro"     && <div className="carta-bg-ouro"><div className="s1"/><div className="s2"/></div>}
+              {tipo === "prata"    && <div className="carta-bg-prata"><div className="p1"/><div className="p2"/></div>}
+              {tipo === "bronze"   && <div className="carta-bg-bronze"><div className="b1"/><div className="b2"/></div>}
 
-              {/* Fundos decorativos por tipo */}
-              {tipo === "legend" && (
-                <div className="carta-bg-legend">
-                  <div className="orb o1"/><div className="orb o2"/><div className="orb o3"/>
-                </div>
-              )}
-              {tipo === "champion" && (
-                <div className="carta-bg-champion">
-                  <div className="orb c1"/><div className="orb c2"/>
-                </div>
-              )}
-              {tipo === "ouro" && (
-                <div className="carta-bg-ouro"><div className="s1"/><div className="s2"/></div>
-              )}
-              {tipo === "prata" && (
-                <div className="carta-bg-prata"><div className="p1"/><div className="p2"/></div>
-              )}
-              {tipo === "bronze" && (
-                <div className="carta-bg-bronze"><div className="b1"/><div className="b2"/></div>
-              )}
-
-              {/* Ícone topo (legend / champion) */}
               {tipo === "legend"   && <div className="carta-crown carta-star z1">✦</div>}
               {tipo === "champion" && <div className="carta-crown carta-king z1">♛</div>}
 
@@ -239,29 +129,26 @@ export default function Home() {
               </div>
 
               <div className="carta-foto z1">
-                {player.fotoUrl
-                  ? <img src={player.fotoUrl} alt={player.nome} />
-                  : <span>👤</span>
-                }
+                {player.fotoUrl ? <img src={player.fotoUrl} alt={player.nome}/> : <span>👤</span>}
               </div>
 
               <div className="carta-nome z1">{player.nome?.split(" ")[0]?.toUpperCase()}</div>
-              <div className="carta-div z1" />
+              <div className="carta-div z1"/>
 
               <div className="carta-atribs z1">
                 <div className="atrib-col">
-                  {atribs.slice(0, 3).map(a => (
+                  {atribs.slice(0,3).map(a => (
                     <div key={a.k} className="atrib">
-                      <span className="av" style={{ color: atribColor(a.v) }}>{a.v}</span>
+                      <span className="av" style={{color: atribColor(a.v)}}>{a.v}</span>
                       <span className="al">{a.l}</span>
                     </div>
                   ))}
                 </div>
-                <div className="atrib-sep" />
+                <div className="atrib-sep"/>
                 <div className="atrib-col">
                   {atribs.slice(3).map(a => (
                     <div key={a.k} className="atrib">
-                      <span className="av" style={{ color: atribColor(a.v) }}>{a.v}</span>
+                      <span className="av" style={{color: atribColor(a.v)}}>{a.v}</span>
                       <span className="al">{a.l}</span>
                     </div>
                   ))}
@@ -269,7 +156,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Tier Badge */}
             <div className={`tier-badge tier-${tipo}`}>
               <span>{tier.badge}</span>
               <span className="tier-sub">· {tier.sub}</span>
@@ -284,23 +170,19 @@ export default function Home() {
                 <span className="tag neon-tag">{player.posicao || "—"}</span>
                 <span className="tag">🦵 {player.perna_boa || "—"}</span>
                 <span className="tag">🎂 {player.idade || "—"} anos</span>
-                {/* Badge de tier nas tags */}
-                <span className={`tag tier-tag-${tipo}`}>
-                  {tier.badge}
-                </span>
+                <span className={`tag tier-tag-${tipo}`}>{tier.badge}</span>
               </div>
             </div>
 
-            {/* Quick stats */}
             <div className="quick-grid">
               {[
-                { i: "⚽", v: player.gols ?? 0,        l: "Gols"    },
-                { i: "🎯", v: player.assistencias ?? 0, l: "Assist." },
-                { i: "🏟", v: player.jogos ?? 0,        l: "Jogos"   },
-                { i: "🟨", v: player.cartoes ?? 0,      l: "Cartões" },
-                { i: "🔥", v: (player.gols ?? 0) + (player.assistencias ?? 0), l: "G+A" },
-                { i: "⭐", v: player.overall ?? 0,      l: "Overall" },
-              ].map(({ i, v, l }) => (
+                { i:"⚽", v:player.gols??0,        l:"Gols"    },
+                { i:"🎯", v:player.assistencias??0, l:"Assist." },
+                { i:"🏟", v:player.jogos??0,        l:"Jogos"   },
+                { i:"🟨", v:player.cartoes??0,      l:"Cartões" },
+                { i:"🔥", v:(player.gols??0)+(player.assistencias??0), l:"G+A" },
+                { i:"⭐", v:player.overall??0,      l:"Overall" },
+              ].map(({i,v,l}) => (
                 <div key={l} className="qs-card">
                   <span className="qs-i">{i}</span>
                   <span className="qs-v">{v}</span>
@@ -315,56 +197,32 @@ export default function Home() {
           </div>
         </div>
 
-        {/* ── CARDS INFO ── */}
+        {/* CARDS INFO */}
         <div className="info-grid">
           <div className={`info-card ${player.confirmado ? "ic-green" : "ic-red"}`}>
-            <div className="ic-header">
-              <span>{player.confirmado ? "✅" : "❌"}</span>
-              <h3>Próximo Jogo</h3>
-            </div>
-            <div className="ic-body">
-              <p className="ic-val">{player.confirmado ? "Confirmado" : "Não confirmado"}</p>
-            </div>
+            <div className="ic-header"><span>{player.confirmado ? "✅" : "❌"}</span><h3>Próximo Jogo</h3></div>
+            <div className="ic-body"><p className="ic-val">{player.confirmado ? "Confirmado" : "Não confirmado"}</p></div>
           </div>
-
           <div className="info-card" onClick={() => navigate("/calendario")}>
-            <div className="ic-header">
-              <span className="ci-icon highlight-verde">📅</span>
-              <p className="ci-label">Próxima Partida</p>
-            </div>
-            <div className="ic-body">
-              <h3 className="ic-val">{proximoJogo.contagem}</h3>
-              <p className="ic-sub">{proximoJogo.data}</p>
-            </div>
+            <div className="ic-header"><span>📅</span><p className="ci-label">Próxima Partida</p></div>
+            <div className="ic-body"><h3 className="ic-val">{proximoJogo.contagem}</h3><p className="ic-sub">{proximoJogo.data}</p></div>
           </div>
-
           <div className="info-card" onClick={() => navigate("/calendario")}>
-            <div className="ic-header">
-              <span className="ci-icon">🗓️</span>
-              <p className="ci-label">Calendário</p>
-            </div>
-            <div className="ic-body">
-              <h3 className="ic-val">Jogos</h3>
-              <p className="ic-sub">Ver todas as datas</p>
-            </div>
+            <div className="ic-header"><span>🗓️</span><p className="ci-label">Calendário</p></div>
+            <div className="ic-body"><h3 className="ic-val">Jogos</h3><p className="ic-sub">Ver todas as datas</p></div>
           </div>
-
           <div className="info-card">
             <div className="ic-header"><span>🏆</span><h3>Campeonato</h3></div>
-            <div className="ic-body">
-              <p className="ic-val">Temporada 2026</p>
-              <p className="ic-sub">Modo Carreira</p>
-            </div>
+            <div className="ic-body"><p className="ic-val">Temporada 2026</p><p className="ic-sub">Modo Carreira</p></div>
           </div>
-
           <div className="info-card">
             <div className="ic-header"><span>📈</span><h3>Desempenho</h3></div>
             <div className="ic-body">
               {[
-                { l: "Média Gols", v: player.jogos > 0 ? (player.gols / player.jogos).toFixed(2) : "0.00" },
-                { l: "Média Ass.", v: player.jogos > 0 ? (player.assistencias / player.jogos).toFixed(2) : "0.00" },
-                { l: "G+A / Jogo", v: player.jogos > 0 ? (((player.gols ?? 0) + (player.assistencias ?? 0)) / player.jogos).toFixed(2) : "0.00" },
-              ].map(({ l, v }) => (
+                { l:"Média Gols", v: player.jogos>0?(player.gols/player.jogos).toFixed(2):"0.00" },
+                { l:"Média Ass.", v: player.jogos>0?(player.assistencias/player.jogos).toFixed(2):"0.00" },
+                { l:"G+A / Jogo", v: player.jogos>0?(((player.gols??0)+(player.assistencias??0))/player.jogos).toFixed(2):"0.00" },
+              ].map(({l,v}) => (
                 <div key={l} className="desemp-row">
                   <span className="d-lbl">{l}</span>
                   <span className="d-val">{v}</span>
@@ -373,10 +231,9 @@ export default function Home() {
             </div>
           </div>
         </div>
-
       </div>
 
-      {/* ── PAINEL EDITAR ── */}
+      {/* PAINEL */}
       {painel && (
         <div className="overlay" onClick={() => setPainel(false)}>
           <div className="painel" onClick={e => e.stopPropagation()}>
@@ -384,11 +241,10 @@ export default function Home() {
               <h2>Editar Perfil</h2>
               <button className="p-close" onClick={() => setPainel(false)}>✕</button>
             </div>
-
             <div className="p-section">
               <p className="p-label">Dados</p>
               <label className="p-fl">Nome</label>
-              <input className="p-input" value={form.nome} onChange={set("nome")} />
+              <input className="p-input" value={form.nome} onChange={set("nome")}/>
               <label className="p-fl">Posição</label>
               <select className="p-input" value={form.posicao} onChange={set("posicao")}>
                 {POSICOES.map(p => <option key={p}>{p}</option>)}
@@ -396,7 +252,7 @@ export default function Home() {
               <div className="p-row">
                 <div className="p-col">
                   <label className="p-fl">Idade</label>
-                  <input className="p-input" type="number" min="5" max="99" value={form.idade} onChange={set("idade")} />
+                  <input className="p-input" type="number" min="5" max="99" value={form.idade} onChange={set("idade")}/>
                 </div>
                 <div className="p-col">
                   <label className="p-fl">Perna boa</label>
@@ -406,11 +262,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
-            {msg.texto && (
-              <div className={`msg ${msg.tipo === "ok" ? "msg-ok" : "msg-err"}`}>{msg.texto}</div>
-            )}
-
+            {msg.texto && <div className={`msg ${msg.tipo==="ok"?"msg-ok":"msg-err"}`}>{msg.texto}</div>}
             <button className="btn-salvar" onClick={salvar} disabled={salvando}>
               {salvando ? "Salvando..." : "Salvar alterações"}
             </button>
