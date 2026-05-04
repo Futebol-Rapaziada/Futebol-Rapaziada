@@ -198,12 +198,12 @@ def atualizar_jogador(id):
         """
         UPDATE jogadores
         SET nome = %s, posicao = %s, idade = %s, perna_boa = %s,
-            fotoUrl = %s, gols = %s, assistencias = %s, jogos = %s, cartoes = %s
+            fotoUrl = %s, defesa = %s, gols = %s, assistencias = %s, jogos = %s, cartoes = %s
         WHERE id = %s
         """,
         (
             dados["nome"], dados["posicao"], dados["idade"], dados["perna_boa"],
-            dados["fotoUrl"], dados["gols"], dados["assistencias"], dados["jogos"],
+            dados["fotoUrl"], dados['defesa'], dados["gols"], dados["assistencias"], dados["jogos"],
             dados["cartoes"], id,
         )
     )
@@ -244,11 +244,11 @@ def criar_jogador():
     conn = obter_conexao()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO jogadores (nome, posicao, id_time, idade, perna_boa, overall, fotoUrl, gols, assistencias, jogos, cartoes) "
+        "INSERT INTO jogadores (nome, posicao, id_time, idade, perna_boa, overall, fotoUrl, defesa, gols, assistencias, jogos, cartoes) "
         "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
         (
             dados["nome"][:90], dados["posicao"], id_time, dados["idade"], dados["perna_boa"],
-            dados.get("overall", 0), dados["fotoUrl"], dados["gols"],
+            dados.get("overall", 0), dados["fotoUrl"], dados['defesa'], dados["gols"],
             dados["assistencias"], dados["jogos"], dados["cartoes"]
         )
     )
@@ -680,6 +680,7 @@ def admin_atualizar_stats(id):
             gols = COALESCE(gols, 0) + %s,
             assistencias = COALESCE(assistencias, 0) + %s,
             jogos = COALESCE(jogos, 0) + %s,
+            defesa = COALESCE(defesa, 0) + %s,
             cartoes = COALESCE(cartoes, 0) + %s
             WHERE id_jogador = %s""",
         (dados.get("gols", 0), dados.get("assistencias", 0),
