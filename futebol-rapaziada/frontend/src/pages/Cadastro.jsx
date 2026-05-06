@@ -74,9 +74,10 @@ export default function Cadastro() {
         await criarJogador({
           nome: form.nome, posicao: form.posicao,
           idade: Number(form.idade), perna_boa: form.perna_boa,
-          fotoUrl: fotoBase64, // base64 string — sem problemas no JSON
+          fotoUrl: fotoBase64 || "",
           overall: 0, time: "",
           gols: 0, assistencias: 0, jogos: 0, cartoes: 0,
+          defesa: 0, // ✅ campo obrigatório que estava faltando
         });
       } catch {
         setErro("Conta criada, mas erro ao salvar perfil. Entre em contato com o suporte.");
