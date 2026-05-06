@@ -50,14 +50,30 @@ export default function Home() {
   }, []);
 
   async function carregar() {
-    try {
-      const todosJog = await getJogadores();
-      setTodos(todosJog);
-      const meu = todosJog.find(j => j.nome?.toLowerCase() === usuarioLogado.nome?.toLowerCase());
-      if (meu) { setPlayer(meu); preencherForm(meu); }
-    } catch(e) { console.error(e); }
-    finally { setLoading(false); }
+  try {
+    const token = localStorage.getItem("token");
+    
+    // Busca o perfil do usuário logado diretamente
+    const res = await fetch(`${API_URL}/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    
+    if (!res.ok) throw new Error("Perfil não encontrado");
+    
+    const meu = await res.json();
+    setPlayer(meu);
+    preencherForm(meu);
+    
+    // Busca todos os jogadores para comparação de tier
+    const todosJog = await getJogadores();
+    setTodos(todosJog);
+    
+  } catch(e) { 
+    console.error(e); 
+  } finally { 
+    setLoading(false); 
   }
+}
 
   function preencherForm(j) {
     setForm({

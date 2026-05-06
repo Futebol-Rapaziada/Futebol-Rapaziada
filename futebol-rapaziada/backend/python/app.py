@@ -139,6 +139,30 @@ def login():
     }
 })
 
+# ─── MEU PERFIL ──────────────────────────────────────────────────────────────
+
+@app.route('/me', methods=['GET'])
+def get_me():
+    verify_jwt_in_request()
+    user_id = get_jwt_identity()
+    
+    conn = obter_conexao()
+    cursor = conn.cursor(dictionary=True)
+    
+    cursor.execute("SELECT nome FROM cadastro WHERE id_usuarios = %s", (user_id,))
+    usuario = cursor.fetchone()
+    if not usuario:
+        cursor.close(); conn.close()
+        return jsonify({"erro": "Usuário não encontrado"}), 404
+    
+    cursor.execute("SELECT * FROM jogadores WHERE nome = %s LIMIT 1", (usuario["nome"],))
+    jogador = cursor.fetchone()
+    cursor.close(); conn.close()
+    
+    if not jogador:
+        return jsonify({"erro": "Jogador não encontrado"}), 404
+    
+    return jsonify(jogador)
 
 # ─── USUÁRIOS ────────────────────────────────────────────────────────────────────
 
