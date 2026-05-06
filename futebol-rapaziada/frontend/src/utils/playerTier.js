@@ -34,9 +34,10 @@ export function getTipo(player, todos) {
   const porGols = [...todos].sort((a, b) => (b.gols ?? 0) - (a.gols ?? 0));
   if (getId(porGols[0]) === id && (player.gols ?? 0) > 0) return "roxo";
 
-  // ── 3. LARANJA — Garçom (1º em assistências) ─────────────────────────────
+  // ── 3. AZUL — Garçom (1º em assistências) ────────────────────────────────
+  // ⚠️ CORRIGIDO: era laranja, mas no planejamento Azul = Garçom
   const porAssists = [...todos].sort((a, b) => (b.assistencias ?? 0) - (a.assistencias ?? 0));
-  if (getId(porAssists[0]) === id && (player.assistencias ?? 0) > 0) return "laranja";
+  if (getId(porAssists[0]) === id && (player.assistencias ?? 0) > 0) return "azul";
 
   // ── 4. VERDE — Paredão (1º em defesas entre GOLEIROS) ────────────────────
   const goleiros = todos.filter(j => GOLEIROS.includes(j.posicao));
@@ -45,11 +46,12 @@ export function getTipo(player, todos) {
     if (getId(porDefesasGol[0]) === id && (player.defesas ?? 0) > 0) return "verde";
   }
 
-  // ── 5. AZUL — Xerife (1º em defesas entre NÃO-GOLEIROS) ──────────────────
+  // ── 5. LARANJA — Xerife (1º em desarmes entre NÃO-GOLEIROS) ──────────────
+  // ⚠️ CORRIGIDO: era azul, mas no planejamento Laranja = Xerife
   const naoGoleiros = todos.filter(j => NAO_GOLEIROS.includes(j.posicao));
   if (naoGoleiros.length > 0 && NAO_GOLEIROS.includes(player.posicao)) {
-    const porDefesasNaoGol = [...naoGoleiros].sort((a, b) => (b.defesas ?? 0) - (a.defesas ?? 0));
-    if (getId(porDefesasNaoGol[0]) === id && (player.defesas ?? 0) > 0) return "azul";
+    const porDesarmes = [...naoGoleiros].sort((a, b) => (b.desarmes ?? b.defesas ?? 0) - (a.desarmes ?? a.defesas ?? 0));
+    if (getId(porDesarmes[0]) === id && (player.desarmes ?? player.defesas ?? 0) > 0) return "laranja";
   }
 
   // ── 6. Por overall ────────────────────────────────────────────────────────
@@ -59,9 +61,9 @@ export function getTipo(player, todos) {
 export function getTipoPorOverall(player) {
   const ovr = Number(player?.overall ?? 0);
   if (ovr === 0)  return "preto";
-  if (ovr >= 71)  return "ouro";
-  if (ovr >= 51)  return "prata";
-  return "bronze";
+  if (ovr >= 75)  return "ouro";   // ⚠️ CORRIGIDO: era 71 → agora 75
+  if (ovr >= 65)  return "prata";  // ⚠️ CORRIGIDO: era 51 → agora 65
+  return "bronze";                 // 1–64
 }
 
 // ─── COR DOS ATRIBUTOS ────────────────────────────────────────────────────────
@@ -95,13 +97,13 @@ export function getAtribs(jogador) {
 
 // ─── TIER INFO ────────────────────────────────────────────────────────────────
 export const TIER_INFO = {
-  vermelho: { badge: "🔴 GOAT",     sub: "1º no Campeonato"   },
-  roxo:     { badge: "🟣 Artilheiro", sub: "Líder em Gols"    },
-  laranja:  { badge: "🟠 Garçom",   sub: "Líder em Assistências" },
-  verde:    { badge: "🟢 Paredão",  sub: "Melhor Goleiro"     },
-  azul:     { badge: "🔵 Xerife",   sub: "Melhor Defesa"      },
-  ouro:     { badge: "🥇 Ouro",     sub: "Overall 71–99"      },
-  prata:    { badge: "🥈 Prata",    sub: "Overall 51–70"      },
-  bronze:   { badge: "🥉 Bronze",   sub: "Overall 1–50"       },
-  preto:    { badge: "⬛ Novato",   sub: "Overall 0"          },
+  vermelho: { badge: "🔴 GOAT",       sub: "1º no Campeonato"      },
+  roxo:     { badge: "🟣 Artilheiro", sub: "Líder em Gols"         },
+  azul:     { badge: "🔵 Garçom",     sub: "Líder em Assistências" }, // ⚠️ CORRIGIDO
+  verde:    { badge: "🟢 Paredão",    sub: "Melhor Goleiro"        },
+  laranja:  { badge: "🟠 Xerife",     sub: "Melhor Defesa"         }, // ⚠️ CORRIGIDO
+  ouro:     { badge: "🥇 Ouro",       sub: "Overall 75–99"         }, // ⚠️ CORRIGIDO
+  prata:    { badge: "🥈 Prata",      sub: "Overall 65–74"         }, // ⚠️ CORRIGIDO
+  bronze:   { badge: "🥉 Bronze",     sub: "Overall 1–64"          }, // ⚠️ CORRIGIDO
+  preto:    { badge: "⬛ Novato",     sub: "Overall 0"             },
 };
