@@ -244,14 +244,14 @@ def criar_jogador():
     conn = obter_conexao()
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO jogadores (nome, posicao, id_time, idade, perna_boa, overall, fotoUrl, defesa, gols, assistencias, jogos, cartoes) "
-        "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-        (
-            dados["nome"][:90], dados["posicao"], id_time, dados["idade"], dados["perna_boa"],
-            dados.get("overall", 0), dados["fotoUrl"], dados['defesa'], dados["gols"],
-            dados["assistencias"], dados["jogos"], dados["cartoes"]
-        )
+    "INSERT INTO jogadores (nome, posicao, id_time, idade, perna_boa, overall, fotoUrl, defesa, gols, assistencias, jogos, cartoes) "
+    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",  # ← adiciona um %s aqui
+    (
+        dados["nome"][:90], dados["posicao"], id_time, dados["idade"], dados["perna_boa"],
+        dados.get("overall", 0), dados["fotoUrl"], dados["defesa"], dados["gols"],  # ← garante dados["defesa"] aqui
+        dados["assistencias"], dados["jogos"], dados["cartoes"]
     )
+)
     conn.commit()
     cursor.close()
     conn.close()
