@@ -206,3 +206,6 @@
 @media (min-width: 1024px) {
   .podios-grid { grid-template-columns: repeat(4, 1fr); }
 }
+/* ── NOVAS COLUNAS: DESARME E DEFESA ── */
+.td-dsm { color: #60a5fa !important; font-weight: 700; }
+.td-def { color: #a78bfa !important; font-weight: 700; }

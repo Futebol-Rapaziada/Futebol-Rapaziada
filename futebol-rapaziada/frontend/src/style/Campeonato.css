@@ -58,10 +58,12 @@
   gap: 6px; padding: 7px 10px; border-radius: 8px;
 }
 .pl-pos { background: rgba(0,255,135,.08); border: 1px solid rgba(0,255,135,.2); }
+.pl-neu { background: rgba(255,200,0,.06); border: 1px solid rgba(255,200,0,.18); }
 .pl-neg { background: rgba(255,77,109,.06); border: 1px solid rgba(255,77,109,.15); }
 .pl-lbl { font-size: 11px; font-weight: 600; color: var(--text2); }
 .pl-val { font-family: var(--font-display); font-size: 14px; flex-shrink: 0; }
 .pl-pos .pl-val { color: var(--neon); }
+.pl-neu .pl-val { color: #ffd166; }
 .pl-neg .pl-val { color: var(--red); }
 
 /* ── ABAS ── */
@@ -89,7 +91,7 @@
   border-radius: 14px; border: 1px solid var(--border);
 }
 .camp-tabela {
-  width: 100%; min-width: 480px;
+  width: 100%; min-width: 620px;
   border-collapse: collapse;
 }
 .camp-tabela thead tr {
@@ -120,6 +122,10 @@
 .tab-av      { font-size: 13px; margin-right: 3px; }
 .tag-eu      { font-size: 9px; background: rgba(0,255,135,.15); color: var(--neon); padding: 1px 4px; border-radius: 4px; margin-left: 4px; font-weight: 700; }
 .col-dest    { color: #ffd166 !important; }
+.col-vit     { color: var(--neon) !important; font-weight: 700; }
+.col-emp     { color: #ffd166 !important; }
+.col-der     { color: var(--red) !important; opacity: .7; }
+.col-dsm     { color: #60a5fa !important; font-weight: 700; }
 .col-red     { color: var(--red) !important; }
 .col-pts     { display: inline-block; background: rgba(0,255,135,.12); color: var(--neon); padding: 2px 7px; border-radius: 6px; font-family: var(--font-display); font-size: 14px; font-weight: 700; }
 

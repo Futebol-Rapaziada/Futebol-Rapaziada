@@ -79,3 +79,21 @@
   .home-row { flex-direction:column; align-items:center; }
   .home-info { width:100%; }
 }
+/* ── NOVOS QUICK STAT CARDS (resultados + defesa) ── */
+.qs-vit { border-color: rgba(0,255,135,.25) !important; }
+.qs-vit .qs-v { color: var(--neon); }
+
+.qs-emp { border-color: rgba(255,209,0,.2) !important; }
+.qs-emp .qs-v { color: #ffd166; }
+
+.qs-der { border-color: rgba(255,77,109,.2) !important; }
+.qs-der .qs-v { color: var(--red); opacity: .75; }
+
+.qs-dsm { border-color: rgba(96,165,250,.25) !important; }
+.qs-dsm .qs-v { color: #60a5fa; }
+
+.qs-def { border-color: rgba(167,139,250,.25) !important; }
+.qs-def .qs-v { color: #a78bfa; }
+
+.qs-pts { background: rgba(0,255,135,.06) !important; border-color: rgba(0,255,135,.3) !important; }
+.qs-pts .qs-v { color: var(--neon); font-size: 22px; }

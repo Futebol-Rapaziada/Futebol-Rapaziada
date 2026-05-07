@@ -4,25 +4,30 @@ import { getJogadores } from "../services/api";
 import Layout from "../components/layout/Layout";
 import "../style/Campeonato.css";
 
-const ABAS = ["Ranking Geral", "Artilheiros", "Garçons", "Participação", "Defesa"];
+const ABAS = ["Ranking Geral", "Artilheiros", "Garçons", "Participação", "Defesa", "Desarmes"];
 
-// Sistema de pontuação
+// Sistema de pontuação atualizado
 const PONTOS = {
   gol:           3,
   assistencia:   2,
-  defesa:        2,
-  vitoria:       5,
+  defesa:        2,   // defesa de goleiro
+  desarme:       2,   // desarme
+  vitoria:       3,   // vitória
+  empate:        1,   // empate
+  derrota:       0,   // derrota (sem pontos)
   cartao_am:    -1,
   cartao_vm:    -3,
 };
 
 function calcPontos(j) {
   return (
-    (j.gols         ?? 0) * PONTOS.gol        +
-    (j.assistencias ?? 0) * PONTOS.assistencia +
-    (j.defesas      ?? 0) * PONTOS.defesa      +
-    (j.vitorias     ?? 0) * PONTOS.vitoria     +
-    (j.cartoes      ?? 0) * PONTOS.cartao_am   +
+    (j.gols              ?? 0) * PONTOS.gol        +
+    (j.assistencias      ?? 0) * PONTOS.assistencia +
+    (j.defesas           ?? 0) * PONTOS.defesa      +
+    (j.desarmes          ?? 0) * PONTOS.desarme     +
+    (j.vitorias          ?? 0) * PONTOS.vitoria     +
+    (j.empates           ?? 0) * PONTOS.empate      +
+    (j.cartoes           ?? 0) * PONTOS.cartao_am   +
     (j.cartoes_vermelhos ?? 0) * PONTOS.cartao_vm
   );
 }
@@ -53,7 +58,8 @@ export default function Campeonato() {
   const artilheiros  = [...jogadores].sort((a, b) => (b.gols ?? 0) - (a.gols ?? 0));
   const garcons      = [...jogadores].sort((a, b) => (b.assistencias ?? 0) - (a.assistencias ?? 0));
   const participacao = [...jogadores].sort((a, b) => ((b.gols??0)+(b.assistencias??0)) - ((a.gols??0)+(a.assistencias??0)));
-  const defesa       = [...jogadores].filter(j => (j.jogos ?? 0) > 0).sort((a, b) => (a.cartoes ?? 0) - (b.cartoes ?? 0));
+  const defesa       = [...jogadores].filter(j => (j.jogos ?? 0) > 0).sort((a, b) => (b.defesas ?? 0) - (a.defesas ?? 0));
+  const desarmes     = [...jogadores].sort((a, b) => (b.desarmes ?? 0) - (a.desarmes ?? 0));
 
   function RankRow({ j, i, children }) {
     return (
@@ -91,12 +97,15 @@ export default function Campeonato() {
           <h3 className="pl-titulo">Sistema de Pontuação</h3>
           <div className="pl-grid">
             {[
-              { l:"Gol",          v:"+3 pts", c:"pos" },
-              { l:"Assistência",  v:"+2 pts", c:"pos" },
-              { l:"Defesa",       v:"+2 pts", c:"pos" },
-              { l:"Vitória",      v:"+5 pts", c:"pos" },
-              { l:"Cartão Amarelo", v:"−1 pt",  c:"neg" },
-              { l:"Cartão Vermelho",v:"−3 pts", c:"neg" },
+              { l:"Gol",              v:"+3 pts", c:"pos" },
+              { l:"Assistência",      v:"+2 pts", c:"pos" },
+              { l:"Defesa (Goleiro)", v:"+2 pts", c:"pos" },
+              { l:"Desarme",          v:"+2 pts", c:"pos" },
+              { l:"Vitória",          v:"+3 pts", c:"pos" },
+              { l:"Empate",           v:"+1 pt",  c:"neu" },
+              { l:"Derrota",          v:"0 pts",  c:"neu" },
+              { l:"Cartão Amarelo",   v:"−1 pt",  c:"neg" },
+              { l:"Cartão Vermelho",  v:"−3 pts", c:"neg" },
             ].map(({l,v,c}) => (
               <div key={l} className={`pl-item pl-${c}`}>
                 <span className="pl-lbl">{l}</span>
@@ -120,9 +129,15 @@ export default function Campeonato() {
               <thead>
                 <tr>
                   <th>#</th><th>Jogador</th><th>Pos.</th>
-                  <th title="Jogos">JG</th><th title="Gols">G</th>
-                  <th title="Assistências">A</th><th title="Vitórias">V</th>
-                  <th title="Defesas">DEF</th><th title="Cartões">🟨</th>
+                  <th title="Jogos">JG</th>
+                  <th title="Gols">G</th>
+                  <th title="Assistências">A</th>
+                  <th title="Vitórias">V</th>
+                  <th title="Empates">E</th>
+                  <th title="Derrotas">D</th>
+                  <th title="Defesas de Goleiro">DEF</th>
+                  <th title="Desarmes">DSM</th>
+                  <th title="Cartões Amarelos">🟨</th>
                   <th title="Cartões Vermelhos">🟥</th>
                   <th title="Pontos" className="th-pts">PTS</th>
                 </tr>
@@ -140,8 +155,11 @@ export default function Campeonato() {
                     <td>{j.jogos??0}</td>
                     <td className="col-dest">{j.gols??0}</td>
                     <td className="col-dest">{j.assistencias??0}</td>
-                    <td>{j.vitorias??0}</td>
+                    <td className="col-vit">{j.vitorias??0}</td>
+                    <td className="col-emp">{j.empates??0}</td>
+                    <td className="col-der">{j.derrotas??0}</td>
                     <td>{j.defesas??0}</td>
+                    <td className="col-dsm">{j.desarmes??0}</td>
                     <td>{j.cartoes??0}</td>
                     <td className="col-red">{j.cartoes_vermelhos??0}</td>
                     <td><span className="col-pts">{j._pts}</span></td>
@@ -192,7 +210,21 @@ export default function Campeonato() {
               ? <p className="camp-vazio">Nenhum jogador com jogos registrados.</p>
               : defesa.slice(0,10).map((j,i)=>(
                 <RankRow key={j.id??i} j={j} i={i}>
-                  <span className="rr-stat">🟨 <strong>{j.cartoes??0}</strong> cart. · 🟥 <strong>{j.cartoes_vermelhos??0}</strong></span>
+                  <span className="rr-stat">🧤 <strong>{j.defesas??0}</strong> def. · <span className="rr-pts">+{(j.defesas??0)*2} pts</span></span>
+                </RankRow>
+              ))
+            }
+          </div>
+        )}
+
+        {/* ── DESARMES ── */}
+        {aba === "Desarmes" && (
+          <div className="rank-lista">
+            {desarmes.length === 0
+              ? <p className="camp-vazio">Nenhum desarme registrado ainda.</p>
+              : desarmes.slice(0,10).map((j,i)=>(
+                <RankRow key={j.id??i} j={j} i={i}>
+                  <span className="rr-stat">🛡️ <strong>{j.desarmes??0}</strong> dsm. · <span className="rr-pts">+{(j.desarmes??0)*2} pts</span></span>
                 </RankRow>
               ))
             }

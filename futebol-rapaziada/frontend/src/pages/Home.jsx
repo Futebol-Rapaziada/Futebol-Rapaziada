@@ -42,6 +42,7 @@ export default function Home() {
   const [form,     setForm]    = useState({
     nome: "", posicao: "", idade: "", perna_boa: "Direita",
     fotoUrl: "", gols: 0, assistencias: 0, jogos: 0, cartoes: 0,
+    vitorias: 0, empates: 0, derrotas: 0, desarmes: 0, defesas: 0,
   });
 
   useEffect(() => {
@@ -50,30 +51,23 @@ export default function Home() {
   }, []);
 
   async function carregar() {
-  try {
-    const token = localStorage.getItem("token");
-    
-    // Busca o perfil do usuário logado diretamente
-    const res = await fetch(`${API_URL}/me`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    
-    if (!res.ok) throw new Error("Perfil não encontrado");
-    
-    const meu = await res.json();
-    setPlayer(meu);
-    preencherForm(meu);
-    
-    // Busca todos os jogadores para comparação de tier
-    const todosJog = await getJogadores();
-    setTodos(todosJog);
-    
-  } catch(e) { 
-    console.error(e); 
-  } finally { 
-    setLoading(false); 
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error("Perfil não encontrado");
+      const meu = await res.json();
+      setPlayer(meu);
+      preencherForm(meu);
+      const todosJog = await getJogadores();
+      setTodos(todosJog);
+    } catch(e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
   function preencherForm(j) {
     setForm({
@@ -81,6 +75,9 @@ export default function Home() {
       perna_boa: j.perna_boa ?? "Direita", fotoUrl: j.fotoUrl ?? "",
       gols: j.gols ?? 0, assistencias: j.assistencias ?? 0,
       jogos: j.jogos ?? 0, cartoes: j.cartoes ?? 0,
+      vitorias: j.vitorias ?? 0, empates: j.empates ?? 0,
+      derrotas: j.derrotas ?? 0, desarmes: j.desarmes ?? 0,
+      defesas: j.defesas ?? 0,
     });
   }
 
@@ -95,9 +92,17 @@ export default function Home() {
         method: "PUT",
         headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
         body: JSON.stringify({
-          ...form, idade: Number(form.idade),
-          gols: Number(form.gols), assistencias: Number(form.assistencias),
-          jogos: Number(form.jogos), cartoes: Number(form.cartoes),
+          ...form,
+          idade:       Number(form.idade),
+          gols:        Number(form.gols),
+          assistencias:Number(form.assistencias),
+          jogos:       Number(form.jogos),
+          cartoes:     Number(form.cartoes),
+          vitorias:    Number(form.vitorias),
+          empates:     Number(form.empates),
+          derrotas:    Number(form.derrotas),
+          desarmes:    Number(form.desarmes),
+          defesas:     Number(form.defesas),
         }),
       });
       if (!res.ok) throw new Error();
@@ -119,7 +124,7 @@ export default function Home() {
       <div className="home-wrap">
         <div className="home-row">
 
-          {/* CARTA — usa componente compartilhado */}
+          {/* CARTA */}
           <CartaFifa jogador={player} todos={todos} showBadge={true} />
 
           {/* INFO */}
@@ -134,6 +139,7 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Quick Stats — linha 1: stats de jogo */}
             <div className="quick-grid">
               {[
                 { i:"⚽", v:player.gols??0,        l:"Gols"    },
@@ -144,6 +150,31 @@ export default function Home() {
                 { i:"⭐", v:player.overall??0,      l:"Overall" },
               ].map(({i,v,l}) => (
                 <div key={l} className="qs-card">
+                  <span className="qs-i">{i}</span>
+                  <span className="qs-v">{v}</span>
+                  <span className="qs-l">{l}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Quick Stats — linha 2: resultados e ações defensivas */}
+            <div className="quick-grid">
+              {[
+                { i:"🏆", v:player.vitorias??0, l:"Vitórias",  c:"qs-card qs-vit" },
+                { i:"🤝", v:player.empates??0,  l:"Empates",   c:"qs-card qs-emp" },
+                { i:"💔", v:player.derrotas??0, l:"Derrotas",  c:"qs-card qs-der" },
+                { i:"🛡️", v:player.desarmes??0, l:"Desarmes",  c:"qs-card qs-dsm" },
+                { i:"🧤", v:player.defesas??0,  l:"Defesas",   c:"qs-card qs-def" },
+                { i:"📊", v:(() => {
+                    const pts =
+                      (player.gols??0)*3 + (player.assistencias??0)*2 +
+                      (player.defesas??0)*2 + (player.desarmes??0)*2 +
+                      (player.vitorias??0)*3 + (player.empates??0)*1 +
+                      (player.cartoes??0)*(-1) + (player.cartoes_vermelhos??0)*(-3);
+                    return pts;
+                  })(), l:"Pts Camp.", c:"qs-card qs-pts" },
+              ].map(({i,v,l,c}) => (
+                <div key={l} className={c ?? "qs-card"}>
                   <span className="qs-i">{i}</span>
                   <span className="qs-v">{v}</span>
                   <span className="qs-l">{l}</span>
@@ -176,6 +207,21 @@ export default function Home() {
             <div className="ic-body"><p className="ic-val">Temporada 2026</p><p className="ic-sub">Modo Carreira</p></div>
           </div>
           <div className="info-card">
+            <div className="ic-header"><span>⚔️</span><h3>Resultados</h3></div>
+            <div className="ic-body">
+              {[
+                { l:"Vitórias",  v: player.vitorias ?? 0 },
+                { l:"Empates",   v: player.empates  ?? 0 },
+                { l:"Derrotas",  v: player.derrotas ?? 0 },
+              ].map(({l,v}) => (
+                <div key={l} className="desemp-row">
+                  <span className="d-lbl">{l}</span>
+                  <span className="d-val">{v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="info-card">
             <div className="ic-header"><span>📈</span><h3>Desempenho</h3></div>
             <div className="ic-body">
               {[
@@ -193,7 +239,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* PAINEL */}
+      {/* PAINEL DE EDIÇÃO */}
       {painel && (
         <div className="overlay" onClick={() => setPainel(false)}>
           <div className="painel" onClick={e => e.stopPropagation()}>
@@ -201,6 +247,8 @@ export default function Home() {
               <h2>Editar Perfil</h2>
               <button className="p-close" onClick={() => setPainel(false)}>✕</button>
             </div>
+
+            {/* Dados pessoais */}
             <div className="p-section">
               <p className="p-label">Dados</p>
               <label className="p-fl">Nome</label>
@@ -222,6 +270,73 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            {/* Estatísticas de ataque */}
+            <div className="p-section">
+              <p className="p-label">⚽ Ataque</p>
+              <div className="p-row">
+                <div className="p-col">
+                  <label className="p-fl">Gols</label>
+                  <input className="p-input" type="number" min="0" value={form.gols} onChange={set("gols")}/>
+                </div>
+                <div className="p-col">
+                  <label className="p-fl">Assistências</label>
+                  <input className="p-input" type="number" min="0" value={form.assistencias} onChange={set("assistencias")}/>
+                </div>
+              </div>
+            </div>
+
+            {/* Resultados */}
+            <div className="p-section">
+              <p className="p-label">🏆 Resultados</p>
+              <div className="p-row">
+                <div className="p-col">
+                  <label className="p-fl">Vitórias</label>
+                  <input className="p-input" type="number" min="0" value={form.vitorias} onChange={set("vitorias")}/>
+                </div>
+                <div className="p-col">
+                  <label className="p-fl">Empates</label>
+                  <input className="p-input" type="number" min="0" value={form.empates} onChange={set("empates")}/>
+                </div>
+              </div>
+              <div className="p-row">
+                <div className="p-col">
+                  <label className="p-fl">Derrotas</label>
+                  <input className="p-input" type="number" min="0" value={form.derrotas} onChange={set("derrotas")}/>
+                </div>
+                <div className="p-col">
+                  <label className="p-fl">Jogos</label>
+                  <input className="p-input" type="number" min="0" value={form.jogos} onChange={set("jogos")}/>
+                </div>
+              </div>
+            </div>
+
+            {/* Ações defensivas */}
+            <div className="p-section">
+              <p className="p-label">🛡️ Defesa</p>
+              <div className="p-row">
+                <div className="p-col">
+                  <label className="p-fl">Desarmes</label>
+                  <input className="p-input" type="number" min="0" value={form.desarmes} onChange={set("desarmes")}/>
+                </div>
+                <div className="p-col">
+                  <label className="p-fl">Defesas (Goleiro)</label>
+                  <input className="p-input" type="number" min="0" value={form.defesas} onChange={set("defesas")}/>
+                </div>
+              </div>
+            </div>
+
+            {/* Disciplina */}
+            <div className="p-section">
+              <p className="p-label">🟨 Disciplina</p>
+              <div className="p-row">
+                <div className="p-col">
+                  <label className="p-fl">Cartões Amarelos</label>
+                  <input className="p-input" type="number" min="0" value={form.cartoes} onChange={set("cartoes")}/>
+                </div>
+              </div>
+            </div>
+
             {msg.texto && <div className={`msg ${msg.tipo==="ok"?"msg-ok":"msg-err"}`}>{msg.texto}</div>}
             <button className="btn-salvar" onClick={salvar} disabled={salvando}>
               {salvando ? "Salvando..." : "Salvar alterações"}

@@ -4,12 +4,10 @@ import { getJogadores } from "../services/api.js";
 import Layout from "../components/layout/Layout.jsx";
 import "../style/Estatisticas.css";
 
-const ABAS = ["Geral","Artilheiro","Garçom","Participação","Defesa","Presença"];
+const ABAS = ["Geral","Artilheiro","Garçom","Participação","Desarme","Goleiro","Presença"];
 
 function Podio({ lista, campo, renderVal, titulo, icone }) {
   const top = lista.slice(0, 3);
-
-  
   const ordemVisual = [1, 0, 2];
   const alturas     = ["75px", "115px", "50px"];
   const cores       = ["#9ca3af", "#ffd166", "#cd7c2f"];
@@ -60,9 +58,9 @@ export default function Estatisticas() {
   const porAssistencias = [...jogadores].sort((a,b)=>(b.assistencias??0)-(a.assistencias??0));
   const porParticipacao = [...jogadores].sort((a,b)=>((b.gols??0)+(b.assistencias??0))-((a.gols??0)+(a.assistencias??0)));
   const porJogos        = [...jogadores].sort((a,b)=>(b.jogos??0)-(a.jogos??0));
-  const porCartoes      = [...jogadores].sort((a,b)=>(b.cartoes??0)-(a.cartoes??0));
+  const porDesarmes     = [...jogadores].sort((a,b)=>(b.desarmes??0)-(a.desarmes??0));
+  const porDefesas      = [...jogadores].sort((a,b)=>(b.defesas??0)-(a.defesas??0));
   const porOverall      = [...jogadores].sort((a,b)=>(b.overall??0)-(a.overall??0));
-  const menosCartoes    = [...jogadores].filter(j=>(j.jogos??0)>0).sort((a,b)=>(a.cartoes??0)-(b.cartoes??0));
 
   const isEu = j => j.nome?.toLowerCase() === usuarioLogado?.nome?.toLowerCase();
 
@@ -85,7 +83,10 @@ export default function Estatisticas() {
             <thead>
               <tr>
                 <th>#</th><th>Jogador</th><th>Pos.</th>
-                <th>JG</th><th>G</th><th>A</th><th>G+A</th><th>🟨</th><th>OVR</th>
+                <th>JG</th><th>G</th><th>A</th><th>G+A</th>
+                <th title="Desarmes">DSM</th>
+                <th title="Defesas de Goleiro">DEF</th>
+                <th>🟨</th><th>OVR</th>
               </tr>
             </thead>
             <tbody>
@@ -105,6 +106,8 @@ export default function Estatisticas() {
                   <td className="td-dest">{j.gols??0}</td>
                   <td className="td-dest">{j.assistencias??0}</td>
                   <td className="td-gpa">{(j.gols??0)+(j.assistencias??0)}</td>
+                  <td className="td-dsm">{j.desarmes??0}</td>
+                  <td className="td-def">{j.defesas??0}</td>
                   <td>{j.cartoes??0}</td>
                   <td><span className="td-ovr">{j.overall??0}</span></td>
                 </tr>
@@ -141,6 +144,7 @@ export default function Estatisticas() {
     <Layout>
       <div className="estat-wrap">
 
+        {/* ── MEUS STATS ── */}
         {eu && (
           <section className="meus-stats">
             <div className="ms-top">
@@ -153,12 +157,12 @@ export default function Estatisticas() {
               </div>
               <div className="ms-boxes">
                 {[
-                  {i:"⚽",v:eu.gols,l:"Gols"},
-                  {i:"🎯",v:eu.assistencias,l:"Assists"},
-                  {i:"🔥",v:(eu.gols??0)+(eu.assistencias??0),l:"G+A"},
-                  {i:"🏟",v:eu.jogos,l:"Jogos"},
-                  {i:"🟨",v:eu.cartoes,l:"Cartões"},
-                  {i:"⭐",v:eu.overall,l:"Overall"},
+                  {i:"⚽",v:eu.gols,        l:"Gols"},
+                  {i:"🎯",v:eu.assistencias, l:"Assists"},
+                  {i:"🔥",v:(eu.gols??0)+(eu.assistencias??0), l:"G+A"},
+                  {i:"🛡️",v:eu.desarmes,    l:"Desarmes"},
+                  {i:"🧤",v:eu.defesas,      l:"Defesas"},
+                  {i:"🏟",v:eu.jogos,        l:"Jogos"},
                 ].map(({i,v,l})=>(
                   <div key={l} className="ms-box">
                     <span className="msb-i">{i}</span>
@@ -172,61 +176,80 @@ export default function Estatisticas() {
               <span>⚽ Artilheiro: <strong>{posicaoNo(porGols)}</strong></span>
               <span>🎯 Garçom: <strong>{posicaoNo(porAssistencias)}</strong></span>
               <span>🔥 G+A: <strong>{posicaoNo(porParticipacao)}</strong></span>
+              <span>🛡️ Desarmes: <strong>{posicaoNo(porDesarmes)}</strong></span>
+              <span>🧤 Defesas: <strong>{posicaoNo(porDefesas)}</strong></span>
               <span>🏟 Presença: <strong>{posicaoNo(porJogos)}</strong></span>
             </div>
           </section>
         )}
 
+        {/* ── ABAS ── */}
         <div className="abas">
           {ABAS.map(a=>(
             <button key={a} className={`aba-btn ${aba===a?"ativa":""}`} onClick={()=>setAba(a)}>{a}</button>
           ))}
         </div>
 
+        {/* ── GERAL ── */}
         {aba==="Geral" && (
           <div className="estat-conteudo">
             <div className="podios-grid">
-              <Podio titulo="Artilheiros"  icone="⚽" lista={porGols}         renderVal={j=>`${j.gols??0} G`}/>
-              <Podio titulo="Garçons"       icone="🎯" lista={porAssistencias} renderVal={j=>`${j.assistencias??0} A`}/>
-              <Podio titulo="Participação" icone="🔥" lista={porParticipacao} renderVal={j=>`${(j.gols??0)+(j.assistencias??0)} G+A`}/>
-              <Podio titulo="Mais Jogos"   icone="🏟" lista={porJogos}        renderVal={j=>`${j.jogos??0} JG`}/>
+              <Podio titulo="Artilheiros"   icone="⚽" lista={porGols}         renderVal={j=>`${j.gols??0} G`}/>
+              <Podio titulo="Garçons"        icone="🎯" lista={porAssistencias} renderVal={j=>`${j.assistencias??0} A`}/>
+              <Podio titulo="Participação"  icone="🔥" lista={porParticipacao} renderVal={j=>`${(j.gols??0)+(j.assistencias??0)} G+A`}/>
+              <Podio titulo="Mais Jogos"    icone="🏟" lista={porJogos}        renderVal={j=>`${j.jogos??0} JG`}/>
+              <Podio titulo="Desarmes"      icone="🛡️" lista={porDesarmes}     renderVal={j=>`${j.desarmes??0} DSM`}/>
+              <Podio titulo="Defesas (GK)"  icone="🧤" lista={porDefesas}      renderVal={j=>`${j.defesas??0} DEF`}/>
             </div>
             <TabelaCompleta/>
           </div>
         )}
 
+        {/* ── ARTILHEIRO ── */}
         {aba==="Artilheiro" && (
           <div className="estat-conteudo">
             <Podio titulo="Artilheiros" icone="⚽" lista={porGols} renderVal={j=>`${j.gols??0} gols`}/>
-            <RankLista lista={porGols} renderVal={j=>`${j.gols??0} gols`}/>
+            <RankLista lista={porGols} renderVal={j=>`⚽ ${j.gols??0} gols`}/>
           </div>
         )}
 
+        {/* ── GARÇOM ── */}
         {aba==="Garçom" && (
           <div className="estat-conteudo">
             <Podio titulo="Garçons" icone="🎯" lista={porAssistencias} renderVal={j=>`${j.assistencias??0} ass.`}/>
-            <RankLista lista={porAssistencias} renderVal={j=>`${j.assistencias??0} assistências`}/>
+            <RankLista lista={porAssistencias} renderVal={j=>`🎯 ${j.assistencias??0} assistências`}/>
           </div>
         )}
 
+        {/* ── PARTICIPAÇÃO ── */}
         {aba==="Participação" && (
           <div className="estat-conteudo">
             <Podio titulo="Participação (G+A)" icone="🔥" lista={porParticipacao} renderVal={j=>`${(j.gols??0)+(j.assistencias??0)} G+A`}/>
-            <RankLista lista={porParticipacao} renderVal={j=>`${(j.gols??0)+(j.assistencias??0)} G+A`}/>
+            <RankLista lista={porParticipacao} renderVal={j=>`🔥 ${(j.gols??0)+(j.assistencias??0)} G+A`}/>
           </div>
         )}
 
-        {aba==="Defesa" && (
+        {/* ── DESARME ── */}
+        {aba==="Desarme" && (
           <div className="estat-conteudo">
-            <Podio titulo="Menos Cartões" icone="🧱" lista={menosCartoes} renderVal={j=>`${j.cartoes??0} cart.`}/>
-            <RankLista lista={menosCartoes} renderVal={j=>`${j.cartoes??0} cartões`}/>
+            <Podio titulo="Mais Desarmes" icone="🛡️" lista={porDesarmes} renderVal={j=>`${j.desarmes??0} dsm.`}/>
+            <RankLista lista={porDesarmes} renderVal={j=>`🛡️ ${j.desarmes??0} desarmes`}/>
           </div>
         )}
 
+        {/* ── GOLEIRO (Defesas) ── */}
+        {aba==="Goleiro" && (
+          <div className="estat-conteudo">
+            <Podio titulo="Defesas de Goleiro" icone="🧤" lista={porDefesas} renderVal={j=>`${j.defesas??0} def.`}/>
+            <RankLista lista={porDefesas} renderVal={j=>`🧤 ${j.defesas??0} defesas`}/>
+          </div>
+        )}
+
+        {/* ── PRESENÇA ── */}
         {aba==="Presença" && (
           <div className="estat-conteudo">
             <Podio titulo="Mais Jogos" icone="🏟" lista={porJogos} renderVal={j=>`${j.jogos??0} jogos`}/>
-            <RankLista lista={porJogos} renderVal={j=>`${j.jogos??0} jogos`}/>
+            <RankLista lista={porJogos} renderVal={j=>`🏟 ${j.jogos??0} jogos`}/>
           </div>
         )}
 
