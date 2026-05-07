@@ -6,6 +6,8 @@ import {
 } from "../services/api";
 import "../style/Admin.css";
 
+const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-production.up.railway.app";
+
 export default function Admin() {
   const navigate = useNavigate();
   const [aba, setAba] = useState("overall");
@@ -17,22 +19,21 @@ export default function Admin() {
   useEffect(() => { carregarDados(); }, []);
 
   async function carregarDados() {
-  try {
-    setLoading(true);
-    // Removido o .then(r => r.json()) pois o api.js já entrega os dados
-    const [rJog, rUsu] = await Promise.all([
-      getJogadores(),
-      getAdminUsuarios(),
-    ]);
-    setJogadores(rJog);
-    setUsuarios(rUsu);
-  } catch (err) { 
-    console.error(err);
-    showMsg("Erro ao carregar dados.", "erro"); 
-  } finally { 
-    setLoading(false); 
+    try {
+      setLoading(true);
+      const [rJog, rUsu] = await Promise.all([
+        getJogadores(),
+        getAdminUsuarios(),
+      ]);
+      setJogadores(rJog);
+      setUsuarios(rUsu);
+    } catch (err) {
+      console.error(err);
+      showMsg("Erro ao carregar dados.", "erro");
+    } finally {
+      setLoading(false);
+    }
   }
-}
 
   function showMsg(texto, tipo = "sucesso") {
     setMsg({ texto, tipo });
@@ -61,30 +62,58 @@ export default function Admin() {
         )}
 
         <div className="adm-abas">
-          {["overall","stats","pagamentos","usuarios"].map((a) => (
+          {["overall","stats","pagamentos","presenca","usuarios"].map((a) => (
             <button key={a} className={`adm-aba ${aba === a ? "ativo" : ""}`} onClick={() => setAba(a)}>
-              {a === "overall" && "⭐ Overall"}
-              {a === "stats" && "📊 Estatísticas"}
+              {a === "overall"    && "⭐ Overall"}
+              {a === "stats"      && "📊 Estatísticas"}
               {a === "pagamentos" && "💰 Pagamentos"}
-              {a === "usuarios" && "👥 Usuários"}
+              {a === "presenca"   && "📋 Presença"}
+              {a === "usuarios"   && "👥 Usuários"}
             </button>
           ))}
         </div>
 
         {loading ? <div className="adm-loading">Carregando...</div> : (
           <div className="adm-content">
-            {aba === "overall" && <AbaOverall jogadores={jogadores} onSave={async (id, dados) => {
-              try { await atualizarOverall(id, dados); showMsg("Overall atualizado!"); }
-              catch { showMsg("Erro ao atualizar overall.", "erro"); }
-            }} />}
-            {aba === "stats" && <AbaStats jogadores={jogadores} onSave={async (id, dados) => {
-              try { await atualizarStats(id, dados); showMsg("Estatísticas atualizadas!"); carregarDados(); }
-              catch { showMsg("Erro ao atualizar estatísticas.", "erro"); }
-            }} />}
-            {aba === "pagamentos" && <AbaPagamentos jogadores={jogadores} onToggle={async (id, pagou) => {
-              try { await confirmarPagamento(id, pagou); showMsg(`Pagamento ${pagou ? "confirmado" : "cancelado"}!`); carregarDados(); }
-              catch { showMsg("Erro ao atualizar pagamento.", "erro"); }
-            }} />}
+            {aba === "overall" && (
+              <AbaOverall jogadores={jogadores} onSave={async (id, dados) => {
+                try { await atualizarOverall(id, dados); showMsg("Overall atualizado!"); }
+                catch { showMsg("Erro ao atualizar overall.", "erro"); }
+              }} />
+            )}
+            {aba === "stats" && (
+              <AbaStats jogadores={jogadores} onSave={async (id, dados) => {
+                try { await atualizarStats(id, dados); showMsg("Estatísticas atualizadas!"); carregarDados(); }
+                catch { showMsg("Erro ao atualizar estatísticas.", "erro"); }
+              }} />
+            )}
+            {aba === "pagamentos" && (
+              <AbaPagamentos jogadores={jogadores} onToggle={async (id, pagou) => {
+                try { await confirmarPagamento(id, pagou); showMsg(`Pagamento ${pagou ? "confirmado" : "cancelado"}!`); carregarDados(); }
+                catch { showMsg("Erro ao atualizar pagamento.", "erro"); }
+              }} />
+            )}
+            {aba === "presenca" && (
+              <AbaPresenca
+                jogadores={jogadores}
+                onToggle={async (j) => {
+                  try {
+                    const token = localStorage.getItem("token");
+                    const novoStatus = !(j.confirmado === 1 || j.confirmado === true);
+                    await fetch(`${API_URL}/jogadores/${j.id_jogador ?? j.id}/confirmar`, {
+                      method: "PATCH",
+                      headers: {
+                        "Content-Type": "application/json",
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                      },
+                      body: JSON.stringify({ confirmado: novoStatus }),
+                    });
+                    showMsg(`Presença de ${j.nome?.split(" ")[0]} ${novoStatus ? "confirmada" : "removida"}!`);
+                    carregarDados();
+                  } catch { showMsg("Erro ao atualizar presença.", "erro"); }
+                }}
+              />
+            )}
             {aba === "usuarios" && <AbaUsuarios usuarios={usuarios} />}
           </div>
         )}
@@ -151,8 +180,21 @@ function AbaStats({ jogadores, onSave }) {
 }
 
 function StatsForm({ jogador, onSave }) {
-  const [vals, setVals] = useState({ gols: 0, assistencias: 0, jogos: 0, cartoes: 0 });
+  const empty = { gols:0, assistencias:0, jogos:0, cartoes:0, vitorias:0, empates:0, derrotas:0, desarmes:0, defesas:0 };
+  const [vals, setVals] = useState(empty);
   const [salvando, setSalvando] = useState(false);
+
+  const campos = [
+    ["gols",        "⚽ Gols"],
+    ["assistencias","🎯 Assists"],
+    ["jogos",       "🏟 Jogos"],
+    ["vitorias",    "🏆 Vitórias"],
+    ["empates",     "🤝 Empates"],
+    ["derrotas",    "💔 Derrotas"],
+    ["desarmes",    "🛡️ Desarmes"],
+    ["defesas",     "🧤 Defesas"],
+    ["cartoes",     "🟨 Cartões"],
+  ];
 
   return (
     <div className="adm-card">
@@ -160,14 +202,23 @@ function StatsForm({ jogador, onSave }) {
         {jogador.fotoUrl && <img src={jogador.fotoUrl} alt={jogador.nome} className="adm-card-foto" />}
         <div><p className="adm-card-nome">{jogador.nome}</p><p className="adm-card-pos">{jogador.posicao}</p></div>
       </div>
+
+      {/* Stats atuais */}
       <div className="adm-stats-atuais">
-        <span>Gols: <b>{jogador.gols||0}</b></span>
-        <span>Assists: <b>{jogador.assistencias||0}</b></span>
-        <span>Jogos: <b>{jogador.jogos||0}</b></span>
-        <span>Cartões: <b>{jogador.cartoes||0}</b></span>
+        <span>⚽ <b>{jogador.gols||0}</b></span>
+        <span>🎯 <b>{jogador.assistencias||0}</b></span>
+        <span>🏟 <b>{jogador.jogos||0}</b></span>
+        <span>🏆 <b>{jogador.vitorias||0}</b></span>
+        <span>🤝 <b>{jogador.empates||0}</b></span>
+        <span>💔 <b>{jogador.derrotas||0}</b></span>
+        <span>🛡️ <b>{jogador.desarmes||0}</b></span>
+        <span>🧤 <b>{jogador.defesas||0}</b></span>
+        <span>🟨 <b>{jogador.cartoes||0}</b></span>
       </div>
-      <div className="adm-atributos">
-        {[["gols","⚽ Gols"],["assistencias","🎯 Assists"],["jogos","🏟 Jogos"],["cartoes","🟨 Cartões"]].map(([k,l]) => (
+
+      {/* Grid de inputs — 3 colunas */}
+      <div className="adm-atributos adm-atributos-3">
+        {campos.map(([k, l]) => (
           <div key={k} className="adm-attr">
             <label className="adm-attr-label">{l}</label>
             <input type="number" min="0" value={vals[k]}
@@ -176,11 +227,12 @@ function StatsForm({ jogador, onSave }) {
           </div>
         ))}
       </div>
+
       <button className="adm-btn-salvar" disabled={salvando}
         onClick={async () => {
           setSalvando(true);
           await onSave(jogador.id_jogador||jogador.id, vals);
-          setVals({ gols: 0, assistencias: 0, jogos: 0, cartoes: 0 });
+          setVals(empty);
           setSalvando(false);
         }}>
         {salvando ? "Salvando..." : "+ Adicionar"}
@@ -221,6 +273,103 @@ function AbaPagamentos({ jogadores, onToggle }) {
             </button>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── PRESENÇA ─────────────────────────────────────────────────────────────────
+function AbaPresenca({ jogadores, onToggle }) {
+  const [atualizando, setAtual] = useState({});
+  const confirmados    = jogadores.filter(j => j.confirmado === 1 || j.confirmado === true);
+  const naoConfirmados = jogadores.filter(j => !(j.confirmado === 1 || j.confirmado === true));
+
+  async function toggle(j) {
+    setAtual(o => ({ ...o, [j.id_jogador ?? j.id]: true }));
+    await onToggle(j);
+    setAtual(o => ({ ...o, [j.id_jogador ?? j.id]: false }));
+  }
+
+  return (
+    <div>
+      <h2 className="adm-section-title">📋 Lista de Presença</h2>
+
+      {/* Resumo */}
+      <div className="adm-pag-resumo">
+        <div className="adm-pag-stat verde">
+          <span className="adm-pag-num">{confirmados.length}</span>
+          <span className="adm-pag-label">Confirmados</span>
+        </div>
+        <div className="adm-pag-stat vermelho">
+          <span className="adm-pag-num">{naoConfirmados.length}</span>
+          <span className="adm-pag-label">Pendentes</span>
+        </div>
+        <div className="adm-pag-stat" style={{ borderColor: "rgba(255,255,255,.1)" }}>
+          <span className="adm-pag-num" style={{ color: "var(--text2)" }}>{jogadores.length}</span>
+          <span className="adm-pag-label">Total</span>
+        </div>
+      </div>
+
+      {/* Tabela confirmados */}
+      <p className="adm-pres-subtitulo">✅ Confirmados ({confirmados.length})</p>
+      <div className="adm-pag-tabela" style={{ marginBottom: "1rem" }}>
+        <div className="adm-pag-thead"><span>Jogador</span><span>Status</span><span>Ação</span></div>
+        {confirmados.length === 0
+          ? <p className="adm-pres-vazio">Nenhum confirmado ainda.</p>
+          : confirmados.map(j => {
+            const id = j.id_jogador ?? j.id;
+            return (
+              <div key={id} className="adm-pag-row">
+                <div className="adm-pag-jogador">
+                  {j.fotoUrl
+                    ? <img src={j.fotoUrl} alt={j.nome} className="adm-pag-foto" />
+                    : <span className="adm-pres-avatar">👤</span>
+                  }
+                  <div><p className="adm-pag-nome">{j.nome}</p><p className="adm-pag-pos">{j.posicao || "—"}</p></div>
+                </div>
+                <span className="adm-pag-badge pago">✅ Confirmado</span>
+                <button
+                  className="adm-pag-btn cancelar"
+                  disabled={atualizando[id]}
+                  onClick={() => toggle(j)}
+                >
+                  {atualizando[id] ? "..." : "Remover"}
+                </button>
+              </div>
+            );
+          })
+        }
+      </div>
+
+      {/* Tabela pendentes */}
+      <p className="adm-pres-subtitulo">❌ Pendentes ({naoConfirmados.length})</p>
+      <div className="adm-pag-tabela">
+        <div className="adm-pag-thead"><span>Jogador</span><span>Status</span><span>Ação</span></div>
+        {naoConfirmados.length === 0
+          ? <p className="adm-pres-vazio">🎉 Todos confirmaram!</p>
+          : naoConfirmados.map(j => {
+            const id = j.id_jogador ?? j.id;
+            return (
+              <div key={id} className="adm-pag-row">
+                <div className="adm-pag-jogador">
+                  {j.fotoUrl
+                    ? <img src={j.fotoUrl} alt={j.nome} className="adm-pag-foto" />
+                    : <span className="adm-pres-avatar">👤</span>
+                  }
+                  <div><p className="adm-pag-nome">{j.nome}</p><p className="adm-pag-pos">{j.posicao || "—"}</p></div>
+                </div>
+                <span className="adm-pag-badge pendente">❌ Pendente</span>
+                <button
+                  className="adm-pag-btn confirmar"
+                  disabled={atualizando[id]}
+                  onClick={() => toggle(j)}
+                >
+                  {atualizando[id] ? "..." : "Confirmar"}
+                </button>
+              </div>
+            );
+          })
+        }
       </div>
     </div>
   );
