@@ -171,7 +171,7 @@ function AbaStats({ jogadores, onSave }) {
   return (
     <div>
       <h2 className="adm-section-title">📊 Adicionar Estatísticas</h2>
-      <p className="adm-section-obs">Os valores serão somados às estatísticas atuais.</p>
+      <p className="adm-section-obs">Os valores serão somados às atuais. Use negativos para diminuir (ex: −1).</p>
       <div className="adm-cards">
         {jogadores.map((j) => <StatsForm key={j.id_jogador||j.id} jogador={j} onSave={onSave} />)}
       </div>
@@ -221,7 +221,7 @@ function StatsForm({ jogador, onSave }) {
         {campos.map(([k, l]) => (
           <div key={k} className="adm-attr">
             <label className="adm-attr-label">{l}</label>
-            <input type="number" min="0" value={vals[k]}
+            <input type="number" value={vals[k]}
               onChange={(e) => setVals((o) => ({ ...o, [k]: Number(e.target.value) }))}
               className="adm-attr-input" />
           </div>
