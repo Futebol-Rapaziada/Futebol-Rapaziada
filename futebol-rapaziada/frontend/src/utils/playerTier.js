@@ -1,8 +1,16 @@
 // src/utils/playerTier.js
-// ─── Utilitário compartilhado de tier ────────────────────────────────────────
 
+// ─── SISTEMA DE PONTUAÇÃO (igual ao Campeonato.jsx) ──────────────────────────
 const PONTOS = {
-  gol: 3, assistencia: 2, defesa: 2, vitoria: 5, cartao_am: -1, cartao_vm: -3,
+  gol:        3,
+  assistencia:2,
+  defesa:     2,   // defesa de goleiro
+  desarme:    2,   // desarme
+  vitoria:    3,   // ← ERA 5, agora é 3
+  empate:     1,   // ← NOVO
+  derrota:    0,   // ← NOVO (0 pts, não precisa multiplicar mas deixa explícito)
+  cartao_am: -1,
+  cartao_vm: -3,
 };
 
 export function calcPontos(j) {
@@ -10,7 +18,9 @@ export function calcPontos(j) {
     (j.gols              ?? 0) * PONTOS.gol        +
     (j.assistencias      ?? 0) * PONTOS.assistencia +
     (j.defesas           ?? 0) * PONTOS.defesa      +
+    (j.desarmes          ?? 0) * PONTOS.desarme     +  // ← NOVO
     (j.vitorias          ?? 0) * PONTOS.vitoria     +
+    (j.empates           ?? 0) * PONTOS.empate      +  // ← NOVO
     (j.cartoes           ?? 0) * PONTOS.cartao_am   +
     (j.cartoes_vermelhos ?? 0) * PONTOS.cartao_vm
   );
@@ -35,7 +45,6 @@ export function getTipo(player, todos) {
   if (getId(porGols[0]) === id && (player.gols ?? 0) > 0) return "roxo";
 
   // ── 3. AZUL — Garçom (1º em assistências) ────────────────────────────────
-  // ⚠️ CORRIGIDO: era laranja, mas no planejamento Azul = Garçom
   const porAssists = [...todos].sort((a, b) => (b.assistencias ?? 0) - (a.assistencias ?? 0));
   if (getId(porAssists[0]) === id && (player.assistencias ?? 0) > 0) return "azul";
 
@@ -47,11 +56,10 @@ export function getTipo(player, todos) {
   }
 
   // ── 5. LARANJA — Xerife (1º em desarmes entre NÃO-GOLEIROS) ──────────────
-  // ⚠️ CORRIGIDO: era azul, mas no planejamento Laranja = Xerife
   const naoGoleiros = todos.filter(j => NAO_GOLEIROS.includes(j.posicao));
   if (naoGoleiros.length > 0 && NAO_GOLEIROS.includes(player.posicao)) {
-    const porDesarmes = [...naoGoleiros].sort((a, b) => (b.desarmes ?? b.defesas ?? 0) - (a.desarmes ?? a.defesas ?? 0));
-    if (getId(porDesarmes[0]) === id && (player.desarmes ?? player.defesas ?? 0) > 0) return "laranja";
+    const porDesarmes = [...naoGoleiros].sort((a, b) => (b.desarmes ?? 0) - (a.desarmes ?? 0));
+    if (getId(porDesarmes[0]) === id && (player.desarmes ?? 0) > 0) return "laranja";
   }
 
   // ── 6. Por overall ────────────────────────────────────────────────────────
@@ -61,9 +69,9 @@ export function getTipo(player, todos) {
 export function getTipoPorOverall(player) {
   const ovr = Number(player?.overall ?? 0);
   if (ovr === 0)  return "preto";
-  if (ovr >= 75)  return "ouro";   // ⚠️ CORRIGIDO: era 71 → agora 75
-  if (ovr >= 65)  return "prata";  // ⚠️ CORRIGIDO: era 51 → agora 65
-  return "bronze";                 // 1–64
+  if (ovr >= 75)  return "ouro";
+  if (ovr >= 65)  return "prata";
+  return "bronze";
 }
 
 // ─── COR DOS ATRIBUTOS ────────────────────────────────────────────────────────
@@ -99,11 +107,11 @@ export function getAtribs(jogador) {
 export const TIER_INFO = {
   vermelho: { badge: "🔴 GOAT",       sub: "1º no Campeonato"      },
   roxo:     { badge: "🟣 Artilheiro", sub: "Líder em Gols"         },
-  azul:     { badge: "🔵 Garçom",     sub: "Líder em Assistências" }, // ⚠️ CORRIGIDO
+  azul:     { badge: "🔵 Garçom",     sub: "Líder em Assistências" },
   verde:    { badge: "🟢 Paredão",    sub: "Melhor Goleiro"        },
-  laranja:  { badge: "🟠 Xerife",     sub: "Melhor Defesa"         }, // ⚠️ CORRIGIDO
-  ouro:     { badge: "🥇 Ouro",       sub: "Overall 75–99"         }, // ⚠️ CORRIGIDO
-  prata:    { badge: "🥈 Prata",      sub: "Overall 65–74"         }, // ⚠️ CORRIGIDO
-  bronze:   { badge: "🥉 Bronze",     sub: "Overall 1–64"          }, // ⚠️ CORRIGIDO
+  laranja:  { badge: "🟠 Xerife",     sub: "Melhor Desarme"        },
+  ouro:     { badge: "🥇 Ouro",       sub: "Overall 75–99"         },
+  prata:    { badge: "🥈 Prata",      sub: "Overall 65–74"         },
+  bronze:   { badge: "🥉 Bronze",     sub: "Overall 1–64"          },
   preto:    { badge: "⬛ Novato",     sub: "Overall 0"             },
 };
