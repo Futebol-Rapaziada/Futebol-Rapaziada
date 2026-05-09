@@ -103,6 +103,25 @@ export async function cadastro(nome, email, senha) {
 }
 
 /* =========================
+   USUÁRIO ATUAL
+========================= */
+
+/**
+ * Retorna o usuário logado a partir do localStorage.
+ * O objeto salvo no login já contém: id, nome, email, isAdmin, id_jogador (se vinculado).
+ * Retorna null se não houver usuário logado.
+ */
+export function getUsuarioAtual() {
+  try {
+    const raw = localStorage.getItem("user");
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+/* =========================
    DADOS GERAIS
 ========================= */
 // ─── Adicionar no final do seu api.js ────────────────────────────────────────
