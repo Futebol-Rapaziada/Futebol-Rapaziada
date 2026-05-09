@@ -21,7 +21,6 @@
   gap: 20px;
 }
 
-/* Card com estilo Glassmorphism igual ao seu projeto */
 .fin-card {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border);
@@ -70,16 +69,16 @@
   display: inline-block;
 }
 
-.status-badge.pago { 
-  background: rgba(0, 255, 135, 0.1); 
-  color: var(--neon); 
-  border: 1px solid rgba(0, 255, 135, 0.3); 
+.status-badge.pago {
+  background: rgba(0, 255, 135, 0.1);
+  color: var(--neon);
+  border: 1px solid rgba(0, 255, 135, 0.3);
 }
 
-.status-badge.pendente { 
-  background: rgba(255, 77, 109, 0.1); 
-  color: var(--red); 
-  border: 1px solid rgba(255, 77, 109, 0.3); 
+.status-badge.pendente {
+  background: rgba(255, 77, 109, 0.1);
+  color: var(--red);
+  border: 1px solid rgba(255, 77, 109, 0.3);
 }
 
 .btn-status-toggle {
@@ -98,16 +97,123 @@
   color: var(--text);
 }
 
+/* ✅ Placeholder para quem não tem permissão */
+.sem-permissao {
+  color: var(--text3);
+  font-size: 14px;
+  padding: 5px 12px;
+  display: inline-block;
+  opacity: 0.4;
+}
+
 .user-cell {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-@media (max-width: 600px) {
-  .fin-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .fin-table th:nth-child(3), .fin-table td:nth-child(3) { display: none; }
-}/* Estilo do Botão de Copiar */
+/* ✅ Botão "Editar Valores" no header do card (admin only) */
+.btn-editar-valores {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-editar-valores:hover {
+  border-color: var(--neon);
+  color: var(--neon);
+}
+
+/* ✅ Formulário de edição de valores */
+.form-editar-valores {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.form-editar-valores label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text2);
+}
+
+.form-editar-valores input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  padding: 8px 12px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: var(--font-display);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-editar-valores input:focus {
+  border-color: var(--neon);
+  box-shadow: 0 0 8px rgba(0, 255, 135, 0.15);
+}
+
+.form-editar-acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btn-salvar-valores {
+  flex: 1;
+  background: rgba(0, 255, 135, 0.12);
+  border: 1px solid var(--neon);
+  color: var(--neon);
+  padding: 8px 16px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-salvar-valores:hover:not(:disabled) {
+  background: var(--neon);
+  color: #000;
+}
+
+.btn-salvar-valores:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-cancelar-valores {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text3);
+  padding: 8px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-cancelar-valores:hover:not(:disabled) {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* Botão copiar PIX */
 .btn-copiar-pix {
   background: rgba(0, 255, 135, 0.1);
   border: 1px solid var(--neon);
@@ -139,17 +245,17 @@
   transform: scale(0.95);
 }
 
-
 .btn-copiar-pix.sucesso {
   background: #00ff87;
   color: #000;
   border-color: #00ff87;
 }
 
-
 .pix-icon {
   font-size: 1.1rem;
-}.valores-info {
+}
+
+.valores-info {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -195,4 +301,9 @@
   color: var(--neon) !important;
   font-size: 22px;
   font-family: var(--font-display);
+}
+
+@media (max-width: 600px) {
+  .fin-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .fin-table th:nth-child(3), .fin-table td:nth-child(3) { display: none; }
 }

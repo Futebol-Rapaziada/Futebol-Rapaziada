@@ -7,29 +7,30 @@ import "../style/Campeonato.css";
 const ABAS = ["Ranking Geral", "Artilheiros", "Garçons", "Participação", "Defesa", "Desarmes"];
 
 // Sistema de pontuação atualizado
+// Sistema de pontuação ajustado - sem cartao_vermelho se não existir
 const PONTOS = {
   gol:           3,
   assistencia:   2,
-  defesa:        2,   // defesa de goleiro
-  desarme:       2,   // desarme
-  vitoria:       3,   // vitória
-  empate:        1,   // empate
-  derrota:       0,   // derrota (sem pontos)
+  defesa:        2,
+  desarme:       2,
+  vitoria:       3,
+  empate:        1,
+  derrota:       0,
   cartao_am:    -1,
-  cartao_vm:    -3,
+ 
 };
 
 function calcPontos(j) {
-  return (
-    (j.gols              ?? 0) * PONTOS.gol        +
-    (j.assistencias      ?? 0) * PONTOS.assistencia +
-    (j.defesas           ?? 0) * PONTOS.defesa      +
-    (j.desarmes          ?? 0) * PONTOS.desarme     +
-    (j.vitorias          ?? 0) * PONTOS.vitoria     +
-    (j.empates           ?? 0) * PONTOS.empate      +
-    (j.cartoes           ?? 0) * PONTOS.cartao_am   +
-    (j.cartoes_vermelhos ?? 0) * PONTOS.cartao_vm
-  );
+  let pontos = 0;
+  pontos += (j.gols ?? 0) * PONTOS.gol;
+  pontos += (j.assistencias ?? 0) * PONTOS.assistencia;
+  pontos += (j.defesas ?? 0) * PONTOS.defesa;
+  pontos += (j.desarmes ?? 0) * PONTOS.desarme;
+  pontos += (j.vitorias ?? 0) * PONTOS.vitoria;
+  pontos += (j.empates ?? 0) * PONTOS.empate;
+  pontos += (j.cartoes ?? 0) * PONTOS.cartao_am;
+
+  return pontos;
 }
 
 export default function Campeonato() {
@@ -127,45 +128,41 @@ export default function Campeonato() {
           <div className="camp-tabela-wrap">
             <table className="camp-tabela">
               <thead>
-                <tr>
-                  <th>#</th><th>Jogador</th><th>Pos.</th>
-                  <th title="Jogos">JG</th>
-                  <th title="Gols">G</th>
-                  <th title="Assistências">A</th>
-                  <th title="Vitórias">V</th>
-                  <th title="Empates">E</th>
-                  <th title="Derrotas">D</th>
-                  <th title="Defesas de Goleiro">DEF</th>
-                  <th title="Desarmes">DSM</th>
-                  <th title="Cartões Amarelos">🟨</th>
-                  <th title="Cartões Vermelhos">🟥</th>
-                  <th title="Pontos" className="th-pts">PTS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {porPontos.map((j, i) => (
-                  <tr key={j.id??i} className={isEu(j)?"eu":""}>
-                    <td className="col-pos">{medalha(i)}</td>
-                    <td className="col-nome">
-                      <span className="tab-av">👤</span>
-                      {j.nome?.split(" ")[0]}
-                      {isEu(j) && <span className="tag-eu">você</span>}
-                    </td>
-                    <td className="col-posicao">{j.posicao||"—"}</td>
-                    <td>{j.jogos??0}</td>
-                    <td className="col-dest">{j.gols??0}</td>
-                    <td className="col-dest">{j.assistencias??0}</td>
-                    <td className="col-vit">{j.vitorias??0}</td>
-                    <td className="col-emp">{j.empates??0}</td>
-                    <td className="col-der">{j.derrotas??0}</td>
-                    <td>{j.defesas??0}</td>
-                    <td className="col-dsm">{j.desarmes??0}</td>
-                    <td>{j.cartoes??0}</td>
-                    <td className="col-red">{j.cartoes_vermelhos??0}</td>
-                    <td><span className="col-pts">{j._pts}</span></td>
-                  </tr>
-                ))}
-              </tbody>
+  <tr>
+    <th>#</th><th>Jogador</th><th>Pos.</th>
+    <th title="Jogos">JG</th>
+    <th title="Gols">G</th>
+    <th title="Assistências">A</th>
+    <th title="Vitórias">V</th>
+    <th title="Empates">E</th>
+    <th title="Derrotas">D</th>
+    <th title="Defesas de Goleiro">DEF</th>
+    <th title="Desarmes">DSM</th>
+    <th title="Cartões Amarelos">🟨</th>
+    {/* <th title="Cartões Vermelhos">🟥</th>  Removido */}
+    <th title="Pontos" className="th-pts">PTS</th>
+  </tr>
+</thead>
+<tbody>
+  {porPontos.map((j, i) => (
+    <tr key={j.id??i} className={isEu(j)?"eu":""}>
+      <td className="col-pos">{medalha(i)}</td>
+      <td className="col-nome">...</td>
+      <td className="col-posicao">{j.posicao||"—"}</td>
+      <td>{j.jogos??0}</td>
+      <td className="col-dest">{j.gols??0}</td>
+      <td className="col-dest">{j.assistencias??0}</td>
+      <td className="col-vit">{j.vitorias??0}</td>
+      <td className="col-emp">{j.empates??0}</td>
+      <td className="col-der">{j.derrotas??0}</td>
+      <td>{j.defesas??0}</td>
+      <td className="col-dsm">{j.desarmes??0}</td>
+      <td>{j.cartoes??0}</td>
+      {/* <td className="col-red">{j.cartoes_vermelhos??0}</td> Removido */}
+      <td><span className="col-pts">{j._pts}</span></td>
+    </tr>
+  ))}
+</tbody>
             </table>
           </div>
         )}
