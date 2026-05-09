@@ -699,22 +699,39 @@ def admin_atualizar_stats(id):
     dados = request.json
     conn = obter_conexao()
     cursor = conn.cursor()
+    
     cursor.execute(
         """UPDATE jogadores SET
             gols = COALESCE(gols, 0) + %s,
             assistencias = COALESCE(assistencias, 0) + %s,
             jogos = COALESCE(jogos, 0) + %s,
-            defesa = COALESCE(defesa, 0) + %s,
-            cartoes = COALESCE(cartoes, 0) + %s
+            vitorias = COALESCE(vitorias, 0) + %s,
+            empates = COALESCE(empates, 0) + %s,
+            derrotas = COALESCE(derrotas, 0) + %s,
+            desarmes = COALESCE(desarmes, 0) + %s,
+            defesas = COALESCE(defesas, 0) + %s,
+            cartoes = COALESCE(cartoes, 0) + %s,
+            cartoes_vermelhos = COALESCE(cartoes_vermelhos, 0) + %s
             WHERE id_jogador = %s""",
-        (dados.get("gols", 0), dados.get("assistencias", 0),
-        dados.get("jogos", 0), dados.get("cartoes", 0), id)
+        (
+            dados.get("gols", 0),
+            dados.get("assistencias", 0),
+            dados.get("jogos", 0),
+            dados.get("vitorias", 0),
+            dados.get("empates", 0),
+            dados.get("derrotas", 0),
+            dados.get("desarmes", 0),
+            dados.get("defesas", 0),
+            dados.get("cartoes", 0),
+            dados.get("cartoes_vermelhos", 0),
+            id
+        )
     )
+    
     conn.commit()
     cursor.close()
     conn.close()
     return jsonify({"mensagem": "Estatísticas atualizadas!"})
-
 
 @app.route('/admin/jogadores/<int:id>/pagamento', methods=['PATCH'])
 @admin_required
