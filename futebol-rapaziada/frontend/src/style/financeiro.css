@@ -1,309 +1,176 @@
-/* src/style/financeiro.css */
-.fin-page {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  max-width: 1100px;
-  margin: 0 auto;
-  animation: cardIn .5s ease;
-}
+@import './tokens.css';
 
-.fin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
+/* ── WRAP ── */
+.fin-wrap { display: flex; flex-direction: column; gap: 24px; }
 
-.fin-grid-top {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+/* ── MEU STATUS ── */
+.fin-meu-status {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  border-radius: 14px; padding: 20px 24px; border: 2px solid;
 }
+.fms-pago    { background: rgba(0,255,135,.05);  border-color: rgba(0,255,135,.3); }
+.fms-pendente { background: rgba(255,77,109,.04); border-color: rgba(255,77,109,.25); }
 
-.fin-card {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  overflow: hidden;
+.fms-info   { display: flex; align-items: center; gap: 14px; }
+.fms-icon   { font-size: 32px; }
+.fms-titulo { font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; color: var(--text); }
+.fms-sub    { font-size: 13px; color: var(--text2); font-weight: 600; margin-top: 2px; }
+
+.btn-fin-acao {
+  padding: 12px 24px; border-radius: 10px;
+  font-family: var(--font-body); font-size: 15px; font-weight: 700;
+  cursor: pointer; letter-spacing: 1px; transition: all .2s;
+  white-space: nowrap; border: none;
 }
+.btn-pagar   { background: var(--neon); color: #000; box-shadow: 0 0 16px rgba(0,255,135,.3); }
+.btn-pagar:hover { background: var(--neon-dim); box-shadow: 0 0 24px rgba(0,255,135,.4); }
+.btn-reverter { background: transparent; color: var(--red); border: 1px solid rgba(255,77,109,.4) !important; }
+.btn-reverter:hover { background: var(--red); color: #fff; }
+.btn-fin-acao:disabled { opacity: .5; cursor: not-allowed; }
 
-.pix-chave {
-  font-family: var(--font-display);
-  font-size: 1.3rem;
-  color: var(--neon);
-  text-shadow: 0 0 10px rgba(0, 255, 135, 0.3);
-  margin-bottom: 15px;
+/* ── CONTADORES ── */
+.fin-contadores { display: flex; gap: 14px; flex-wrap: wrap; }
+.fin-cnt {
+  flex: 1; min-width: 110px;
+  background: rgba(255,255,255,.02); border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
 }
+.fin-cnt-pago       { border-color: rgba(0,255,135,.2);  background: rgba(0,255,135,.03); }
+.fin-cnt-pendente   { border-color: rgba(255,77,109,.2); background: rgba(255,77,109,.03); }
+.fin-cnt-arrecadado { border-color: rgba(76,201,240,.2); background: rgba(76,201,240,.03); }
 
-.fin-tabela-wrapper {
-  padding: 0 16px 16px;
-  overflow-x: auto;
+.fin-cnt-num { font-family: var(--font-display); font-size: 40px; line-height: 1; }
+.fin-cnt-num-rs { font-size: 22px; }
+.fin-cnt-pago       .fin-cnt-num { color: var(--neon); }
+.fin-cnt-pendente   .fin-cnt-num { color: var(--red); }
+.fin-cnt-arrecadado .fin-cnt-num { color: var(--blue); }
+.fin-cnt-lbl { font-size: 11px; color: var(--text2); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ── CARD PIX ── */
+.fin-pix-card {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+  background: rgba(255,255,255,.02); border: 1px solid rgba(0,255,135,.2);
+  border-radius: 14px; padding: 22px 26px;
 }
-
-.fin-table {
-  width: 100%;
-  border-collapse: collapse;
+.fin-pix-left   { display: flex; flex-direction: column; gap: 6px; }
+.fin-pix-label  { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text2); font-weight: 700; }
+.fin-pix-chave  {
+  font-family: var(--font-display); font-size: 1.35rem;
+  color: var(--neon); text-shadow: 0 0 10px rgba(0,255,135,.3);
 }
+.fin-pix-valores { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+.fin-val-tag     { font-size: 13px; color: var(--text2); }
+.fin-val-tag b   { color: var(--neon); }
 
-.fin-table th {
-  padding: 15px 10px;
-  color: var(--text2);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
+.btn-copiar-pix {
+  background: rgba(0,255,135,.1); border: 1px solid var(--neon); color: var(--neon);
+  padding: 10px 20px; border-radius: 8px;
+  font-family: var(--font-display); font-weight: bold;
+  text-transform: uppercase; letter-spacing: 1px;
+  cursor: pointer; transition: all .3s ease; white-space: nowrap; align-self: center;
 }
+.btn-copiar-pix:hover { background: var(--neon); color: #000; box-shadow: 0 0 20px rgba(0,255,135,.4); transform: translateY(-2px); }
+.btn-copiar-pix.sucesso { background: var(--neon); color: #000; }
 
-.fin-table td {
-  padding: 12px 10px;
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-}
-
-.status-badge {
-  font-size: 10px;
-  font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 4px;
-  display: inline-block;
-}
-
-.status-badge.pago {
-  background: rgba(0, 255, 135, 0.1);
-  color: var(--neon);
-  border: 1px solid rgba(0, 255, 135, 0.3);
-}
-
-.status-badge.pendente {
-  background: rgba(255, 77, 109, 0.1);
-  color: var(--red);
-  border: 1px solid rgba(255, 77, 109, 0.3);
-}
-
-.btn-status-toggle {
-  background: transparent;
-  border: 1px solid var(--border2);
-  color: var(--text3);
-  padding: 5px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 11px;
-  transition: 0.2s;
-}
-
-.btn-status-toggle:hover {
-  border-color: var(--text2);
-  color: var(--text);
-}
-
-/* ✅ Placeholder para quem não tem permissão */
-.sem-permissao {
-  color: var(--text3);
-  font-size: 14px;
-  padding: 5px 12px;
-  display: inline-block;
-  opacity: 0.4;
-}
-
-.user-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* ✅ Botão "Editar Valores" no header do card (admin only) */
+/* ── EDITAR VALORES (admin) ── */
 .btn-editar-valores {
-  margin-left: auto;
-  background: transparent;
-  border: 1px solid var(--border2);
-  color: var(--text2);
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  cursor: pointer;
-  transition: 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  background: transparent; border: 1px solid var(--border2); color: var(--text2);
+  padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; transition: .2s;
 }
+.btn-editar-valores:hover { border-color: var(--neon); color: var(--neon); }
 
-.btn-editar-valores:hover {
-  border-color: var(--neon);
-  color: var(--neon);
-}
-
-/* ✅ Formulário de edição de valores */
-.form-editar-valores {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 15px;
-}
-
+.form-editar-valores { display: flex; flex-direction: column; gap: 10px; }
 .form-editar-valores label {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--text2);
+  display: flex; flex-direction: column; gap: 4px;
+  font-size: 11px; text-transform: uppercase; letter-spacing: .8px; color: var(--text2);
 }
-
 .form-editar-valores input {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border2);
-  border-radius: 6px;
-  padding: 8px 12px;
-  color: var(--text);
-  font-size: 14px;
-  font-family: var(--font-display);
-  outline: none;
-  transition: border-color 0.2s;
+  background: rgba(255,255,255,.05); border: 1px solid var(--border2); border-radius: 6px;
+  padding: 7px 10px; color: var(--text); font-size: 14px; outline: none; transition: border-color .2s;
 }
-
-.form-editar-valores input:focus {
-  border-color: var(--neon);
-  box-shadow: 0 0 8px rgba(0, 255, 135, 0.15);
-}
-
-.form-editar-acoes {
-  display: flex;
-  gap: 10px;
-  margin-top: 4px;
-}
+.form-editar-valores input:focus { border-color: var(--neon); box-shadow: 0 0 8px rgba(0,255,135,.15); }
+.form-editar-acoes { display: flex; gap: 8px; }
 
 .btn-salvar-valores {
-  flex: 1;
-  background: rgba(0, 255, 135, 0.12);
-  border: 1px solid var(--neon);
-  color: var(--neon);
-  padding: 8px 16px;
-  border-radius: 7px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s;
+  flex: 1; background: rgba(0,255,135,.12); border: 1px solid var(--neon); color: var(--neon);
+  padding: 7px 14px; border-radius: 7px; font-size: 12px; font-weight: 700; cursor: pointer; transition: .2s;
 }
-
-.btn-salvar-valores:hover:not(:disabled) {
-  background: var(--neon);
-  color: #000;
-}
-
-.btn-salvar-valores:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+.btn-salvar-valores:hover:not(:disabled) { background: var(--neon); color: #000; }
+.btn-salvar-valores:disabled { opacity: .5; cursor: not-allowed; }
 
 .btn-cancelar-valores {
-  background: transparent;
-  border: 1px solid var(--border2);
-  color: var(--text3);
-  padding: 8px 14px;
-  border-radius: 7px;
-  font-size: 12px;
-  cursor: pointer;
-  transition: 0.2s;
+  background: transparent; border: 1px solid var(--border2); color: var(--text3);
+  padding: 7px 12px; border-radius: 7px; font-size: 12px; cursor: pointer; transition: .2s;
 }
+.btn-cancelar-valores:hover:not(:disabled) { border-color: var(--red); color: var(--red); }
 
-.btn-cancelar-valores:hover:not(:disabled) {
-  border-color: var(--red);
-  color: var(--red);
+/* ── SEÇÕES ── */
+.fin-section        { display: flex; flex-direction: column; gap: 12px; }
+.fin-section-titulo { font-family: var(--font-display); font-size: 18px; letter-spacing: 2px; color: var(--text2); }
+.fin-lista          { display: flex; flex-direction: column; gap: 8px; }
+.fin-vazio          { color: var(--text2); font-size: 14px; padding: 12px 0; }
+
+/* ── ITEM ── */
+.fin-item {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,.02); border: 1px solid var(--border);
+  border-radius: 10px; padding: 13px 18px; transition: all .15s;
 }
+.fin-item:hover     { background: rgba(255,255,255,.04); }
+.fin-item-pago      { border-color: rgba(0,255,135,.1); }
+.fin-item-pendente  { border-color: rgba(255,77,109,.08); }
+.fin-eu             { border-left: 3px solid var(--neon) !important; }
 
-/* Botão copiar PIX */
-.btn-copiar-pix {
-  background: rgba(0, 255, 135, 0.1);
-  border: 1px solid var(--neon);
-  color: var(--neon);
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-family: var(--font-display);
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.3s ease;
-  margin-top: 15px;
-  width: 100%;
+.fin-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,255,255,.07); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 14px; color: var(--neon);
+  flex-shrink: 0;
 }
+.fin-info   { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.fin-nome   { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+.fin-pos    { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
 
-.btn-copiar-pix:hover {
-  background: var(--neon);
-  color: #000;
-  box-shadow: 0 0 20px rgba(0, 255, 135, 0.4);
-  transform: translateY(-2px);
+.tag-eu { font-size: 9px; background: rgba(0,255,135,.15); color: var(--neon); padding: 1px 5px; border-radius: 4px; font-weight: 700; }
+
+.fin-item-acoes { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.fin-tipo-badge {
+  font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 700;
 }
+.fin-tipo-badge.tit { background: rgba(0,255,135,.1); color: var(--neon); border: 1px solid rgba(0,255,135,.2); }
+.fin-tipo-badge.res { background: rgba(255,255,255,.05); color: var(--text2); border: 1px solid var(--border); }
 
-.btn-copiar-pix:active {
-  transform: scale(0.95);
+.fin-status-badge {
+  font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
 }
+.fin-status-badge.pago     { background: rgba(0,255,135,.1);  color: var(--neon); border: 1px solid rgba(0,255,135,.2); }
+.fin-status-badge.pendente { background: rgba(255,77,109,.08); color: var(--red);  border: 1px solid rgba(255,77,109,.15); }
 
-.btn-copiar-pix.sucesso {
-  background: #00ff87;
-  color: #000;
-  border-color: #00ff87;
+.fin-valor { font-size: 13px; font-family: var(--font-display); color: var(--text2); }
+
+/* ── BOTÕES MINI ── */
+.btn-mini {
+  padding: 5px 12px; border-radius: 6px;
+  font-family: var(--font-body); font-size: 12px; font-weight: 700;
+  cursor: pointer; letter-spacing: 1px; transition: all .2s; white-space: nowrap;
 }
+.btn-mini:disabled { opacity: .4; cursor: not-allowed; }
 
-.pix-icon {
-  font-size: 1.1rem;
-}
+.btn-mini-pagar   { background: rgba(0,255,135,.1); border: 1px solid rgba(0,255,135,.25); color: var(--neon); }
+.btn-mini-pagar:hover { background: var(--neon); color: #000; }
 
-.valores-info {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-bottom: 15px;
-}
+.btn-mini-reverter { background: transparent; border: 1px solid rgba(255,77,109,.25); color: var(--red); }
+.btn-mini-reverter:hover { background: var(--red); color: #fff; }
 
-.val-item {
-  color: var(--text2);
-  font-size: 13px;
-}
-
-.val-item b {
-  color: var(--neon);
-}
-
-.badge-tipo {
-  font-size: 10px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-weight: 700;
-}
-
-.badge-tipo.tit {
-  background: rgba(0, 255, 135, 0.1);
-  color: var(--neon);
-  border: 1px solid rgba(0, 255, 135, 0.2);
-}
-
-.badge-tipo.res {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text2);
-  border: 1px solid var(--border);
-}
-
-.obs-fin {
-  font-size: 11px;
-  color: var(--text3);
-  margin-top: 10px;
-  font-style: italic;
-}
-
-.green {
-  color: var(--neon) !important;
-  font-size: 22px;
-  font-family: var(--font-display);
-}
-
+/* ── RESPONSIVO ── */
 @media (max-width: 600px) {
-  .fin-header { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .fin-table th:nth-child(3), .fin-table td:nth-child(3) { display: none; }
+  .fin-item-acoes { gap: 6px; }
+  .fin-tipo-badge { display: none; }
+  .fin-pix-card   { flex-direction: column; }
+  .btn-copiar-pix { width: 100%; justify-content: center; }
 }
