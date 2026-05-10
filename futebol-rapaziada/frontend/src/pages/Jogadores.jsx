@@ -1,21 +1,16 @@
 import { useEffect, useState, useMemo } from "react";
 import Layout from "../components/layout/Layout";
 import CartaFifa from "../components/CartaFifa";
-import { getJogadores } from "../services/api"; // ✅ import estático (igual ao Home.jsx)
+import { getJogadores } from "../services/api";
 import { getTipo, TIER_INFO, calcPontos } from "../utils/playerTier";
 import "../style/Jogadores.css";
 
-// ─── Retorna o nome a exibir na carta ────────────────────────────────────────
-// Se o primeiro nome se repete entre os jogadores cadastrados,
-// exibe "Primeiro Sobrenome" para diferenciar.
-// Ex.: dois "Lucas" → "Lucas Silva" e "Lucas Mendes"
 function nomeExibicao(jogador, contagemPrimeiros) {
   const partes = (jogador.nome ?? "").trim().split(/\s+/);
   const primeiro = partes[0] ?? "";
   if (partes.length > 1 && (contagemPrimeiros[primeiro] ?? 0) > 1) {
     return `${primeiro} ${partes[1]}`;
   }
-  // Único → só o primeiro nome
   return primeiro;
 }
 
@@ -28,7 +23,6 @@ export default function Jogadores() {
   const [filtroOrdem,   setFiltroOrdem]   = useState("overall");
 
   useEffect(() => {
-    // ✅ Renomeado de "fetch" para "carregarJogadores" — evita sobrescrever o fetch global
     const carregarJogadores = async () => {
       try {
         const lista = await getJogadores();

@@ -11,7 +11,7 @@ const MENU = [
   { path: "/financeiro",   icon: "💰", label: "Financeiro" },
   { path: "/estatisticas", icon: "📊", label: "Estatísticas" },
   { path: "/campeonato",   icon: "🏆", label: "Campeonato" },
-  { path: "/jogos",        icon: "⚽", label: "Jogos" },,
+  { path: "/jogos",        icon: "⚽", label: "Jogos" },
   { path: "/times",        icon: "👕", label: "Times", em_breve: true },
 ];
 

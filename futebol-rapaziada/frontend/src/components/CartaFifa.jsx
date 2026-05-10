@@ -2,9 +2,7 @@
 // Componente de carta compartilhado entre Home e Jogadores
 import { getTipo, getAtribs, atribColor, TIER_INFO } from "../utils/playerTier";
 
-// ─── Nome exibido na carta ────────────────────────────────────────────────────
-// Se o primeiro nome se repete no elenco → "Primeiro Segundo" (ex: "GABRIEL JADER")
-// Se for único → só o primeiro nome (ex: "PIETRO")
+
 function resolverNome(jogador, todos = []) {
   const partes   = (jogador.nome ?? "").trim().split(/\s+/);
   const primeiro = partes[0] ?? "";
