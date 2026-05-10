@@ -15,7 +15,8 @@ function nomeExibicao(jogador, contagemPrimeiros) {
   if (partes.length > 1 && (contagemPrimeiros[primeiro] ?? 0) > 1) {
     return `${primeiro} ${partes[1]}`;
   }
-  return jogador.nome ?? "";
+  // Único → só o primeiro nome
+  return primeiro;
 }
 
 export default function Jogadores() {
