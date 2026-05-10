@@ -170,8 +170,8 @@ function OverallForm({ jogador, onSave }) {
 function AbaStats({ jogadores, onSave }) {
   return (
     <div>
-      <h2 className="adm-section-title">📊 Adicionar Estatísticas</h2>
-      <p className="adm-section-obs">Os valores serão somados às atuais. Use negativos para diminuir (ex: −1).</p>
+      <h2 className="adm-section-title">📊 Estatísticas</h2>
+      <p className="adm-section-obs">Use os botões − e + para ajustar cada stat. O valor será somado ao atual.</p>
       <div className="adm-cards">
         {jogadores.map((j) => <StatsForm key={j.id_jogador||j.id} jogador={j} onSave={onSave} />)}
       </div>
@@ -181,61 +181,95 @@ function AbaStats({ jogadores, onSave }) {
 
 function StatsForm({ jogador, onSave }) {
   const empty = { gols:0, assistencias:0, jogos:0, cartoes:0, vitorias:0, empates:0, derrotas:0, desarmes:0, defesas:0 };
-  const [vals, setVals] = useState(empty);
+  const [deltas, setDeltas] = useState(empty);
   const [salvando, setSalvando] = useState(false);
 
   const campos = [
-    ["gols",        "⚽ Gols"],
-    ["assistencias","🎯 Assists"],
-    ["jogos",       "🏟 Jogos"],
-    ["vitorias",    "🏆 Vitórias"],
-    ["empates",     "🤝 Empates"],
-    ["derrotas",    "💔 Derrotas"],
-    ["desarmes",    "🛡️ Desarmes"],
-    ["defesas",     "🧤 Defesas"],
-    ["cartoes",     "🟨 Cartões"],
+    { key: "gols",        label: "Gols",     icon: "⚽" },
+    { key: "assistencias",label: "Assists",  icon: "🎯" },
+    { key: "jogos",       label: "Jogos",    icon: "🏟" },
+    { key: "vitorias",    label: "Vitórias", icon: "🏆" },
+    { key: "empates",     label: "Empates",  icon: "🤝" },
+    { key: "derrotas",    label: "Derrotas", icon: "💔" },
+    { key: "desarmes",    label: "Desarmes", icon: "🛡️" },
+    { key: "defesas",     label: "Defesas",  icon: "🧤" },
+    { key: "cartoes",     label: "Cartões",  icon: "🟨" },
   ];
 
+  const step = (key, dir) =>
+    setDeltas(o => ({ ...o, [key]: o[key] + dir }));
+
+  const hasChanges = Object.values(deltas).some(v => v !== 0);
+
   return (
-    <div className="adm-card">
+    <div className="adm-card adm-stats-card">
       <div className="adm-card-header">
-        {jogador.fotoUrl && <img src={jogador.fotoUrl} alt={jogador.nome} className="adm-card-foto" />}
-        <div><p className="adm-card-nome">{jogador.nome}</p><p className="adm-card-pos">{jogador.posicao}</p></div>
+        {jogador.fotoUrl
+          ? <img src={jogador.fotoUrl} alt={jogador.nome} className="adm-card-foto" />
+          : <span className="adm-pres-avatar">👤</span>
+        }
+        <div>
+          <p className="adm-card-nome">{jogador.nome}</p>
+          <p className="adm-card-pos">{jogador.posicao}</p>
+        </div>
+        {hasChanges && (
+          <button className="adm-stats-reset" onClick={() => setDeltas(empty)} title="Resetar alterações">↺</button>
+        )}
       </div>
 
-      {/* Stats atuais */}
-      <div className="adm-stats-atuais">
-        <span>⚽ <b>{jogador.gols||0}</b></span>
-        <span>🎯 <b>{jogador.assistencias||0}</b></span>
-        <span>🏟 <b>{jogador.jogos||0}</b></span>
-        <span>🏆 <b>{jogador.vitorias||0}</b></span>
-        <span>🤝 <b>{jogador.empates||0}</b></span>
-        <span>💔 <b>{jogador.derrotas||0}</b></span>
-        <span>🛡️ <b>{jogador.desarmes||0}</b></span>
-        <span>🧤 <b>{jogador.defesas||0}</b></span>
-        <span>🟨 <b>{jogador.cartoes||0}</b></span>
+      <div className="adm-stats-rows">
+        {campos.map(({ key, label, icon }) => {
+          const atual = jogador[key] || 0;
+          const delta = deltas[key];
+          const novo  = atual + delta;
+          return (
+            <div key={key} className="adm-stats-row">
+              <span className="adm-stats-icon">{icon}</span>
+              <span className="adm-stats-label">{label}</span>
+
+              <div className="adm-stats-preview">
+                <span className="adm-stats-atual">{atual}</span>
+                {delta !== 0 && (
+                  <>
+                    <span className="adm-stats-arrow">→</span>
+                    <span className={`adm-stats-novo ${delta > 0 ? "positivo" : "negativo"}`}>{novo}</span>
+                    <span className={`adm-stats-delta ${delta > 0 ? "positivo" : "negativo"}`}>
+                      {delta > 0 ? `+${delta}` : delta}
+                    </span>
+                  </>
+                )}
+              </div>
+
+              <div className="adm-stepper">
+                <button
+                  className="adm-stepper-btn minus"
+                  onClick={() => step(key, -1)}
+                  disabled={novo <= 0}
+                  aria-label={`Diminuir ${label}`}
+                >−</button>
+                <span className="adm-stepper-val" data-changed={delta !== 0}>{delta > 0 ? `+${delta}` : delta}</span>
+                <button
+                  className="adm-stepper-btn plus"
+                  onClick={() => step(key, 1)}
+                  aria-label={`Aumentar ${label}`}
+                >+</button>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Grid de inputs — 3 colunas */}
-      <div className="adm-atributos adm-atributos-3">
-        {campos.map(([k, l]) => (
-          <div key={k} className="adm-attr">
-            <label className="adm-attr-label">{l}</label>
-            <input type="number" value={vals[k]}
-              onChange={(e) => setVals((o) => ({ ...o, [k]: Number(e.target.value) }))}
-              className="adm-attr-input" />
-          </div>
-        ))}
-      </div>
-
-      <button className="adm-btn-salvar" disabled={salvando}
+      <button
+        className="adm-btn-salvar"
+        disabled={salvando || !hasChanges}
         onClick={async () => {
           setSalvando(true);
-          await onSave(jogador.id_jogador||jogador.id, vals);
-          setVals(empty);
+          await onSave(jogador.id_jogador||jogador.id, deltas);
+          setDeltas(empty);
           setSalvando(false);
-        }}>
-        {salvando ? "Salvando..." : "+ Adicionar"}
+        }}
+      >
+        {salvando ? "Salvando..." : hasChanges ? "Salvar Alterações" : "Sem alterações"}
       </button>
     </div>
   );
