@@ -7,7 +7,6 @@ import Estatisticas from "../pages/Estatisticas";
 import Campeonato   from "../pages/Campeonato";
 import Presenca     from "../pages/Presenca";
 import Jogos        from "../pages/Jogos";
-import Times        from "../pages/Times";
 import Financeiro   from "../pages/Financeiro"; 
 import Jogadores    from "../pages/Jogadores"; 
 import Calendario   from "../pages/Calendario"; 
@@ -43,7 +42,6 @@ export default function RouterApp() {
         <Route path="/campeonato"   element={<P><Campeonato /></P>} />
         <Route path="/presenca"     element={<P><Presenca /></P>} />
         <Route path="/jogos"        element={<P><Jogos /></P>} />
-        <Route path="/times"        element={<P><Times /></P>} />
         <Route path="/financeiro"   element={<P><Financeiro /></P>} />
         <Route path="/jogadores"    element={<P><Jogadores /></P>} />
         <Route path="/calendario"   element={<P><Calendario /></P>} />
