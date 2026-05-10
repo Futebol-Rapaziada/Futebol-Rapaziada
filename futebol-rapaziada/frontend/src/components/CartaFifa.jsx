@@ -2,6 +2,21 @@
 // Componente de carta compartilhado entre Home e Jogadores
 import { getTipo, getAtribs, atribColor, TIER_INFO } from "../utils/playerTier";
 
+
+function resolverNome(jogador, todos = []) {
+  const partes   = (jogador.nome ?? "").trim().split(/\s+/);
+  const primeiro = partes[0] ?? "";
+  if (partes.length > 1) {
+    const duplicado = todos.some(
+      j => j !== jogador &&
+           (j.id_jogador ?? j.id) !== (jogador.id_jogador ?? jogador.id) &&
+           (j.nome ?? "").trim().split(/\s+/)[0] === primeiro
+    );
+    if (duplicado) return `${primeiro} ${partes[1]}`;
+  }
+  return primeiro;
+}
+
 function CardBg({ tipo }) {
   if (tipo === "vermelho") return <div className="carta-bg-vermelho"><div className="vm1"/><div className="vm2"/><div className="vm3"/></div>;
   if (tipo === "roxo")     return <div className="carta-bg-roxo"><div className="rx1"/><div className="rx2"/><div className="rx3"/></div>;
@@ -27,6 +42,7 @@ export default function CartaFifa({ jogador, todos, showBadge = true }) {
   const atribs = getAtribs(jogador);
   const tier   = TIER_INFO[tipo];
   const crown  = CROWN[tipo];
+  const nome   = resolverNome(jogador, todos);
 
   return (
     <div className="carta-wrap">
@@ -50,7 +66,7 @@ export default function CartaFifa({ jogador, todos, showBadge = true }) {
           }
         </div>
 
-        <div className="carta-nome z1">{jogador.nome?.split(" ")[0]?.toUpperCase()}</div>
+        <div className="carta-nome z1">{nome.toUpperCase()}</div>
         <div className="carta-div z1"/>
 
         <div className="carta-atribs z1">

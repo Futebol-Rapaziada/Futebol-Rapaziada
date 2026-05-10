@@ -321,6 +321,107 @@
   .adm-atributos-3 { grid-template-columns: repeat(3, 1fr) !important; }
 }
 
+/* ─── STATS CARD ────────────────────────────────────────────────────────────── */
+.adm-stats-card .adm-card-header {
+  margin-bottom: .85rem;
+  padding-bottom: .85rem;
+}
+
+.adm-stats-reset {
+  margin-left: auto;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--border2);
+  color: var(--text2); border-radius: 8px;
+  width: 32px; height: 32px;
+  font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s; flex-shrink: 0;
+}
+.adm-stats-reset:hover { color: var(--neon); border-color: var(--neon); }
+
+/* ─── STATS ROWS ─────────────────────────────────────────────────────────────── */
+.adm-stats-rows {
+  display: flex; flex-direction: column;
+  gap: .35rem; margin-bottom: 1rem;
+}
+
+.adm-stats-row {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .5rem .65rem;
+  border-radius: 10px;
+  background: rgba(255,255,255,.025);
+  border: 1px solid transparent;
+  transition: background .15s, border-color .15s;
+}
+.adm-stats-row:hover {
+  background: rgba(255,255,255,.045);
+  border-color: var(--border);
+}
+
+.adm-stats-icon {
+  font-size: 1rem; width: 22px; text-align: center; flex-shrink: 0;
+}
+
+.adm-stats-label {
+  font-size: .78rem; font-weight: 700;
+  color: var(--text2); letter-spacing: .5px;
+  min-width: 58px; flex-shrink: 0;
+}
+
+/* ─── PREVIEW ATUAL → NOVO ───────────────────────────────────────────────────── */
+.adm-stats-preview {
+  display: flex; align-items: center; gap: .35rem;
+  flex: 1; font-size: .8rem;
+}
+
+.adm-stats-atual {
+  color: var(--text3); font-weight: 600;
+  min-width: 20px; text-align: center;
+}
+
+.adm-stats-arrow { color: var(--text3); font-size: .7rem; }
+
+.adm-stats-novo { font-weight: 700; font-size: .88rem; }
+.adm-stats-novo.positivo { color: var(--neon); }
+.adm-stats-novo.negativo { color: #ff6b6b; }
+
+.adm-stats-delta {
+  font-size: .68rem; font-weight: 700;
+  padding: .1rem .35rem; border-radius: 20px;
+}
+.adm-stats-delta.positivo { background: rgba(0,255,135,.12); color: var(--neon); }
+.adm-stats-delta.negativo { background: rgba(255,77,109,.12); color: #fca5a5; }
+
+/* ─── STEPPER ────────────────────────────────────────────────────────────────── */
+.adm-stepper {
+  display: flex; align-items: center;
+  background: rgba(0,0,0,.25); border: 1px solid var(--border2);
+  border-radius: 10px; overflow: hidden; flex-shrink: 0;
+}
+
+.adm-stepper-btn {
+  background: transparent; border: none;
+  color: var(--text2); font-size: 1.1rem; font-weight: 700;
+  width: 32px; height: 32px;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.adm-stepper-btn:hover:not(:disabled) { color: var(--text); background: rgba(255,255,255,.07); }
+.adm-stepper-btn:active:not(:disabled) { transform: scale(.88); }
+.adm-stepper-btn:disabled { opacity: .25; cursor: not-allowed; }
+.adm-stepper-btn.plus:hover:not(:disabled)  { color: var(--neon); }
+.adm-stepper-btn.minus:hover:not(:disabled) { color: #ff6b6b; }
+
+.adm-stepper-val {
+  font-family: var(--font-body); font-size: .82rem; font-weight: 700;
+  color: var(--text3); min-width: 26px; text-align: center;
+  border-left: 1px solid var(--border2);
+  border-right: 1px solid var(--border2);
+  padding: 0 2px; line-height: 32px; height: 32px;
+  transition: color .15s;
+}
+.adm-stepper-val[data-changed="true"] { color: var(--text); }
+
 /* ─── PRESENÇA ───────────────────────────────────────────────────────────── */
 .adm-pres-subtitulo {
   font-size: .78rem; font-weight: 700;

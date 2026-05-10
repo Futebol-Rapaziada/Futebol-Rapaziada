@@ -1,9 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Layout from "../components/layout/Layout";
 import CartaFifa from "../components/CartaFifa";
-import { getJogadores } from "../services/api"; // ✅ import estático (igual ao Home.jsx)
+import { getJogadores } from "../services/api";
 import { getTipo, TIER_INFO, calcPontos } from "../utils/playerTier";
 import "../style/Jogadores.css";
+
+function nomeExibicao(jogador, contagemPrimeiros) {
+  const partes = (jogador.nome ?? "").trim().split(/\s+/);
+  const primeiro = partes[0] ?? "";
+  if (partes.length > 1 && (contagemPrimeiros[primeiro] ?? 0) > 1) {
+    return `${primeiro} ${partes[1]}`;
+  }
+  return primeiro;
+}
 
 export default function Jogadores() {
   const [jogadores,     setJogadores]     = useState([]);
@@ -14,7 +23,6 @@ export default function Jogadores() {
   const [filtroOrdem,   setFiltroOrdem]   = useState("overall");
 
   useEffect(() => {
-    // ✅ Renomeado de "fetch" para "carregarJogadores" — evita sobrescrever o fetch global
     const carregarJogadores = async () => {
       try {
         const lista = await getJogadores();
@@ -28,6 +36,17 @@ export default function Jogadores() {
     };
     carregarJogadores();
   }, []);
+
+  // ── Conta quantas vezes cada primeiro nome aparece no elenco completo ──────
+  // Calculado sobre TODOS os jogadores (não apenas os filtrados), para que a
+  // exibição seja consistente independente do filtro ativo.
+  const contagemPrimeiros = useMemo(() => {
+    return jogadores.reduce((acc, j) => {
+      const primeiro = (j.nome ?? "").trim().split(/\s+/)[0];
+      if (primeiro) acc[primeiro] = (acc[primeiro] ?? 0) + 1;
+      return acc;
+    }, {});
+  }, [jogadores]);
 
   const posicoes = ["Todos", ...new Set(jogadores.map(j => j.posicao).filter(Boolean))];
 
