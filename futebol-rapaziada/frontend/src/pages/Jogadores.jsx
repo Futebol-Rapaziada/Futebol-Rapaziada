@@ -13,7 +13,7 @@ function nomeExibicao(jogador, contagemPrimeiros) {
   const partes = (jogador.nome ?? "").trim().split(/\s+/);
   const primeiro = partes[0] ?? "";
   if (partes.length > 1 && (contagemPrimeiros[primeiro] ?? 0) > 1) {
-    return `${primeiro} ${partes[partes.length - 1]}`;
+    return `${primeiro} ${partes[1]}`;
   }
   return jogador.nome ?? "";
 }
