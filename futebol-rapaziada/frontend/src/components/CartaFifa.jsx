@@ -50,7 +50,9 @@ export default function CartaFifa({ jogador, todos, showBadge = true }) {
           }
         </div>
 
-        <div className="carta-nome z1">{jogador.nome?.split(" ")[0]?.toUpperCase()}</div>
+        {/* ✅ Removido .split(" ")[0] — o nome já vem processado de quem chama o componente.
+            Jogadores.jsx passa "Gabriel Jader" quando há duplicatas; caso único continua "Gabriel". */}
+        <div className="carta-nome z1">{jogador.nome?.toUpperCase()}</div>
         <div className="carta-div z1"/>
 
         <div className="carta-atribs z1">
