@@ -1,24 +1,11 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../components/layout/Layout";
 import CartaFifa from "../components/CartaFifa";
-import { getJogadores } from "../services/api"; // ✅ import estático (igual ao Home.jsx)
+import { getJogadores } from "../services/api";
 import { getTipo, TIER_INFO, calcPontos } from "../utils/playerTier";
 import "../style/Jogadores.css";
 
-// ─── Retorna o nome a exibir na carta ────────────────────────────────────────
-// Se o primeiro nome se repete entre os jogadores cadastrados,
-// exibe "Primeiro Sobrenome" para diferenciar.
-// Ex.: dois "Lucas" → "Lucas Silva" e "Lucas Mendes"
-function nomeExibicao(jogador, contagemPrimeiros) {
-  const partes = (jogador.nome ?? "").trim().split(/\s+/);
-  const primeiro = partes[0] ?? "";
-  if (partes.length > 1 && (contagemPrimeiros[primeiro] ?? 0) > 1) {
-    return `${primeiro} ${partes[partes.length - 1]}`;
-  }
-  return jogador.nome ?? "";
-}
-
-export default function Jogadores() {
+export default function Admin() {
   const [jogadores,     setJogadores]     = useState([]);
   const [loading,       setLoading]       = useState(true);
   const [erro,          setErro]          = useState(null);
@@ -27,7 +14,6 @@ export default function Jogadores() {
   const [filtroOrdem,   setFiltroOrdem]   = useState("overall");
 
   useEffect(() => {
-    // ✅ Renomeado de "fetch" para "carregarJogadores" — evita sobrescrever o fetch global
     const carregarJogadores = async () => {
       try {
         const lista = await getJogadores();
@@ -41,17 +27,6 @@ export default function Jogadores() {
     };
     carregarJogadores();
   }, []);
-
-  // ── Conta quantas vezes cada primeiro nome aparece no elenco completo ──────
-  // Calculado sobre TODOS os jogadores (não apenas os filtrados), para que a
-  // exibição seja consistente independente do filtro ativo.
-  const contagemPrimeiros = useMemo(() => {
-    return jogadores.reduce((acc, j) => {
-      const primeiro = (j.nome ?? "").trim().split(/\s+/)[0];
-      if (primeiro) acc[primeiro] = (acc[primeiro] ?? 0) + 1;
-      return acc;
-    }, {});
-  }, [jogadores]);
 
   const posicoes = ["Todos", ...new Set(jogadores.map(j => j.posicao).filter(Boolean))];
 
@@ -125,29 +100,19 @@ export default function Jogadores() {
 
         <div className="jogadores-grid">
           {filtrados.map(j => {
-            const tipo = getTipo(j, jogadores);
-            const tier = TIER_INFO[tipo];
+            const tipo   = getTipo(j, jogadores);
+            const tier   = TIER_INFO[tipo];
             const pontos = calcPontos(j);
-
-            // Sobrescreve o nome apenas para exibição na carta,
-            // sem alterar o objeto original do estado.
-            const jogadorExibicao = {
-              ...j,
-              nome: nomeExibicao(j, contagemPrimeiros),
-            };
 
             return (
               <div key={j.id_jogador ?? j.id} className="carta-wrap">
-                <CartaFifa jogador={jogadorExibicao} todos={jogadores} showBadge={false} />
+                <CartaFifa jogador={j} todos={jogadores} showBadge={false} />
 
                 {/* ── ESTATÍSTICAS ABAIXO DA CARTA ── */}
                 <div className="carta-rodape">
-                  {/* Badge de tier */}
                   <span className={`rodape-tier tier-${tipo}`}>
                     {tier.badge}
                   </span>
-
-                  {/* Stats em linha */}
                   <div className="rodape-stats">
                     <div className="stat-item" title="Gols">
                       <span className="stat-icon">⚽</span>
