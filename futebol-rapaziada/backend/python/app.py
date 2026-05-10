@@ -1,15 +1,28 @@
+
 from flask import Flask, jsonify, request, Response
 from flask_jwt_extended import JWTManager, create_access_token, verify_jwt_in_request, get_jwt_identity
 from database import obter_conexao
 from supabase import create_client, Client
 import bcrypt
 import os
+import pymysql
 import uuid
 from dotenv import load_dotenv
 
 load_dotenv()
 
 from functools import wraps
+
+def obter_conexao():
+    return pymysql.connect(
+        host=os.getenv("DB_HOST"),
+        port=int(os.getenv("DB_PORT")),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME"),
+        charset="utf8mb4",
+        cursorclass=pymysql.cursors.DictCursor
+    )
 
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
