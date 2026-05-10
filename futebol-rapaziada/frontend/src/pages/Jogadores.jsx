@@ -130,16 +130,9 @@ export default function Jogadores() {
             const tier = TIER_INFO[tipo];
             const pontos = calcPontos(j);
 
-            // Sobrescreve o nome apenas para exibição na carta,
-            // sem alterar o objeto original do estado.
-            const jogadorExibicao = {
-              ...j,
-              nome: nomeExibicao(j, contagemPrimeiros),
-            };
-
             return (
               <div key={j.id_jogador ?? j.id} className="carta-wrap">
-                <CartaFifa jogador={jogadorExibicao} todos={jogadores} showBadge={false} />
+                <CartaFifa jogador={j} todos={jogadores} showBadge={false} />
 
                 {/* ── ESTATÍSTICAS ABAIXO DA CARTA ── */}
                 <div className="carta-rodape">
