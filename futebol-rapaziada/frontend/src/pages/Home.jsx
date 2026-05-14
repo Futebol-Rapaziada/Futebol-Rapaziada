@@ -6,7 +6,7 @@ import CartaFifa from "../components/CartaFifa";
 import { getTipo, TIER_INFO } from "../utils/playerTier";
 import "../style/Home.css";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-production.up.railway.app";
+const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-lfqr.onrender.com";
 const POSICOES = ["Goleiro","Zagueiro","Lateral Direito","Lateral Esquerdo","Meia","Centroavante"];
 
 const obterDadosProximoJogo = () => {
