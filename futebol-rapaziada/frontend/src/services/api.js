@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-lfqr.onrender.com"
+const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-lfqr.onrender.com";
 
 // ─── TOKEN ───────────────────────────────────────────────────────────────────────
 
@@ -12,6 +12,10 @@ export function obterToken() {
 
 export function removerToken() {
   localStorage.removeItem("token");
+}
+
+export async function getMe() {
+  return request("/me");
 }
 
 // ─── REQUEST BASE ─────────────────────────────────────────────────────────────────

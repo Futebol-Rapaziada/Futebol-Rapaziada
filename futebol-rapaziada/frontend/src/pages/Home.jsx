@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getJogadores, deletarJogador } from "../services/api";
+import { getJogadores, deletarJogador, getMe } from "../services/api";
 import Layout from "../components/layout/Layout";
 import CartaFifa from "../components/CartaFifa";
 import { getTipo, TIER_INFO } from "../utils/playerTier";
 import "../style/Home.css";
 
-const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-lfqr.onrender.com";
 const POSICOES = ["Goleiro","Zagueiro","Lateral Direito","Lateral Esquerdo","Meia","Centroavante"];
 
 const obterDadosProximoJogo = () => {
@@ -52,12 +51,7 @@ export default function Home() {
 
   async function carregar() {
     try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${API_URL}/me`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!res.ok) throw new Error("Perfil não encontrado");
-      const meu = await res.json();
+      const meu = await getMe();
       setPlayer(meu);
       preencherForm(meu);
       const todosJog = await getJogadores();
@@ -88,21 +82,25 @@ export default function Home() {
     setSalv(true); setMsg({ tipo: "", texto: "" });
     try {
       const token = localStorage.getItem("token");
+      const API_URL = import.meta.env.VITE_API_URL ?? "https://futebol-rapaziada-lfqr.onrender.com";
       const res = await fetch(`${API_URL}/jogadores/${player.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({
           ...form,
-          idade:       Number(form.idade),
-          gols:        Number(form.gols),
-          assistencias:Number(form.assistencias),
-          jogos:       Number(form.jogos),
-          cartoes:     Number(form.cartoes),
-          vitorias:    Number(form.vitorias),
-          empates:     Number(form.empates),
-          derrotas:    Number(form.derrotas),
-          desarmes:    Number(form.desarmes),
-          defesas:     Number(form.defesas),
+          idade:        Number(form.idade),
+          gols:         Number(form.gols),
+          assistencias: Number(form.assistencias),
+          jogos:        Number(form.jogos),
+          cartoes:      Number(form.cartoes),
+          vitorias:     Number(form.vitorias),
+          empates:      Number(form.empates),
+          derrotas:     Number(form.derrotas),
+          desarmes:     Number(form.desarmes),
+          defesas:      Number(form.defesas),
         }),
       });
       if (!res.ok) throw new Error();
@@ -139,7 +137,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Quick Stats — linha 1: stats de jogo */}
+            {/* Quick Stats — linha 1 */}
             <div className="quick-grid">
               {[
                 { i:"⚽", v:player.gols??0,        l:"Gols"    },
@@ -157,14 +155,14 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Quick Stats — linha 2: resultados e ações defensivas */}
+            {/* Quick Stats — linha 2 */}
             <div className="quick-grid">
               {[
-                { i:"🏆", v:player.vitorias??0, l:"Vitórias",  c:"qs-card qs-vit" },
-                { i:"🤝", v:player.empates??0,  l:"Empates",   c:"qs-card qs-emp" },
-                { i:"💔", v:player.derrotas??0, l:"Derrotas",  c:"qs-card qs-der" },
-                { i:"🛡️", v:player.desarmes??0, l:"Desarmes",  c:"qs-card qs-dsm" },
-                { i:"🧤", v:player.defesas??0,  l:"Defesas",   c:"qs-card qs-def" },
+                { i:"🏆", v:player.vitorias??0, l:"Vitórias", c:"qs-card qs-vit" },
+                { i:"🤝", v:player.empates??0,  l:"Empates",  c:"qs-card qs-emp" },
+                { i:"💔", v:player.derrotas??0, l:"Derrotas", c:"qs-card qs-der" },
+                { i:"🛡️", v:player.desarmes??0, l:"Desarmes", c:"qs-card qs-dsm" },
+                { i:"🧤", v:player.defesas??0,  l:"Defesas",  c:"qs-card qs-def" },
                 { i:"📊", v:(() => {
                     const pts =
                       (player.gols??0)*3 + (player.assistencias??0)*2 +
@@ -210,9 +208,9 @@ export default function Home() {
             <div className="ic-header"><span>⚔️</span><h3>Resultados</h3></div>
             <div className="ic-body">
               {[
-                { l:"Vitórias",  v: player.vitorias ?? 0 },
-                { l:"Empates",   v: player.empates  ?? 0 },
-                { l:"Derrotas",  v: player.derrotas ?? 0 },
+                { l:"Vitórias", v: player.vitorias ?? 0 },
+                { l:"Empates",  v: player.empates  ?? 0 },
+                { l:"Derrotas", v: player.derrotas ?? 0 },
               ].map(({l,v}) => (
                 <div key={l} className="desemp-row">
                   <span className="d-lbl">{l}</span>
@@ -248,7 +246,6 @@ export default function Home() {
               <button className="p-close" onClick={() => setPainel(false)}>✕</button>
             </div>
 
-            {/* Dados pessoais */}
             <div className="p-section">
               <p className="p-label">Dados</p>
               <label className="p-fl">Nome</label>
@@ -271,7 +268,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Estatísticas de ataque */}
             <div className="p-section">
               <p className="p-label">⚽ Ataque</p>
               <div className="p-row">
@@ -286,7 +282,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Resultados */}
             <div className="p-section">
               <p className="p-label">🏆 Resultados</p>
               <div className="p-row">
@@ -311,7 +306,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Ações defensivas */}
             <div className="p-section">
               <p className="p-label">🛡️ Defesa</p>
               <div className="p-row">
@@ -326,7 +320,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Disciplina */}
             <div className="p-section">
               <p className="p-label">🟨 Disciplina</p>
               <div className="p-row">
