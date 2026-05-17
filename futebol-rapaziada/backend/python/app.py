@@ -639,7 +639,7 @@ def criar_midia():
     midia["autor"] = {"id": midia.pop("autor_id"), "nome": midia.pop("autor_nome")}
     return jsonify(midia), 201
 
-# ─── ADMIN ───────────────────────────────────────────────────────────────────────
+# ─── ADMINzao ───────────────────────────────────────────────────────────────────────
 
 @app.route('/admin/jogadores/<int:id>/overall', methods=['PATCH'])
 @admin_required
