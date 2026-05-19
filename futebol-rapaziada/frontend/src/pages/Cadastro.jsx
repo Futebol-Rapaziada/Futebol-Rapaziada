@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { cadastro, criarJogador } from "../services/api";
+import { cadastro, criarJogador, login } from "../services/api";
 import "../style/Cadastro.css";
 
 const POSICOES = [
@@ -44,7 +44,7 @@ export default function Cadastro() {
     setErro("");
     const reader = new FileReader();
     reader.onload = () => {
-      setFotoBase64(reader.result); // data:image/...;base64,...
+      setFotoBase64(reader.result);
       setPreview(reader.result);
     };
     reader.readAsDataURL(file);
@@ -59,25 +59,35 @@ export default function Cadastro() {
       setLoading(true);
 
       // 1. Cria conta
-      const dataUser = await cadastro(form.nome, form.email, form.senha);
+      await cadastro(form.nome, form.email, form.senha);
 
-      // 2. Salva user no localStorage
-      if (dataUser?.id) {
-  localStorage.setItem("user", JSON.stringify({
-    id: dataUser.id, nome: form.nome, email: form.email,
-    isAdmin: false, // novo usuário nunca começa como admin
-  }));
-} 
+      // 2. Faz login automático para obter o token
+      const dataLogin = await login(form.email, form.senha);
 
-      // 3. Cria perfil do jogador
+      // 3. Salva token e user no localStorage
+      localStorage.setItem("token", dataLogin.token);
+      localStorage.setItem("user", JSON.stringify({
+        id: dataLogin.user.id,
+        nome: dataLogin.user.nome,
+        email: dataLogin.user.email,
+        isAdmin: dataLogin.user.isAdmin ?? false,
+      }));
+
+      // 4. Cria perfil do jogador
       try {
         await criarJogador({
-          nome: form.nome, posicao: form.posicao,
-          idade: Number(form.idade), perna_boa: form.perna_boa,
+          nome: form.nome,
+          posicao: form.posicao,
+          idade: Number(form.idade),
+          perna_boa: form.perna_boa,
           fotoUrl: fotoBase64 || "",
-          overall: 0, time: "",
-          gols: 0, assistencias: 0, jogos: 0, cartoes: 0,
-          defesa: 0, // ✅ campo obrigatório que estava faltando
+          overall: 0,
+          time: "",
+          gols: 0,
+          assistencias: 0,
+          jogos: 0,
+          cartoes: 0,
+          defesa: 0,
         });
       } catch {
         setErro("Conta criada, mas erro ao salvar perfil. Entre em contato com o suporte.");
@@ -95,21 +105,18 @@ export default function Cadastro() {
 
   return (
     <div className="cad-wrap">
-      {/* Fundo decorativo */}
       <div className="cad-bg">
         <div className="cad-orb orb1" /><div className="cad-orb orb2" />
         <div className="cad-grid" />
       </div>
 
       <div className="cad-card">
-        {/* Header */}
         <div className="cad-header">
           <span className="cad-tagline">⚽ Player Card</span>
           <h1 className="cad-titulo">Cadastro do Jogador</h1>
           <p className="cad-sub">Crie sua conta e monte seu perfil.</p>
         </div>
 
-        {/* Dados da conta */}
         <div className="cad-section">
           <p className="cad-section-label">Dados da Conta</p>
           <div className="cad-grid-form">
@@ -120,7 +127,6 @@ export default function Cadastro() {
           </div>
         </div>
 
-        {/* Perfil */}
         <div className="cad-section">
           <p className="cad-section-label">Perfil do Jogador</p>
           <div className="cad-grid-form">
